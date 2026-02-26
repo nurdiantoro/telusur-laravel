@@ -20,10 +20,10 @@ class TblCommentsTableSeeder extends Seeder
             array(
                 'id' => 1,
                 'commentator_id' => 8,
+                'post_id' => 17,
                 'comment' => 'TEK KOMENTAR APA AJA',
                 'created_at' => '2019-06-13 07:17:34',
                 'updated_at' => NULL,
-                'post_id' => 17,
             ),
         ));
     }

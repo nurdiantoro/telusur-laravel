@@ -15,7 +15,7 @@ class TblPostsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tbl_posts')->insert(array(
+        DB::table('posts')->insert(array(
             0 =>
             array(
                 'id' => 1,

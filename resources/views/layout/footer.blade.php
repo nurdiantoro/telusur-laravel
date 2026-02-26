@@ -11,7 +11,8 @@
                 <p>Pada tanggal 5 Oktober 2018, juga Terdaftar di
                     Kemenkominfo No. 00840/DJAI.PSE/04/2018.</p>
                 <br>
-                <img src="{{ asset('img/logo-telusur.webp') }}" alt="Logo Telusur">
+                <img src="{{ asset('img/logo-telusur.webp') }}" alt="Logo Telusur" loading="lazy" width="300px"
+                    height="86px">
             </div>
         </div>
         <div class="flex flex-col">

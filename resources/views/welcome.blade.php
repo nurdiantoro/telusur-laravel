@@ -2,7 +2,7 @@
 <div class="navbar md:flex-col md:gap-2 p-0">
     {{-- Logo --}}
     <div class="mx-auto">
-        <img src="{{ asset('img/logo-telusur.webp') }}" alt="Logo">
+        <img src="{{ asset('img/logo-telusur.webp') }}" alt="Logo" width="300px" height="86px">
     </div>
 
     {{-- Navbar Mobile --}}

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('library_category', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 30);
-            $table->timestamps();
-        });
+        // Schema::create('library_category', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name', 30);
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('library_category');
+        // Schema::dropIfExists('library_category');
     }
 };
