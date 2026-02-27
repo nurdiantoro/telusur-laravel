@@ -3,11 +3,12 @@
 namespace App\Filament\Resources\Posts\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class PostForm
 {
@@ -16,22 +17,30 @@ class PostForm
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->required(),
+                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function ($state, callable $set, $record) {
+                        if (!$record) {
+                            $set('slug', Str::slug($state));
+                        }
+                    }),
                 TextInput::make('slug')
-                    ->unique()
-                    // ->readOnly()
-                    ->required(),
-                TextInput::make('post_type_id')
-                    ->numeric(),
-                FileUpload::make('cover')
+                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
+                    ->disabled()
+                    ->dehydrated()
+                    ->unique(ignoreRecord: true),
+                Select::make('type')
+                    ->required()
+                    ->options([
+                        'post' => 'post',
+                        'video' => 'video',
+                    ])
+                    ->default('post')
+                    ->native(false),
+                SpatieMediaLibraryFileUpload::make('cover')
                     ->disk('public')
-                    ->visibility('public')
-                    ->image()
-                    ->automaticallyCropImagesToAspectRatio('16:9')
-                    ->automaticallyResizeImagesMode('cover')
-                    ->automaticallyResizeImagesToWidth('1920')
-                    ->automaticallyResizeImagesToHeight('1080'),
-                // TextInput::make('cover'),
+                    ->collection('cover')
+                    ->image(),
                 TextInput::make('cover_thumbnail'),
                 TextInput::make('caption'),
                 TextInput::make('video_url')
@@ -44,18 +53,18 @@ class PostForm
                         ['table'], // The `customBlocks` and `mergeTags` tools are also added here if those features are used.
                         ['undo', 'redo'],
                     ])
-                    ->required()
+                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
                     ->columnSpanFull(),
                 TextInput::make('status_id')
-                    ->required()
+                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
                     ->numeric(),
                 TextInput::make('category_id')
                     ->numeric(),
                 TextInput::make('author_id')
-                    ->required()
+                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
                     ->numeric(),
                 TextInput::make('views')
-                    ->required()
+                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
                     ->numeric()
                     ->default(0),
                 DateTimePicker::make('publish_time'),
