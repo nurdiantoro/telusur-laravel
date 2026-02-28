@@ -1520,4 +1520,6 @@
     @endif
 </head>
 
-<body class="bg-[#FDFDFC]  text-[#1b1b18] flex items-center lg:justify-center min-h-screen flex-col">
+<body class="bg-neutral-50  text-[#1b1b18] flex items-center lg:justify-center min-h-screen flex-col">
+
+    @include('layout.navbar')

@@ -32,4 +32,9 @@ class Post extends Model implements HasMedia
             ->quality(85)
             ->nonQueued();
     }
+
+    public function postCategories()
+    {
+        return $this->belongsToMany(PostCategory::class, 'pivot_post_categories');
+    }
 }

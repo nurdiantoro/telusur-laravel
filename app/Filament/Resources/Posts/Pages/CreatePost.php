@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Posts\Pages;
 use App\Filament\Resources\Posts\PostResource;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Carbon;
 
 class CreatePost extends CreateRecord
 {
@@ -27,7 +28,12 @@ class CreatePost extends CreateRecord
                 ->color('gray')
                 ->action(function () {
                     $this->submitStatus = 'draft';
-                    $this->create(false); // tidak memperdulikan validasi form
+
+                    $this->create(false);
+
+                    $this->redirect(
+                        $this->getResource()::getUrl('index')
+                    );
                 }),
 
             Action::make('cancel')
@@ -37,10 +43,27 @@ class CreatePost extends CreateRecord
         ];
     }
 
-    // Ubah Status sesuai tombol yang diklik
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        // Ubah Status sesuai tombol yang diklik
         $data['status'] = $this->submitStatus ?? 'draft';
+
+        // jika user tidak pilih scheduled → publish_time = sekarang
+        if ($this->submitStatus === 'published') {
+            if (empty($data['publish_time'])) {
+                $data['publish_time'] = Carbon::now();
+            }
+        }
+
+        return $data;
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // pastikan publish_time otomatis saat publish
+        if ($this->submitStatus === 'published' && empty($data['publish_time'])) {
+            $data['publish_time'] = now();
+        }
         return $data;
     }
 

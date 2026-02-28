@@ -47,7 +47,6 @@ class PostsTable
                         'published'   => 'Published',
                         'unpublished' => 'Unpublished',
                     ])
-                    ->default('draft'),
             ])
             ->recordActions([
                 EditAction::make(),

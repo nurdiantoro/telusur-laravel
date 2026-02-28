@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\Posts\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\RichEditor;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
@@ -14,60 +16,114 @@ class PostForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('title')
-                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function ($state, callable $set, $record) {
-                        if (!$record) {
-                            $set('slug', Str::slug($state));
-                        }
-                    }),
-                TextInput::make('slug')
-                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
-                    ->disabled()
-                    ->dehydrated()
-                    ->unique(ignoreRecord: true),
-                Select::make('type')
-                    ->required()
-                    ->options([
-                        'post' => 'post',
-                        'video' => 'video',
-                    ])
-                    ->default('post')
-                    ->native(false),
-                SpatieMediaLibraryFileUpload::make('cover')
-                    ->disk('public')
-                    ->collection('cover')
-                    ->image(),
-                TextInput::make('cover_thumbnail'),
-                TextInput::make('caption'),
-                TextInput::make('video_url')
-                    ->url(),
-                RichEditor::make('content')
-                    ->toolbarButtons([
-                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link'],
-                        ['h2', 'h3', 'alignStart', 'alignCenter', 'alignEnd'],
-                        ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
-                        ['table'], // The `customBlocks` and `mergeTags` tools are also added here if those features are used.
-                        ['undo', 'redo'],
-                    ])
-                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
-                    ->columnSpanFull(),
-                TextInput::make('status_id')
-                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
-                    ->numeric(),
-                TextInput::make('category_id')
-                    ->numeric(),
-                TextInput::make('author_id')
-                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
-                    ->numeric(),
-                TextInput::make('views')
-                    ->required(fn($livewire) => $livewire->submitStatus === 'published')
-                    ->numeric()
-                    ->default(0),
-                DateTimePicker::make('publish_time'),
-            ]);
+        return $schema->components([
+            Grid::make(3)
+                ->columnSpanFull()
+                ->schema([
+
+                    /* =========================
+                     |  KOLOM KIRI – META POST
+                     ========================= */
+                    Section::make('Post Detail')
+                        ->columnSpan(1)
+                        ->schema([
+                            TextInput::make('title')
+                                ->required(fn($livewire) => $livewire->submitStatus === 'published')
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(function ($state, callable $set, $record) {
+                                    if (! $record) {
+                                        $set('slug', Str::slug($state));
+                                    }
+                                }),
+
+                            TextInput::make('slug')
+                                ->disabled()
+                                ->dehydrated()
+                                ->unique(ignoreRecord: true)
+                                ->required(fn($livewire) => $livewire->submitStatus === 'published'),
+
+                            Select::make('type')
+                                ->options([
+                                    'post' => 'Post',
+                                    'video' => 'Video',
+                                ])
+                                ->default('post')
+                                ->native(false)
+                                ->reactive()
+                                ->required(),
+
+                            SpatieMediaLibraryFileUpload::make('cover')
+                                ->disk('public')
+                                ->collection('cover')
+                                ->image(),
+
+                            TextInput::make('cover_thumbnail')
+                                ->disabled(fn($get) => $get('type') !== 'post'),
+
+                            TextInput::make('video_url')
+                                ->label('Video URL')
+                                ->disabled(fn($get) => $get('type') !== 'video'),
+
+                            TextInput::make('caption'),
+
+                            Select::make('postCategories')
+                                ->label('Kategori')
+                                ->relationship('postCategories', 'name')
+                                ->multiple()
+                                ->preload()
+                                ->searchable()
+                                ->required(fn($livewire) => $livewire->submitStatus === 'published'),
+                            Select::make('publish_at')
+                                ->reactive()
+                                ->options([
+                                    'immediately' => 'Immediately',
+                                    'scheduled' => 'Scheduled',
+                                ])
+                                ->default('scheduled') // untuk create
+                                ->afterStateHydrated(function ($state, callable $set, $record) {
+
+                                    // Cek apakah ini edit (ada record)
+                                    if ($record) {
+                                        // Jika publish_time sudah ada → post sebelumnya dijadwalkan, default pilih 'scheduled'
+                                        // Jika publish_time null → post belum pernah publish, default pilih 'immediately'
+                                        if (!$record->publish_time) {
+                                            $set('publish_at', 'scheduled'); // scheduled karena belum ada publish_time
+                                        } else {
+                                            $set('publish_at', 'immediately'); // immediately karena ada waktu publish
+                                        }
+                                    }
+                                    // Note: Saat create, default tetap diatur oleh ->default('scheduled')
+                                })
+                                ->native(false)
+                                ->dehydrated(false)
+                                ->required(fn($livewire) => $livewire->submitStatus === 'published'),
+                            DateTimePicker::make('publish_time')
+                                ->label('Publish Time')
+                                ->disabled(fn($get) => $get('publish_at') === 'immediately')
+                                ->required(fn($livewire) => $livewire->submitStatus === 'published'),
+                        ]),
+
+                    /* =========================
+                     |  KOLOM KANAN – CONTENT
+                     ========================= */
+                    Section::make('Content')
+                        ->columnSpan(2)
+                        ->schema([
+                            RichEditor::make('content')
+                                ->required(fn($livewire) => $livewire->submitStatus === 'published')
+                                ->toolbarButtons([
+                                    ['bold', 'italic', 'underline', 'strike', 'link'],
+                                    ['h2', 'h3', 'alignStart', 'alignCenter', 'alignEnd'],
+                                    ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                                    ['table'],
+                                    ['undo', 'redo'],
+                                ])
+                                ->extraAttributes([
+                                    'style' => 'min-height: 700px;',
+                                ])
+                                ->columnSpanFull(),
+                        ]),
+                ]),
+        ]);
     }
 }
