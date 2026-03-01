@@ -15,13 +15,19 @@ class FrontendController extends Controller
         $description = 'Telusur adalah platform pencarian yang membantu Anda menemukan informasi, tempat, dan layanan dengan mudah. Jelajahi dunia dengan Telusur!';
 
         $categories = PostCategory::limit(12)->get();
-        $post = Post::find('216'); // atau lewat route model binding
-        $cover = $post->getFirstMediaUrl('cover'); // default file asli
-        $coverWebp = $post->getFirstMediaUrl('cover', 'webp'); // versi conversion 'webp'
-        $coverThumb = $post->getFirstMediaUrl('cover', 'thumb'); // versi thumbnail
 
-        // dd($post->getFirstMedia('cover')->getPath('webp'));
+        $post = Post::find('1');
+        $firstCategory = $post->postCategories()->first();
+        $coverWebp = $post->getFirstMediaUrl('preview', 'webp'); // versi conversion 'webp'
+        $coverThumb = $post->getFirstMediaUrl('preview', 'thumb'); // versi thumbnail
 
-        return view('index', compact('title', 'description', 'categories', 'post', 'cover', 'coverWebp', 'coverThumb'));
+        $beritaPopulers = Post::with('media')
+            ->latest()
+            ->where('status', 'published')
+            ->where('publish_time', '<=', now())
+            ->limit(6)
+            ->get();
+
+        return view('index', compact('title', 'description', 'categories', 'post', 'coverWebp', 'coverThumb', 'firstCategory', 'beritaPopulers'));
     }
 }

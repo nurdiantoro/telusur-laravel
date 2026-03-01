@@ -23,7 +23,6 @@ class EditPost extends EditRecord
 
     protected function getFormActions(): array
     {
-
         return [
             Action::make('publish')
                 ->label('Publish')
@@ -70,14 +69,14 @@ class EditPost extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        // Ubah Status sesuai tombol yang diklik
-        $data['status'] = $this->submitStatus ?? 'draft';
+        // Jaga agar status tidak null saat edit
+        if (empty($data['status'])) {
+            $data['status'] = $this->record->status ?? 'draft';
+        }
 
-        // jika user tidak pilih scheduled → publish_time = sekarang
-        if ($this->submitStatus === 'published') {
-            if (empty($data['publish_time'])) {
-                $data['publish_time'] = Carbon::now();
-            }
+        // Pastikan publish_time ada jika status published
+        if ($data['status'] === 'published' && empty($data['publish_time'])) {
+            $data['publish_time'] = Carbon::now();
         }
 
         return $data;

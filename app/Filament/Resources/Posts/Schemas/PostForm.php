@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Posts\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Components\Section;
@@ -10,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class PostForm
@@ -27,6 +29,19 @@ class PostForm
                     Section::make('Post Detail')
                         ->columnSpan(1)
                         ->schema([
+                            TextInput::make('author_name')
+                                ->label('Author')
+                                ->disabled()
+                                ->dehydrated(false)
+                                ->formatStateUsing(
+                                    fn($state, $record) =>
+                                    $record?->author?->name ?? Auth::user()?->name
+                                ),
+
+                            Hidden::make('author_id')
+                                ->default(fn() => Auth::id())
+                                ->required(),
+
                             TextInput::make('title')
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published')
                                 ->live(onBlur: true)
@@ -54,11 +69,10 @@ class PostForm
 
                             SpatieMediaLibraryFileUpload::make('cover')
                                 ->disk('public')
-                                ->collection('cover')
-                                ->image(),
-
-                            TextInput::make('cover_thumbnail')
-                                ->disabled(fn($get) => $get('type') !== 'post'),
+                                ->collection('preview')
+                                ->image()
+                                ->imageEditor()
+                                ->required(fn($livewire) => $livewire->submitStatus === 'published'),
 
                             TextInput::make('video_url')
                                 ->label('Video URL')
