@@ -28,6 +28,13 @@ class FrontendController extends Controller
             ->limit(6)
             ->get();
 
-        return view('index', compact('title', 'description', 'categories', 'post', 'coverWebp', 'coverThumb', 'firstCategory', 'beritaPopulers'));
+        $beritaTerbaru = Post::with('media')
+            ->latest()
+            ->where('status', 'published')
+            ->where('publish_time', '<=', now())
+            ->limit(12)
+            ->get();
+
+        return view('index', compact('title', 'description', 'categories', 'post', 'coverWebp', 'coverThumb', 'firstCategory', 'beritaPopulers', 'beritaTerbaru'));
     }
 }

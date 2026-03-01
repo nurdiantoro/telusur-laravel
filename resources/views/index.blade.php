@@ -15,10 +15,12 @@
         </div>
     </div>
 
-    <div class="flex flex-row gap-8">
+    <div class="flex flex-col md:flex-row gap-8">
 
-        {{-- Main News --}}
-        <div class="w-2/3 flex flex-col gap-12">
+        {{-- Main Div --}}
+        <div class="md:w-2/3 flex flex-col gap-12">
+
+            {{-- Card --}}
             <div class="relative aspect-2/1 bg-cover bg-center flex flex-col justify-end p-6 group"
                 style="background-image: url('{{ $post->getFirstMediaUrl('preview', 'preview') ?: $post->getFirstMediaUrl('preview') }}');">
                 <!-- overlay agar teks lebih terbaca -->
@@ -47,26 +49,100 @@
                         {{ svg('fas-arrow-left') }}</div>
                 </div>
             </div>
+
+            {{-- Berita Populer --}}
             <div>
                 <div
                     class="border-b-6 mb-6 border-gray-200 before:absolute before:w-16 before:top-full before:h-1.5 before:bg-warna-01 relative">
                     <h2 class="text-2xl font-bold mb-6">Berita Terbaru</h2>
                 </div>
-                @foreach ($beritaPopulers as $index => $post)
-                    {{-- 2 berita utama --}}
-                    <div class="featured-post">
-                        {{-- style khusus --}}
-                        <img src="{{ $post->cover_preview }}" alt="{{ $post->title }}">
-                        {{ $post->title }}
-                    </div>
-                    {{-- 4 berita lainnya --}}
-                    <div class="regular-post">
-                        {{ $post->title }}
-                    </div>
-                @endforeach
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @foreach ($beritaPopulers as $index => $post)
+                        <article class="flex gap-4 items-start group">
+                            {{-- Thumbnail --}}
+                            <a href="{{ $post->slug }}" class="shrink-0">
+                                <img src="{{ $post->cover_preview ? $post->cover_preview : asset('img/no_image.webp') }}"
+                                    alt="{{ $post->title }}" class="w-28 h-20 object-cover rounded-md">
+                            </a>
+
+                            {{-- Content --}}
+                            <div class="flex flex-col">
+                                <div class="text-xs text-gray-500 mb-1">
+                                    <span class="text-merah-02 font-semibold">
+                                        By {{ $post->author->name ?? 'Admin' }}
+                                    </span>
+                                    <span class="mx-1">•</span>
+                                    <span>{{ $post->created_at->format('F d, Y') }}</span>
+                                </div>
+
+                                <a href="{{ $post->slug }}">
+                                    <h3 class="font-semibold text-sm leading-snug group-hover:text-merah-02 transition">
+                                        {{ $post->title }}
+                                    </h3>
+                                </a>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            </div>
+
+            <div>
+                <div
+                    class="border-b-6 mb-6 border-gray-200 before:absolute before:w-16 before:top-full before:h-1.5 before:bg-warna-01 relative">
+                    <h2 class="text-2xl font-bold mb-6">Artikel Terbaru</h2>
+                </div>
+
+                <div class="flex flex-col gap-6">
+                    @foreach ($beritaTerbaru as $index => $post)
+                        <article class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+                            {{-- Image --}}
+                            <a href="{{ $post->slug }}" class="block md:col-span-1">
+                                <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
+
+                                    <img src="{{ $post->cover_thumbnail ? $post->cover_thumbnail : asset('img/no_image.webp') }}"
+                                        alt="{{ $post->title }}" class="w-full h-full  object-cover rounded-md">
+                                </div>
+                            </a>
+
+                            {{-- Content --}}
+                            <div class="flex flex-col justify-center md:col-span-2">
+
+                                {{-- Category --}}
+                                <span class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 mb-3 w-fit">
+                                    {{ strtoupper($post->category->name ?? 'No Category') }}
+                                </span>
+
+                                {{-- Meta --}}
+                                <div class="text-xs text-gray-500 mb-2">
+                                    <span class="text-red-600 font-semibold">
+                                        By {{ $post->author->name ?? 'Admin' }}
+                                    </span>
+                                    <span class="mx-1">•</span>
+                                    <span>{{ $post->created_at->format('F d, Y') }}</span>
+                                </div>
+
+                                {{-- Title --}}
+                                <a href="{{ $post->slug }}">
+                                    <h2 class="text-xl font-bold leading-snug mb-3 hover:text-red-600 transition">
+                                        {{ $post->title }}
+                                    </h2>
+                                </a>
+
+                                {{-- Excerpt --}}
+                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                                    {{ $post->excerpt }}
+                                </p>
+                            </div>
+
+                        </article>
+                    @endforeach
+                </div>
             </div>
         </div>
-        <div class="w-1/3">
+
+        {{-- side div --}}
+        <div class="md:w-1/3">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel tempore ut nemo. Quis quidem quae ipsum, maxime
             quaerat necessitatibus est facere quasi animi, nesciunt tempora rem vel nobis libero sequi.</div>
     </div>
