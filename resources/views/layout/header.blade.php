@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/icon-telusur.webp') }}">
 
-    <title>telusur</title>
+    <title>{{ $title ?? 'Telusur' }}</title>
+    <meta name="description"
+        content="{{ $data['description'] ??
+            'PT. Telusur Info Media menyediakan Kebijakan Privasi (Privacy Policy) ini untuk memberikan informasi kepada para pengguna aplikasi mobile kami tentang kebijakan dan prosedur mengenai pengumpulan, penggunaan dan pengungkapan informasi pribadi.' }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -1520,6 +1523,6 @@
     @endif
 </head>
 
-<body class="bg-neutral-50  text-[#1b1b18] flex items-center lg:justify-center min-h-screen flex-col">
+<body class="bg-white  text-[#1b1b18] flex items-center lg:justify-center min-h-screen flex-col">
 
     @include('layout.navbar')

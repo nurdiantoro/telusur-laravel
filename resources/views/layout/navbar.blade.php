@@ -1,4 +1,4 @@
-<div class="navbar md:flex-col md:gap-2 p-0">
+<div class="navbar md:flex-col md:gap-2 pb-6 shadow-md">
     {{-- Logo --}}
     <div class="mx-auto">
         <img src="{{ asset('img/logo-telusur.webp') }}" alt="Logo" width="300px" height="86px">
@@ -29,27 +29,20 @@
     </div>
 
     {{-- Navbar Desktop --}}
-    <div class="navbar-center hidden lg:flex bg-neutral-950 w-full static">
-        <ul class="menu menu-horizontal px-1 mx-auto">
+    <div class="navbar-center hidden lg:flex bg-white w-full static">
+        <ul class="menu menu-horizontal px-1 mx-auto justify-center">
             <li>
                 <details>
-                    <summary class="text-white">POLHUKAM</summary>
+                    <summary class="">POLHUKAM</summary>
                     <ul class="p-2 bg-base-100 w-40 z-1">
-                        <li><a class="text-white">POLITIK</a></li>
-                        <li><a class="text-white">PARLEMEN</a></li>
+                        <li><a class="">POLITIK</a></li>
+                        <li><a class="">PARLEMEN</a></li>
                     </ul>
                 </details>
             </li>
-            <li><a class="text-white">MEGAPOL</a></li>
-            <li><a class="text-white">DAERAH</a></li>
-            <li><a class="text-white">NASIONAL</a></li>
-            <li><a class="text-white">INTERNASIONAL</a></li>
-            <li><a class="text-white">EKUIN</a></li>
-            <li><a class="text-white">SPORT</a></li>
-            <li><a class="text-white">GAYA HIDUP</a></li>
-            <li><a class="text-white">TELUSURIA</a></li>
-            <li><a class="text-white">OPINI</a></li>
-            <li><a class="text-white">INDEKS</a></li>
+            @foreach ($categories as $category)
+                <li class="text-bold"><a>{{ $category->name }}</a></li>
+            @endforeach
         </ul>
     </div>
 
