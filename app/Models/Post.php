@@ -35,11 +35,13 @@ class Post extends Model implements HasMedia
     {
         return $this->belongsToMany(PostCategory::class, 'pivot_post_categories');
     }
-
-    // Relasi dengan User (Author)
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+    public function main_category()
+    {
+        return $this->belongsTo(PostCategory::class, 'category_id');
     }
 
     // Ambil cover WEBP dari Spatie (collection: preview), fallback ke placeholder jika tidak ada

@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class TblPostsTableSeeder extends Seeder
+class PostsTableSeeder extends Seeder
 {
 
     /**
@@ -15,7 +15,7 @@ class TblPostsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tbl_posts')->insert(array(
+        DB::table('posts')->insert(array(
             0 =>
             array(
                 'id' => 1,

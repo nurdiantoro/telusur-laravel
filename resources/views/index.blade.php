@@ -2,9 +2,10 @@
 <div class="md:w-300 mx-auto px-4 py-8 min-h-[200vh] bg-white">
 
     {{-- Highlight title --}}
-    <div class="flex flex-row justify-between gap-2 pb-3 mb-6 border-b border-gray-300">
+    <div class="flex flex-row justify-between items-center gap-2 pb-3 mb-6 border-b border-gray-300">
         <span class="px-2 py-1 bg-linear-to-r from-merah-01 to-merah-02 text-white font-bold">Hot news</span>
-        <span class="text-lg text-gray-700 grow">This is the highlight section of our application. </span>
+        <a href="{{ $post->main_category->slug . '/' . $post->slug }}" class="text-lg grow">This is the
+            highlight section of our application. </a>
         <div class="hidden md:flex gap-2">
             <button type="button" class="cursor-pointer text-gray-500 hover:text-gray-700">
                 {{ svg('feathericon-arrow-left-circle') }}
@@ -59,9 +60,12 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @foreach ($beritaPopulers as $index => $post)
+                        <?php
+                        $url = $post->main_category->slug . '/' . $post->slug;
+                        ?>
                         <article class="flex gap-4 items-start group">
                             {{-- Thumbnail --}}
-                            <a href="{{ $post->slug }}" class="shrink-0">
+                            <a href="{{ $url }}" class="shrink-0">
                                 <img src="{{ $post->cover_preview ? $post->cover_preview : asset('img/no_image.webp') }}"
                                     alt="{{ $post->title }}" class="w-28 h-20 object-cover rounded-md">
                             </a>
@@ -70,13 +74,13 @@
                             <div class="flex flex-col">
                                 <div class="text-xs text-gray-500 mb-1">
                                     <span class="text-merah-02 font-semibold">
-                                        By {{ $post->author->name ?? 'Admin' }}
+                                        By {{ $post->author->name ?? 'No Name' }}
                                     </span>
                                     <span class="mx-1">•</span>
                                     <span>{{ $post->created_at->format('F d, Y') }}</span>
                                 </div>
 
-                                <a href="{{ $post->slug }}">
+                                <a href="{{ $url }}">
                                     <h3 class="font-semibold text-sm leading-snug group-hover:text-merah-02 transition">
                                         {{ $post->title }}
                                     </h3>
@@ -95,9 +99,12 @@
 
                 <div class="flex flex-col gap-6">
                     @foreach ($beritaTerbaru as $index => $post)
+                        <?php
+                        $url = $post->main_category->slug . '/' . $post->slug;
+                        ?>
                         <article class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
                             {{-- Image --}}
-                            <a href="{{ $post->slug }}" class="block md:col-span-1">
+                            <a href="{{ $url }}" class="block md:col-span-1 peer">
                                 <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
 
                                     <img src="{{ $post->cover_thumbnail ? $post->cover_thumbnail : asset('img/no_image.webp') }}"
@@ -109,21 +116,23 @@
                             <div class="flex flex-col justify-center md:col-span-2">
 
                                 {{-- Category --}}
-                                <span class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 mb-3 w-fit">
-                                    {{ strtoupper($post->category->name ?? 'No Category') }}
-                                </span>
+                                <a href="{{ $post->main_category->slug }}"
+                                    class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 mb-3 w-fit">
+                                    {{ strtoupper($post->main_category->name ?? 'No Category') }}
+                                </a>
 
                                 {{-- Meta --}}
                                 <div class="text-xs text-gray-500 mb-2">
-                                    <span class="text-red-600 font-semibold">
+                                    <a href="{{ $post->author->name }}"
+                                        class="text-red-600 font-semibold hover:underline">
                                         By {{ $post->author->name ?? 'Admin' }}
-                                    </span>
+                                    </a>
                                     <span class="mx-1">•</span>
                                     <span>{{ $post->created_at->format('F d, Y') }}</span>
                                 </div>
 
                                 {{-- Title --}}
-                                <a href="{{ $post->slug }}">
+                                <a href="{{ $url }}">
                                     <h2 class="text-xl font-bold leading-snug mb-3 hover:text-red-600 transition">
                                         {{ $post->title }}
                                     </h2>
