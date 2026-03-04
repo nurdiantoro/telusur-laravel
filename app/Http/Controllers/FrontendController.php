@@ -47,7 +47,16 @@ class FrontendController extends Controller
         );
         $categories = PostCategory::limit(12)->get();
 
-        // dd($post);
-        return view('post_detail', compact('post', 'title', 'description', 'categories'));
+        $otherArticles = Post::with(['media', 'main_category', 'author'])
+            ->where('id', '!=', $post->id)
+            ->latest()
+            ->where('category_id', $post->category_id)
+            ->where('status', 'published')
+            ->where('publish_time', '<=', now())
+            ->limit(3)
+            ->get();
+
+        // dd($otherArticles[0]->main_category->name);
+        return view('post_detail', compact('post', 'title', 'description', 'categories', 'otherArticles'));
     }
 }
