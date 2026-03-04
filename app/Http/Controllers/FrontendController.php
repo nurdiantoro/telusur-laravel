@@ -15,7 +15,7 @@ class FrontendController extends Controller
         $description = 'Telusur adalah platform pencarian yang membantu Anda menemukan informasi, tempat, dan layanan dengan mudah. Jelajahi dunia dengan Telusur!';
         $categories = PostCategory::limit(12)->get();
 
-        $post = Post::find('1');
+        $post = Post::find('25');
         $firstCategory = $post->postCategories()->first();
         $coverWebp = $post->getFirstMediaUrl('preview', 'webp'); // versi conversion 'webp'
         $coverThumb = $post->getFirstMediaUrl('preview', 'thumb'); // versi thumbnail

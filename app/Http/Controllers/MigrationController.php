@@ -13,32 +13,37 @@ class MigrationController extends Controller
         DB::beginTransaction();
 
         try {
-            // Ambil semua post yang masih punya category_id
-            $posts = Post::whereNotNull('category_id')->get();
+            $total = 0;
 
-            foreach ($posts as $post) {
-                // Cegah duplikasi data pivot
-                DB::table('pivot_post_categories')->updateOrInsert(
-                    [
-                        'post_id' => $post->id,
-                        'post_category_id' => $post->category_id,
-                    ],
-                    []
-                );
-            }
+            Post::whereNotNull('category_id')
+                ->orderBy('id') // wajib untuk chunk
+                ->chunk(500, function ($posts) use (&$total) {
+
+                    foreach ($posts as $post) {
+                        DB::table('pivot_post_categories')->updateOrInsert(
+                            [
+                                'post_id' => $post->id,
+                                'post_category_id' => $post->category_id,
+                            ],
+                            []
+                        );
+
+                        $total++;
+                    }
+                });
 
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
+                'status'  => 'success',
                 'message' => 'Migrasi category_id ke pivot berhasil',
-                'total' => $posts->count(),
+                'total'   => $total,
             ]);
         } catch (\Throwable $e) {
             DB::rollBack();
 
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => $e->getMessage(),
             ], 500);
         }
