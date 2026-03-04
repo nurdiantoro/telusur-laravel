@@ -15,19 +15,16 @@ class FrontendController extends Controller
         $description = 'Telusur adalah platform pencarian yang membantu Anda menemukan informasi, tempat, dan layanan dengan mudah. Jelajahi dunia dengan Telusur!';
         $categories = PostCategory::limit(12)->get();
 
-        $post = Post::find('25');
-        $firstCategory = $post->postCategories()->first();
-        $coverWebp = $post->getFirstMediaUrl('preview', 'webp'); // versi conversion 'webp'
-        $coverThumb = $post->getFirstMediaUrl('preview', 'thumb'); // versi thumbnail
+        $post = Post::with(['media', 'postCategories'])->find(25);
 
-        $beritaPopulers = Post::with('media')
+        $beritaPopulers = Post::with(['media', 'main_category', 'author',])
             ->latest()
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
             ->limit(6)
             ->get();
 
-        $beritaTerbaru = Post::with('media')
+        $beritaTerbaru = Post::with(['media', 'main_category', 'author',])
             ->latest()
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
@@ -36,7 +33,7 @@ class FrontendController extends Controller
 
         // dd($beritaPopulers);
 
-        return view('index', compact('title', 'description', 'categories', 'post', 'coverWebp', 'coverThumb', 'firstCategory', 'beritaPopulers', 'beritaTerbaru'));
+        return view('index', compact('title', 'description', 'categories', 'post', 'beritaPopulers', 'beritaTerbaru'));
     }
 
     public function postDetail($categorySlug, $postSlug)

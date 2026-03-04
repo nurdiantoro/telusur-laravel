@@ -20,7 +20,7 @@
                     $url = urlencode(url()->current());
                     $title = urlencode($post->title);
                 @endphp
-                <div class="flex items-center justify-end gap-1">
+                <div class="flex items-center justify-end gap-1 mt-2">
                     <!-- Facebook -->
                     <a href="https://www.facebook.com/sharer/sharer.php?u={{ $url }}" target="_blank"
                         rel="noopener"
@@ -50,7 +50,8 @@
                     </a>
                 </div>
             </div>
-            <div>{!! $post->content !!}</div>
+            <div class="article-content">
+                {!! $post->content !!}</div>
         </div>
 
         {{-- side div --}}

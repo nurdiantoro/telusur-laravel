@@ -84,4 +84,43 @@ class MigrationController extends Controller
             'message' => 'Migrasi status selesai',
         ]);
     }
+
+    public function ubahtype()
+    {
+        Post::whereNotNull('post_type_id')
+            ->chunkById(500, function ($posts) {
+
+                DB::beginTransaction();
+
+                try {
+                    foreach ($posts as $post) {
+
+                        $type = match ($post->post_type_id) {
+                            3001 => 'Post',
+                            3002 => 'Opini',
+                            3003 => 'Berita Video',
+                            default => null,
+                        };
+
+                        if ($type) {
+                            DB::table('posts')
+                                ->where('id', $post->id)
+                                ->update([
+                                    'type' => $type
+                                ]);
+                        }
+                    }
+
+                    DB::commit();
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    throw $e; // biar Laravel tetap tahu ada error
+                }
+            });
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Migrasi post type selesai',
+        ]);
+    }
 }

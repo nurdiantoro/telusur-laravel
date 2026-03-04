@@ -22,20 +22,20 @@
         <div class="md:w-2/3 flex flex-col gap-12">
 
             {{-- Card --}}
-            <div class="relative aspect-2/1 bg-cover bg-center flex flex-col justify-end p-6 group"
-                style="background-image: url('{{ $post->getFirstMediaUrl('preview', 'preview') ?: $post->getFirstMediaUrl('preview') }}');">
-                <!-- overlay agar teks lebih terbaca -->
-                <div class="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent ">
-                </div>
+            <div class="relative aspect-2/1 bg-cover bg-center flex flex-col justify-end p-6 group rounded-lg overflow-hidden"
+                style="background-image: url('{{ $post->getFirstMediaUrl('preview', 'preview') ?: asset('img/no_image.webp') }}');">
 
-                <!-- konten -->
+                <div class="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent"></div>
+
                 <div class="relative text-white">
                     <span
-                        class="px-2 py-1 bg-linear-to-r from-merah-01 to-merah-02 text-white font-bold mb-2 inline-block">{{ $firstCategory->name }}</span>
-                    <h2 class="text-2xl font-bold mb-2">{{ $post->title }}</h2>
-                    <span>{{ $post->created_at->format('j F Y') }}</span>
-                </div>
+                        class="px-2 py-1 bg-linear-to-r from-merah-01 to-merah-02 text-white font-bold mb-2 inline-block">
+                        {{ $firstCategory?->name ?? 'No Category' }}
+                    </span>
 
+                    <h2 class="text-2xl font-bold mb-2">{{ $post->title }}</h2>
+                    <span>{{ $post->created_at->translatedFormat('j F Y') }}</span>
+                </div>
                 {{-- Arrow --}}
                 <div
                     class="absolute top-0 bottom-0 right-0 text-white transition-opacity cursor-pointer z-10 flex items-center justify-center">
@@ -59,14 +59,17 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    @foreach ($beritaPopulers as $index => $post)
-                        <?php
-                        $url = $post->main_category->slug . '/' . $post->slug;
-                        ?>
+                    @foreach ($beritaPopulers as $post)
+                        @php
+                            $category = $post->main_category;
+                            $author = $post->author;
+                            $url = ($category?->slug ?? '#') . '/' . $post->slug;
+                        @endphp
+
                         <article class="flex gap-4 items-start group">
                             {{-- Thumbnail --}}
                             <a href="{{ $url }}" class="shrink-0">
-                                <img src="{{ $post->cover_preview ? $post->cover_preview : asset('img/no_image.webp') }}"
+                                <img src="{{ $post->cover_preview ?: asset('img/no_image.webp') }}"
                                     alt="{{ $post->title }}" class="w-28 h-20 object-cover rounded-md">
                             </a>
 
@@ -74,10 +77,10 @@
                             <div class="flex flex-col">
                                 <div class="text-xs text-gray-500 mb-1">
                                     <span class="text-merah-02 font-semibold">
-                                        By {{ $post->author->name ?? 'No Name' }}
+                                        By {{ $author?->name ?? 'Admin' }}
                                     </span>
                                     <span class="mx-1">•</span>
-                                    <span>{{ $post->created_at->format('F d, Y') }}</span>
+                                    <span>{{ $post->created_at->translatedFormat('F d, Y') }}</span>
                                 </div>
 
                                 <a href="{{ $url }}">

@@ -80,10 +80,10 @@ class PostForm
 
                             TextInput::make('caption'),
 
-                            Select::make('postCategories')
+                            Select::make('category_id')
                                 ->label('Kategori')
                                 ->relationship('postCategories', 'name')
-                                ->multiple()
+                                // ->multiple()
                                 ->preload()
                                 ->searchable()
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published'),
