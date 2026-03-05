@@ -1,8 +1,8 @@
 <div class="navbar md:flex-col md:gap-2 pb-6 shadow-md">
     {{-- Logo --}}
-    <div class="mx-auto">
+    <a href="{{ route('home') }}" class="mx-auto">
         <img src="{{ asset('img/logo-telusur.webp') }}" alt="Logo" width="300px" height="86px">
-    </div>
+    </a>
 
     {{-- Navbar Mobile --}}
     <div class="navbar-start">

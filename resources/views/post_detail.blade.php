@@ -15,16 +15,16 @@
 
             <article>
                 {{-- Title --}}
-                <h1 class="text-3xl font-bold border-b border-gray-200 pb-4 mb-4">{{ $post->title }}</h1>
+                <h1 class="text-3xl font-bold mb-2">{{ $post->title }}</h1>
 
                 {{-- Meta --}}
-                <div>
-                    <span>by {{ $post->author->name }}</span>
+                <div class="text-gray-500">
+                    <span>by {{ $post->author->name }}</span> -
                     <time>{{ $post->created_at->format('F d, Y') }}</time>
                 </div>
 
                 {{-- Thumbnail --}}
-                <figure class="mb-6">
+                <figure class="mb-6 mt-4">
                     <img src="{{ $post->cover_preview ? $post->cover_preview : asset('img/no_image.webp') }}"
                         alt="{{ $post->title }}" class="w-full h-auto">
                     <figcaption class="text-sm italic">{{ $post->caption }}</figcaption>
@@ -84,15 +84,16 @@
             <form action="" class="p-4 rounded-lg bg-gray-100 flex flex-col gap-2 mb-6">
                 @csrf
                 <h2 class="font-bold">Komentar</h2>
-                <textarea name="comment" id="comment" rows="5" class="w-full border border-gray-300 bg-white rounded-md p-2"></textarea>
+                <textarea name="comment" id="comment" rows="5"
+                    class="w-full border border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:drop-shadow"></textarea>
                 <div class="flex flex-col md:flex-row gap-2 md:gap-4">
                     <div class="md:w-1/2">
                         <input type="text" name="comment" placeholder="Nama"
-                            class="w-full border border-gray-300 bg-white rounded-md p-2">
+                            class="w-full border border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:drop-shadow">
                     </div>
                     <div class="md:w-1/2">
                         <input type="email" name="email" placeholder="Email"
-                            class="w-full border border-gray-300 bg-white rounded-md p-2">
+                            class="w-full border border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:drop-shadow">
                     </div>
                     <input type="hidden" name="jangan_diisi">
                 </div>
