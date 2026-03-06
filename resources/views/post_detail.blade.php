@@ -104,7 +104,7 @@
             </form>
 
             <div>
-                <h2>Artikel Terkait</h2>
+                <h2 class="font-bold">Artikel Terkait</h2>
                 <div class="flex flex-wrap">
                     @foreach ($otherArticles as $article)
                         <div class="p-2 w-1/3">

@@ -20,7 +20,7 @@
                         <img src="{{ $post->cover_preview ? $post->cover_preview : asset('img/no_image.webp') }}"
                             alt="{{ $post->title }}" class="w-1/3 h-auto object-cover rounded-md">
                         <div class="flex flex-col">
-                            <h2 class="font-bold group-hover:text-merah-02">{{ $post->title }}</h2>
+                            <h2 class="font-bold group-hover:text-merah-01">{{ $post->title }}</h2>
                             <time class="text-sm text-gray-500">{{ $post->publish_time->format('F d, Y') }}</time>
                         </div>
                     </a>
@@ -28,7 +28,7 @@
             </div>
 
             <div class="mt-6 mx-auto">
-                {{ $posts->onEachSide(0)->links() }}
+                {{ $posts->onEachSide(1)->links() }}
             </div>
 
         </div>

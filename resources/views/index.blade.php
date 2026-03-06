@@ -159,8 +159,5 @@
             quaerat necessitatibus est facere quasi animi, nesciunt tempora rem vel nobis libero sequi.</div>
     </div>
 
-
-
-
 </div>
 @include('layout.footer')
