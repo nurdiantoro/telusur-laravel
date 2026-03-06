@@ -27,8 +27,8 @@
                 @endforeach
             </div>
 
-            <div class="mt-6">
-                {{ $posts->onEachSide(5)->links() }}
+            <div class="mt-6 mx-auto">
+                {{ $posts->onEachSide(0)->links() }}
             </div>
 
         </div>
