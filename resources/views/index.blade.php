@@ -19,7 +19,7 @@
     <div class="flex flex-col md:flex-row gap-8">
 
         {{-- Main Div --}}
-        <div class="md:w-2/3 flex flex-col gap-12">
+        <div class="md:w-3/4 flex flex-col gap-12">
 
             {{-- Card --}}
             <div class="relative aspect-2/1 bg-cover bg-center flex flex-col justify-end p-6 group rounded-lg overflow-hidden"
@@ -84,7 +84,7 @@
                                 </div>
 
                                 <a href="{{ $url }}">
-                                    <h3 class="font-semibold text-sm leading-snug group-hover:text-merah-02 transition">
+                                    <h3 class="font-semibold text-sm leading-snug group-hover:text-merah-01 transition">
                                         {{ $post->title }}
                                     </h3>
                                 </a>
@@ -136,7 +136,7 @@
 
                                 {{-- Title --}}
                                 <a href="{{ $url }}">
-                                    <h2 class="text-xl font-bold leading-snug mb-3 hover:text-red-600 transition">
+                                    <h2 class="text-xl font-bold leading-snug mb-3 hover:text-merah-01 transition">
                                         {{ $post->title }}
                                     </h2>
                                 </a>
@@ -154,9 +154,9 @@
         </div>
 
         {{-- side div --}}
-        <div class="md:w-1/3">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel tempore ut nemo. Quis quidem quae ipsum, maxime
-            quaerat necessitatibus est facere quasi animi, nesciunt tempora rem vel nobis libero sequi.</div>
+        <div class="md:w-1/4">
+            @include('layout.sidebar')
+        </div>
     </div>
 
 </div>

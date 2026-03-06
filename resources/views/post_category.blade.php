@@ -4,7 +4,7 @@
     <div class="flex flex-col md:flex-row gap-8">
 
         {{-- Main Content --}}
-        <div class="md:w-2/3 flex flex-col">
+        <div class="md:w-3/4 flex flex-col">
             <div class="hidden md:flex flex-row gap-2 items-center mb-4">
                 <a href="{{ route('home') }}" class="text-sm text-warna-01 font-bold hover:underline">Home</a>
                 <span class="w-2 h-auto"><x-fas-angle-right /></span>
@@ -34,9 +34,9 @@
         </div>
 
         {{-- side div --}}
-        <div class="md:w-1/3">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel tempore ut nemo. Quis quidem quae ipsum, maxime
-            quaerat necessitatibus est facere quasi animi, nesciunt tempora rem vel nobis libero sequi.</div>
+        <div class="md:w-1/4">
+            @include('layout.sidebar')
+        </div>
     </div>
 </div>
 @include('layout.footer')

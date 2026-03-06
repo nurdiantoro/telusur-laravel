@@ -4,32 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\PostCategory;
+use App\Models\SidebarAds;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class FrontendController extends Controller
 {
     protected $categories;
+    protected $sidebarAds;
+    protected $beritaPopulers;
 
     public function __construct()
     {
         $this->categories = PostCategory::limit(12)->get();
-    }
-
-    public function index()
-    {
-        $categories = $this->categories;
-        $title = 'Telusur - Jelajahi Dunia dengan Mudah';
-        $description = 'Telusur adalah platform pencarian yang membantu Anda menemukan informasi, tempat, dan layanan dengan mudah. Jelajahi dunia dengan Telusur!';
-
-        $post = Post::with(['media', 'postCategories'])->find(25);
-
-        $beritaPopulers = Post::with(['media', 'main_category', 'author',])
+        $this->sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $this->beritaPopulers = Post::with(['media', 'main_category', 'author',])
             ->latest('publish_time')
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
             ->limit(6)
             ->get();
+    }
+
+    public function index()
+    {
+        $categories = $this->categories;
+        $sidebarAds = $this->sidebarAds;
+        $beritaPopulers = $this->beritaPopulers;
+
+        $title = 'Telusur - Jelajahi Dunia dengan Mudah';
+        $description = 'Telusur adalah platform pencarian yang membantu Anda menemukan informasi, tempat, dan layanan dengan mudah. Jelajahi dunia dengan Telusur!';
+
+        $post = Post::with(['media', 'postCategories'])->find(25);
 
         $beritaTerbaru = Post::with(['media', 'main_category', 'author',])
             ->latest('publish_time')
@@ -40,12 +46,15 @@ class FrontendController extends Controller
 
         // dd($beritaPopulers);
 
-        return view('index', compact('title', 'description', 'categories', 'post', 'beritaPopulers', 'beritaTerbaru'));
+        return view('index', compact('title', 'description', 'categories', 'post', 'beritaPopulers', 'beritaTerbaru', 'sidebarAds'));
     }
 
     public function postDetail($categorySlug, $postSlug)
     {
         $categories = $this->categories;
+        $sidebarAds = $this->sidebarAds;
+        $beritaPopulers = $this->beritaPopulers;
+
         $post = Post::where('slug', $postSlug)->first();
 
         $title = $post->title . ' - Telusur';
@@ -64,12 +73,15 @@ class FrontendController extends Controller
             ->get();
 
         // dd($otherArticles[0]->main_category->name);
-        return view('post_detail', compact('post', 'title', 'description', 'categories', 'otherArticles'));
+        return view('post_detail', compact('post', 'title', 'description', 'categories', 'otherArticles', 'sidebarAds', 'beritaPopulers'));
     }
 
     public function postByCategory($slug)
     {
         $categories = $this->categories;
+        $sidebarAds = $this->sidebarAds;
+        $beritaPopulers = $this->beritaPopulers;
+
         $category = PostCategory::where('slug', $slug)->firstOrFail();
         $posts = Post::with(['media'])
             ->select('id', 'title', 'slug', 'publish_time')
@@ -80,6 +92,6 @@ class FrontendController extends Controller
             ->paginate(10);
 
         // dd($posts);
-        return view('post_category', compact('category', 'posts', 'categories'));
+        return view('post_category', compact('category', 'posts', 'categories', 'sidebarAds', 'beritaPopulers'));
     }
 }
