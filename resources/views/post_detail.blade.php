@@ -20,7 +20,7 @@
                 {{-- Meta --}}
                 <div class="text-gray-500">
                     <span>by {{ $post->author->name }}</span> -
-                    <time>{{ $post->created_at->format('F d, Y') }}</time>
+                    <time>{{ $post->publish_time->format('F d, Y') }}</time>
                 </div>
 
                 {{-- Thumbnail --}}
@@ -115,7 +115,7 @@
                                     class=" text-warna-01 group-hover:text-warna-02 font-bold block mt-2">
                                     {{ $article->title }}
                                 </a>
-                                <p class="text-sm text-gray-600">{{ $article->created_at->format('F d, Y') }}</p>
+                                <p class="text-sm text-gray-600">{{ $article->publish_time->format('F d, Y') }}</p>
                             </div>
                         </div>
                     @endforeach

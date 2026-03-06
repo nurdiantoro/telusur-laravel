@@ -41,7 +41,8 @@
                 </details>
             </li>
             @foreach ($categories as $category)
-                <li class="text-bold"><a>{{ $category->name }}</a></li>
+                <li class="text-bold hover:bg-gray-200 rounded"><a
+                        href="{{ route('post.category', $category->slug) }}">{{ $category->name }}</a></li>
             @endforeach
         </ul>
     </div>
