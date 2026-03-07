@@ -44,14 +44,17 @@ class Post extends Model implements HasMedia
         return $this->belongsTo(PostCategory::class, 'category_id');
     }
 
-    // Ambil cover WEBP dari Spatie (collection: preview), fallback ke placeholder jika tidak ada
-    public function getCoverPreviewAttribute()
+    // =======================================SPATIE MEDIA LIBRARY=======================================================
+    // getSpatiePreviewAttribute bisa di panggil di view dengan $post->spatie_preview
+    // $this->getFirstMediaUrl('Name Collection', 'Name Conversion')
+    public function getSpatiePreviewAttribute()
     {
-        return $this->getFirstMediaUrl('preview', 'preview');
+        return $this->getFirstMediaUrl('imagesCollection', 'preview');
     }
 
-    public function getCoverThumbnailAttribute()
+    public function getSpatieThumbnailAttribute()
     {
-        return $this->getFirstMediaUrl('preview', 'thumbnail');
+        return $this->getFirstMediaUrl('imagesCollection', 'thumbnail');
     }
+    // =======================================SPATIE MEDIA LIBRARY=======================================================
 }

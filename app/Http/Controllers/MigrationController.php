@@ -8,47 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class MigrationController extends Controller
 {
-    public function ubahkategori()
-    {
-        DB::beginTransaction();
-
-        try {
-            $total = 0;
-
-            Post::whereNotNull('category_id')
-                ->orderBy('id') // wajib untuk chunk
-                ->chunk(500, function ($posts) use (&$total) {
-
-                    foreach ($posts as $post) {
-                        DB::table('pivot_post_categories')->updateOrInsert(
-                            [
-                                'post_id' => $post->id,
-                                'post_category_id' => $post->category_id,
-                            ],
-                            []
-                        );
-
-                        $total++;
-                    }
-                });
-
-            DB::commit();
-
-            return response()->json([
-                'status'  => 'success',
-                'message' => 'Migrasi category_id ke pivot berhasil',
-                'total'   => $total,
-            ]);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-
-            return response()->json([
-                'status'  => 'error',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
     public function ubahstatus()
     {
         Post::whereNotNull('status_id')
@@ -96,9 +55,9 @@ class MigrationController extends Controller
                     foreach ($posts as $post) {
 
                         $type = match ($post->post_type_id) {
-                            3001 => 'Post',
-                            3002 => 'Opini',
-                            3003 => 'Berita Video',
+                            3001 => 'post',
+                            3002 => 'opini',
+                            3003 => 'video',
                             default => null,
                         };
 

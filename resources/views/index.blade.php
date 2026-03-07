@@ -69,18 +69,18 @@
                         <article class="flex gap-4 items-start group">
                             {{-- Thumbnail --}}
                             <a href="{{ $url }}" class="shrink-0">
-                                <img src="{{ $post->cover_preview ?: asset('img/no_image.webp') }}"
+                                <img src="{{ $post->spatie_thumbnail ?: asset('img/no_image.webp') }}"
                                     alt="{{ $post->title }}" class="w-28 h-20 object-cover rounded-md">
                             </a>
 
                             {{-- Content --}}
                             <div class="flex flex-col">
                                 <div class="text-xs text-gray-500 mb-1">
-                                    <span class="text-merah-02 font-semibold">
+                                    <span class="text-merah-01 font-semibold">
                                         By {{ $author?->name ?? 'Admin' }}
                                     </span>
                                     <span class="mx-1">•</span>
-                                    <span>{{ $post->created_at->translatedFormat('F d, Y') }}</span>
+                                    <span>{{ $post->created_at->translatedFormat('d F Y') }}</span>
                                 </div>
 
                                 <a href="{{ $url }}">
@@ -105,12 +105,12 @@
                         <?php
                         $url = $post->main_category->slug . '/' . $post->slug;
                         ?>
-                        <article class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+                        <article class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start group">
                             {{-- Image --}}
                             <a href="{{ $url }}" class="block md:col-span-1 peer">
                                 <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
 
-                                    <img src="{{ $post->cover_thumbnail ? $post->cover_thumbnail : asset('img/no_image.webp') }}"
+                                    <img src="{{ $post->spatie_thumbnail ?: asset('img/no_image.webp') }}"
                                         alt="{{ $post->title }}" class="w-full h-full  object-cover rounded-md">
                                 </div>
                             </a>
@@ -131,12 +131,13 @@
                                         By {{ $post->author->name ?? 'Admin' }}
                                     </a>
                                     <span class="mx-1">•</span>
-                                    <span>{{ $post->created_at->format('F d, Y') }}</span>
+                                    <span>{{ $post->created_at->translatedFormat('d F Y') }}</span>
                                 </div>
 
                                 {{-- Title --}}
                                 <a href="{{ $url }}">
-                                    <h2 class="text-xl font-bold leading-snug mb-3 hover:text-merah-01 transition">
+                                    <h2
+                                        class="text-xl font-bold leading-snug mb-3 group-hover:text-merah-01 transition">
                                         {{ $post->title }}
                                     </h2>
                                 </a>

@@ -9,6 +9,7 @@ use App\Filament\Resources\Posts\Schemas\PostForm;
 use App\Filament\Resources\Posts\Tables\PostsTable;
 use App\Models\Post;
 use BackedEnum;
+use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -45,6 +46,21 @@ class PostResource extends Resource
             'index' => ListPosts::route('/'),
             'create' => CreatePost::route('/create'),
             'edit' => EditPost::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getNavigationItems(): array
+    {
+        return [
+            NavigationItem::make('Post')
+                ->group('News')
+                ->url(static::getUrl('index', ['type' => 'post']))
+                ->icon('heroicon-o-document-text'),
+
+            NavigationItem::make('Video')
+                ->group('News')
+                ->url(static::getUrl('index', ['type' => 'video']))
+                ->icon('heroicon-o-video-camera'),
         ];
     }
 }

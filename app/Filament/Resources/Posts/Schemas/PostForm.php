@@ -67,9 +67,9 @@ class PostForm
                                 ->reactive()
                                 ->required(),
 
-                            SpatieMediaLibraryFileUpload::make('cover')
+                            SpatieMediaLibraryFileUpload::make('imagesCollection')
                                 ->disk('public')
-                                ->collection('preview')
+                                ->collection('imagesCollection')
                                 ->image()
                                 ->imageEditor()
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published'),

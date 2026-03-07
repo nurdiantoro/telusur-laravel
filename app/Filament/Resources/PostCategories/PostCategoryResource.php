@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 
 class PostCategoryResource extends Resource
 {
+    protected static ?string $navigationLabel = 'Categories';
     protected static ?string $model = PostCategory::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
