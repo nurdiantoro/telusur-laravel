@@ -8,8 +8,8 @@
             <div class="hidden md:flex flex-row gap-2 items-center mb-4">
                 <a href="{{ route('home') }}" class="text-sm text-warna-01 font-bold hover:underline">Home</a>
                 <span class="w-2 h-auto"><x-fas-angle-right /></span>
-                <a href="{{ $post->main_category->slug }}" class="text-sm text-gray-600 hover:underline">
-                    {{ $post->main_category->name }}
+                <a href="{{ $post->category->slug }}" class="text-sm text-gray-600 hover:underline">
+                    {{ $post->category->name }}
                 </a>
             </div>
 
@@ -20,12 +20,12 @@
                 {{-- Meta --}}
                 <div class="text-gray-500">
                     <span>by {{ $post->author->name }}</span> -
-                    <time>{{ $post->publish_time->format('F d, Y') }}</time>
+                    <time>{{ $post->created_at->translatedFormat('j F Y') }}</time>
                 </div>
 
                 {{-- Thumbnail --}}
                 <figure class="mb-6 mt-4">
-                    <img src="{{ $post->cover_preview ? $post->cover_preview : asset('img/no_image.webp') }}"
+                    <img src="{{ $post->spatie_preview ? $post->spatie_preview : asset('img/no_image.webp') }}"
                         alt="{{ $post->title }}" class="w-full h-auto">
                     <figcaption class="text-sm italic">{{ $post->caption }}</figcaption>
                     @php
@@ -111,7 +111,7 @@
                             <div class="py-4 group">
                                 <img src="{{ $post->cover_preview ?: asset('img/no_image.webp') }}"
                                     alt="{{ $post->title }}" class="w-full h-auto object-cover rounded-md">
-                                <a href="{{ route('post.detail', ['category' => $article->main_category->slug, 'slug' => $article->slug]) }}"
+                                <a href="{{ route('post.detail', ['category' => $article->category->slug, 'slug' => $article->slug]) }}"
                                     class=" text-warna-01 group-hover:text-warna-02 font-bold block mt-2">
                                     {{ $article->title }}
                                 </a>

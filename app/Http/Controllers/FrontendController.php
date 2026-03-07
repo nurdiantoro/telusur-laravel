@@ -18,7 +18,7 @@ class FrontendController extends Controller
     {
         $this->categories = PostCategory::limit(12)->get();
         $this->sidebarAds = SidebarAds::orderBy('sort_order')->get();
-        $this->beritaPopulers = Post::with(['media', 'main_category', 'author',])
+        $this->beritaPopulers = Post::with(['media', 'category', 'author',])
             ->latest('publish_time')
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
@@ -35,9 +35,9 @@ class FrontendController extends Controller
         $title = 'Telusur - Jelajahi Dunia dengan Mudah';
         $description = 'Telusur adalah platform pencarian yang membantu Anda menemukan informasi, tempat, dan layanan dengan mudah. Jelajahi dunia dengan Telusur!';
 
-        $post = Post::with(['media', 'postCategories'])->find(25);
+        $post = Post::with(['media'])->find(25);
 
-        $beritaTerbaru = Post::with(['media', 'main_category', 'author',])
+        $beritaTerbaru = Post::with(['media', 'category', 'author',])
             ->latest('publish_time')
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
@@ -63,7 +63,7 @@ class FrontendController extends Controller
             155
         );
 
-        $otherArticles = Post::with(['media', 'main_category', 'author'])
+        $otherArticles = Post::with(['media', 'category', 'author'])
             ->where('id', '!=', $post->id)
             ->latest('publish_time')
             ->where('category_id', $post->category_id)
@@ -72,7 +72,7 @@ class FrontendController extends Controller
             ->limit(3)
             ->get();
 
-        // dd($otherArticles[0]->main_category->name);
+        // dd($otherArticles[0]->category->name);
         return view('post_detail', compact('post', 'title', 'description', 'categories', 'otherArticles', 'sidebarAds', 'beritaPopulers'));
     }
 

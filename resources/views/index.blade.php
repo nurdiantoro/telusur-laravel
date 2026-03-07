@@ -4,7 +4,7 @@
     {{-- Highlight title --}}
     <div class="flex flex-row justify-between items-center gap-2 pb-3 mb-6 border-b border-gray-300">
         <span class="px-2 py-1 bg-linear-to-r from-merah-01 to-merah-02 text-white font-bold">Hot news</span>
-        <a href="{{ $post->main_category->slug . '/' . $post->slug }}" class="text-lg grow">This is the
+        <a href="{{ $post->category->slug . '/' . $post->slug }}" class="text-lg grow">This is the
             highlight section of our application. </a>
         <div class="hidden md:flex gap-2">
             <button type="button" class="cursor-pointer text-gray-500 hover:text-gray-700">
@@ -61,7 +61,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @foreach ($beritaPopulers as $post)
                         @php
-                            $category = $post->main_category;
+                            $category = $post->category;
                             $author = $post->author;
                             $url = ($category?->slug ?? '#') . '/' . $post->slug;
                         @endphp
@@ -103,7 +103,7 @@
                 <div class="flex flex-col gap-6">
                     @foreach ($beritaTerbaru as $index => $post)
                         <?php
-                        $url = $post->main_category->slug . '/' . $post->slug;
+                        $url = $post->category->slug . '/' . $post->slug;
                         ?>
                         <article class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start group">
                             {{-- Image --}}
@@ -119,9 +119,9 @@
                             <div class="flex flex-col justify-center md:col-span-2">
 
                                 {{-- Category --}}
-                                <a href="{{ $post->main_category->slug }}"
+                                <a href="{{ $post->category->slug }}"
                                     class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 mb-3 w-fit">
-                                    {{ strtoupper($post->main_category->name ?? 'No Category') }}
+                                    {{ strtoupper($post->category->name ?? 'No Category') }}
                                 </a>
 
                                 {{-- Meta --}}

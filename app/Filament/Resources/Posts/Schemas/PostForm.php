@@ -82,7 +82,7 @@ class PostForm
 
                             Select::make('category_id')
                                 ->label('Kategori')
-                                ->relationship('postCategories', 'name')
+                                ->relationship('category', 'name')
                                 // ->multiple()
                                 ->preload()
                                 ->searchable()
