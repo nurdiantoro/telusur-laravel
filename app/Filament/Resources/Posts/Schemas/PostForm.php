@@ -129,11 +129,13 @@ class PostForm
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published')
                                 ->toolbarButtons([
                                     ['bold', 'italic', 'underline', 'strike', 'link'],
-                                    ['h2', 'h3', 'alignStart', 'alignCenter', 'alignEnd'],
-                                    ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
-                                    ['table'],
+                                    ['alignStart', 'alignCenter', 'alignEnd'],
+                                    ['attachFiles'],
                                     ['undo', 'redo'],
                                 ])
+                                ->fileAttachmentsDisk('public')
+                                ->fileAttachmentsDirectory('posts')
+                                ->fileAttachmentsVisibility('public')
                                 ->extraAttributes([
                                     'style' => 'min-height: 700px;',
                                 ])

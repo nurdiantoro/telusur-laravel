@@ -64,7 +64,7 @@
                 </figure>
 
                 {{-- Content --}}
-                <div class="article-content border-b border-gray-200 mb-6">{!! $post->content !!}</div>
+                <div class="article-content border-b border-gray-200 mb-6">{!! str($post->content)->sanitizeHtml() !!}</div>
             </article>
 
             {{-- Komentar --}}
