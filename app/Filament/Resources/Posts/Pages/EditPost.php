@@ -32,17 +32,25 @@ class EditPost extends EditRecord
                     $this->save(); // ✔ normal save + validation
                 }),
 
-            Action::make('draft_or_unpublish')
-                ->label(fn() => $this->record && $this->record->status === 'published' ? 'Unpublish' : 'Draft')
+            Action::make('draft')
+                ->label('Draft')
                 ->color('gray')
+                ->visible(fn() => $this->record && in_array($this->record->status, ['draft', 'unpublished']))
                 ->action(function () {
-                    if ($this->record && $this->record->status === 'published') {
-                        // Jika sudah published → ubah menjadi unpublished
-                        $this->submitStatus = 'unpublished';
-                    } else {
-                        // Jika draft / create → tetap draft
-                        $this->submitStatus = 'draft';
-                    }
+
+                    $this->submitStatus = 'draft';
+
+                    $this->save(false); // skip validasi
+                    $this->redirect($this->getResource()::getUrl('index'));
+                }),
+
+            Action::make('unpublish')
+                ->label('Unpublish')
+                ->color('gray')
+                ->visible(fn() => $this->record && $this->record->status === 'published')
+                ->action(function () {
+
+                    $this->submitStatus = 'unpublished';
 
                     $this->save(false); // skip validasi
                     $this->redirect($this->getResource()::getUrl('index'));
@@ -52,38 +60,23 @@ class EditPost extends EditRecord
         ];
     }
 
-    protected function mutateFormDataBeforeCreate(array $data): array
+    protected function getRedirectUrl(): string
     {
-        // Ubah Status sesuai tombol yang diklik
-        $data['status'] = $this->submitStatus ?? 'draft';
-
-        // jika user tidak pilih scheduled → publish_time = sekarang
-        if ($this->submitStatus === 'published') {
-            if (empty($data['publish_time'])) {
-                $data['publish_time'] = Carbon::now();
-            }
-        }
-
-        return $data;
+        return $this->getResource()::getUrl('index');
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        // Jaga agar status tidak null saat edit
-        if (empty($data['status'])) {
-            $data['status'] = $this->record->status ?? 'draft';
+        // Perubahan status, saat tombol publish/draft/unpublish diklik
+        if ($this->submitStatus) {
+            $data['status'] = $this->submitStatus;
         }
 
-        // Pastikan publish_time ada jika status published
-        if ($data['status'] === 'published' && empty($data['publish_time'])) {
-            $data['publish_time'] = Carbon::now();
+        // kalau user pilih publish_at = immediately → publish_time = sekarang
+        if ($this->data['publish_at'] === 'immediately') {
+            $data['publish_time'] = now();
         }
 
         return $data;
-    }
-
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
     }
 }

@@ -67,9 +67,10 @@ class PostForm
                                 ->reactive()
                                 ->required(),
 
-                            SpatieMediaLibraryFileUpload::make('imagesCollection')
+                            SpatieMediaLibraryFileUpload::make('image')
                                 ->disk('public')
                                 ->collection('imagesCollection')
+                                ->maxSize(2480)
                                 ->image()
                                 ->imageEditor()
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published'),
@@ -101,9 +102,9 @@ class PostForm
                                         // Jika publish_time sudah ada → post sebelumnya dijadwalkan, default pilih 'scheduled'
                                         // Jika publish_time null → post belum pernah publish, default pilih 'immediately'
                                         if (!$record->publish_time) {
-                                            $set('publish_at', 'scheduled'); // scheduled karena belum ada publish_time
+                                            $set('publish_at', 'immediately'); // immediately karena belum ada publish_time
                                         } else {
-                                            $set('publish_at', 'immediately'); // immediately karena ada waktu publish
+                                            $set('publish_at', 'scheduled'); // scheduled karena ada waktu publish
                                         }
                                     }
                                     // Note: Saat create, default tetap diatur oleh ->default('scheduled')
@@ -114,7 +115,8 @@ class PostForm
                             DateTimePicker::make('publish_time')
                                 ->label('Publish Time')
                                 ->disabled(fn($get) => $get('publish_at') === 'immediately')
-                                ->required(fn($livewire) => $livewire->submitStatus === 'published'),
+                                ->dehydrated(fn($get) => $get('publish_at') === 'scheduled')
+                                ->required(fn($get, $livewire) => $livewire->submitStatus === 'published' && $get('publish_at') === 'scheduled'),
                         ]),
 
                     /* =========================

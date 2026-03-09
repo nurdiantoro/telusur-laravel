@@ -46,24 +46,19 @@ class CreatePost extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // Ubah Status sesuai tombol yang diklik
-        $data['status'] = $this->submitStatus ?? 'draft';
+        if ($this->submitStatus) {
+            $data['status'] = $this->submitStatus;
+        }
 
-        // jika user tidak pilih scheduled → publish_time = sekarang
+        // 1. User pilih publish_at = immediately
+        // 2. Langsung klik publish, tanpa draft dulu
+        // 3. Maka publish_time = sekarang
         if ($this->submitStatus === 'published') {
-            if (empty($data['publish_time'])) {
-                $data['publish_time'] = Carbon::now();
+            if ($this->data['publish_at'] === 'immediately') {
+                $data['publish_time'] = now();
             }
         }
 
-        return $data;
-    }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        // pastikan publish_time otomatis saat publish
-        if ($this->submitStatus === 'published' && empty($data['publish_time'])) {
-            $data['publish_time'] = now();
-        }
         return $data;
     }
 

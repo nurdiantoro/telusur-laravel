@@ -16,20 +16,6 @@ class Post extends Model implements HasMedia
 
     protected $casts = ['publish_time' => 'datetime',];
 
-    public function registerMediaConversions(?Media $media = null): void
-    {
-        $this->addMediaConversion('preview')
-            ->format('webp')
-            ->fit(Fit::Crop, 1200, 600)
-            ->quality(80)
-            ->nonQueued();
-
-        $this->addMediaConversion('thumbnail')
-            ->format('webp')
-            ->fit(Fit::Crop, 600, 300)
-            ->quality(85)
-            ->nonQueued();
-    }
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');
@@ -40,13 +26,30 @@ class Post extends Model implements HasMedia
     }
 
     // =======================================SPATIE MEDIA LIBRARY=======================================================
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('preview')
+            ->format('webp')
+            ->width(1200)
+            ->height(1200)
+            ->quality(80)
+            ->nonQueued();
+
+        $this->addMediaConversion('thumbnail')
+            ->format('webp')
+            ->width(600)
+            ->height(300)
+            ->quality(80)
+            ->nonQueued();
+    }
+
     // getSpatiePreviewAttribute bisa di panggil di view dengan $post->spatie_preview
     // $this->getFirstMediaUrl('Name Collection', 'Name Conversion')
     public function getSpatiePreviewAttribute()
     {
         return $this->getFirstMediaUrl('imagesCollection', 'preview');
     }
-
     public function getSpatieThumbnailAttribute()
     {
         return $this->getFirstMediaUrl('imagesCollection', 'thumbnail');
