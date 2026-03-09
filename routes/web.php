@@ -5,13 +5,12 @@ use App\Http\Controllers\MigrationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontendController::class, 'index'])->name('home');
-Route::get('/about', function () {
-    return '<h1>About Page</h1><p>This is the about page.</p>';
-})->name('about');
+Route::get('/kebijakan', [FrontendController::class, 'kebijakan'])->name('kebijakan');
+Route::get('/pedoman', [FrontendController::class, 'pedoman'])->name('pedoman');
+Route::get('/disclaimer', [FrontendController::class, 'disclaimer'])->name('disclaimer');
+Route::get('/about', [FrontendController::class, 'about'])->name('about');
+Route::get('/terms', [FrontendController::class, 'terms'])->name('terms');
 
-// Wajib dijalankan saat migrasi
-Route::get('/ubahstatus', [MigrationController::class, 'ubahstatus'])->name('home');
-Route::get('/ubahtype', [MigrationController::class, 'ubahtype'])->name('home');
 
 // Prioritas untuk kategori, jika tidak ada maka akan mencari berdasarkan slug
 Route::get('/{category}', [FrontendController::class, 'postByCategory'])->name('post.category');

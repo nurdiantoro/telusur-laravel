@@ -55,7 +55,10 @@ class FrontendController extends Controller
         $sidebarAds = $this->sidebarAds;
         $beritaPopulers = $this->beritaPopulers;
 
-        $post = Post::where('slug', $postSlug)->first();
+        $post = Post::where('slug', $postSlug)
+            ->where('status', 'published')
+            ->where('publish_time', '<=', now())
+            ->first();
 
         $title = $post->title . ' - Telusur';
         $description = Str::limit(
@@ -93,5 +96,50 @@ class FrontendController extends Controller
 
         // dd($posts);
         return view('post_category', compact('category', 'posts', 'categories', 'sidebarAds', 'beritaPopulers'));
+    }
+
+    public function kebijakan()
+    {
+        $categories = $this->categories;
+        $sidebarAds = $this->sidebarAds;
+        $beritaPopulers = $this->beritaPopulers;
+
+        return view('kebijakan', compact('categories', 'sidebarAds', 'beritaPopulers'));
+    }
+
+    public function pedoman()
+    {
+        $categories = $this->categories;
+        $sidebarAds = $this->sidebarAds;
+        $beritaPopulers = $this->beritaPopulers;
+
+        return view('pedoman', compact('categories', 'sidebarAds', 'beritaPopulers'));
+    }
+
+    public function disclaimer()
+    {
+        $categories = $this->categories;
+        $sidebarAds = $this->sidebarAds;
+        $beritaPopulers = $this->beritaPopulers;
+
+        return view('disclaimer', compact('categories', 'sidebarAds', 'beritaPopulers'));
+    }
+
+    public function about()
+    {
+        $categories = $this->categories;
+        $sidebarAds = $this->sidebarAds;
+        $beritaPopulers = $this->beritaPopulers;
+
+        return view('about', compact('categories', 'sidebarAds', 'beritaPopulers'));
+    }
+
+    public function terms()
+    {
+        $categories = $this->categories;
+        $sidebarAds = $this->sidebarAds;
+        $beritaPopulers = $this->beritaPopulers;
+
+        return view('terms', compact('categories', 'sidebarAds', 'beritaPopulers'));
     }
 }
