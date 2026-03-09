@@ -20,7 +20,7 @@
             <div class="flex flex-wrap">
                 @foreach ($categories as $category)
                     <a href="{{ route('post.category', $category->slug) }}"
-                        class="text-neutral-400 text-sm hover:text-warna-02 transition-colors w-1/2 mb-3">{{ $category->name }}</a>
+                        class="text-neutral-400 text-sm hover:text-warna-02 transition-colors w-1/2 py-2">{{ $category->name }}</a>
                 @endforeach
             </div>
         </div>
