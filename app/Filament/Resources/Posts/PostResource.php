@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Posts;
 use App\Filament\Resources\Posts\Pages\CreatePost;
 use App\Filament\Resources\Posts\Pages\EditPost;
 use App\Filament\Resources\Posts\Pages\ListPosts;
+use App\Filament\Resources\Posts\RelationManagers\ActivitiesRelationManager;
 use App\Filament\Resources\Posts\Schemas\PostForm;
 use App\Filament\Resources\Posts\Tables\PostsTable;
 use App\Models\Post;
@@ -36,7 +37,7 @@ class PostResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ActivitiesRelationManager::class,
         ];
     }
 
@@ -49,18 +50,18 @@ class PostResource extends Resource
         ];
     }
 
-    public static function getNavigationItems(): array
-    {
-        return [
-            NavigationItem::make('Post')
-                ->group('News')
-                ->url(static::getUrl('index', ['type' => 'post']))
-                ->icon('heroicon-o-document-text'),
+    // public static function getNavigationItems(): array
+    // {
+    //     return [
+    //         NavigationItem::make('Post')
+    //             ->group('News')
+    //             ->url(static::getUrl('index', ['type' => 'post']))
+    //             ->icon('heroicon-o-document-text'),
 
-            NavigationItem::make('Video')
-                ->group('News')
-                ->url(static::getUrl('index', ['type' => 'video']))
-                ->icon('heroicon-o-video-camera'),
-        ];
-    }
+    //         NavigationItem::make('Video')
+    //             ->group('News')
+    //             ->url(static::getUrl('index', ['type' => 'video']))
+    //             ->icon('heroicon-o-video-camera'),
+    //     ];
+    // }
 }

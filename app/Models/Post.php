@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Image\Enums\Fit;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -11,6 +13,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class Post extends Model implements HasMedia
 {
     use InteractsWithMedia;
+    use LogsActivity;
 
     protected $guarded = [];
 
@@ -55,4 +58,16 @@ class Post extends Model implements HasMedia
         return $this->getFirstMediaUrl('imagesCollection', 'thumbnail');
     }
     // =======================================SPATIE MEDIA LIBRARY=======================================================
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty();
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'subject');
+    }
 }
