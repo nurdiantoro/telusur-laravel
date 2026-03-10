@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('post_categories', function (Blueprint $table) {
-            //
+            $table->boolean('is_navbar')->default(false)->after('parent_id');
+            $table->integer('sort_order')->default(0)->after('is_navbar')->index();
         });
     }
 
@@ -22,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('post_categories', function (Blueprint $table) {
-            //
+            $table->dropColumn('is_navbar');
+            $table->dropColumn('sort_order');
         });
     }
 };

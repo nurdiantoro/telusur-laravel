@@ -31,7 +31,7 @@
     {{-- Navbar Desktop --}}
     <div class="navbar-center hidden lg:flex bg-white w-full static">
         <ul class="menu menu-horizontal px-1 mx-auto justify-center">
-            <li>
+            {{-- <li>
                 <details>
                     <summary class="">POLHUKAM</summary>
                     <ul class="p-2 bg-base-100 w-40 z-1">
@@ -39,10 +39,13 @@
                         <li><a class="">PARLEMEN</a></li>
                     </ul>
                 </details>
-            </li>
-            @foreach ($categories as $category)
-                <li class="text-bold hover:bg-gray-200 rounded"><a
-                        href="{{ route('post.category', $category->slug) }}">{{ $category->name }}</a></li>
+            </li> --}}
+            @foreach ($navbarCategories as $navbar)
+                <li class="text-bold hover:bg-gray-200 rounded uppercase font-bold">
+                    <a href="{{ route('post.category', $navbar->slug) }}">
+                        {{ $navbar->name }}
+                    </a>
+                </li>
             @endforeach
         </ul>
     </div>

@@ -1,7 +1,9 @@
 <footer class="bg-neutral-950  w-full md:p-10 p-4">
     <div
         class="flex gap-6 md:flex-row flex-col flex-justify-between md:max-w-300 mx-auto border-b pb-4 mb-4 border-neutral-600">
-        <div class="flex flex-col">
+
+        {{-- Tentang Kami --}}
+        <div class="flex flex-col md:w-2/5">
             {{-- <div class="w-full border-b pb-4 mb-4 border-neutral-600 text-white font-bold text-xl">TENTANG KAMI</div> --}}
             <img src="{{ asset('img/logo-telusur.webp') }}" alt="Logo Telusur" loading="lazy" width="300px" height="86px">
             <div class="text-neutral-400 text-sm">
@@ -15,17 +17,21 @@
 
             </div>
         </div>
-        <div class="flex flex-col">
-            <div class="w-full border-b pb-4 mb-4 border-neutral-600 text-white font-bold text-xl">Kategori</div>
+
+        {{-- Kategori --}}
+        <div class="flex flex-col md:w-2/5">
+            <div class="w-full border-b pb-2 mb-4 border-neutral-600 text-white font-bold text-xl">Kategori</div>
             <div class="flex flex-wrap">
                 @foreach ($categories as $category)
                     <a href="{{ route('post.category', $category->slug) }}"
-                        class="text-neutral-400 text-sm hover:text-warna-02 transition-colors w-1/2 py-2">{{ $category->name }}</a>
+                        class="text-neutral-400 text-sm hover:text-warna-02 transition-colors w-1/3 py-2">{{ $category->name }}</a>
                 @endforeach
             </div>
         </div>
-        <div class="flex flex-col">
-            <div class="w-full border-b pb-4 mb-4 border-neutral-600 text-white font-bold text-xl">Notifikasi</div>
+
+        {{-- Notifikasi --}}
+        <div class="flex flex-col md:w-1/5">
+            <div class="w-full border-b pb-2 mb-4 border-neutral-600 text-white font-bold text-xl">Notifikasi</div>
             <div class="text-neutral-400 text-sm">
                 <p>Daftarkan email kamu untuk mendapatkan informasi terbaru</p>
                 <form action="" method="get">

@@ -10,6 +10,10 @@ class PostCategory extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'sort_order' => 'integer',
+    ];
+
     public function parent()
     {
         return $this->belongsTo(PostCategory::class, 'parent_id');

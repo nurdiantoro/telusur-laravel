@@ -11,12 +11,18 @@ use Illuminate\Support\Str;
 class FrontendController extends Controller
 {
     protected $categories;
+    protected $navbarCategories;
     protected $sidebarAds;
     protected $beritaPopulers;
 
     public function __construct()
     {
-        $this->categories = PostCategory::limit(12)->get();
+        $this->categories = PostCategory::all();
+        $this->navbarCategories = PostCategory::whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->with('children')
+            ->orderBy('sort_order')
+            ->get();
         $this->sidebarAds = SidebarAds::orderBy('sort_order')->get();
         $this->beritaPopulers = Post::with(['media', 'category', 'author',])
             ->latest('publish_time')
@@ -29,6 +35,7 @@ class FrontendController extends Controller
     public function index()
     {
         $categories = $this->categories;
+        $navbarCategories = $this->navbarCategories;
         $sidebarAds = $this->sidebarAds;
         $beritaPopulers = $this->beritaPopulers;
 
@@ -46,12 +53,13 @@ class FrontendController extends Controller
 
         // dd($beritaPopulers);
 
-        return view('index', compact('title', 'description', 'categories', 'post', 'beritaPopulers', 'beritaTerbaru', 'sidebarAds'));
+        return view('index', compact('title', 'description', 'categories', 'post', 'beritaPopulers', 'beritaTerbaru', 'sidebarAds', 'navbarCategories'));
     }
 
     public function postDetail($categorySlug, $postSlug)
     {
         $categories = $this->categories;
+        $navbarCategories = $this->navbarCategories;
         $sidebarAds = $this->sidebarAds;
         $beritaPopulers = $this->beritaPopulers;
 
@@ -76,12 +84,13 @@ class FrontendController extends Controller
             ->get();
 
         // dd($otherArticles[0]->category->name);
-        return view('post_detail', compact('post', 'title', 'description', 'categories', 'otherArticles', 'sidebarAds', 'beritaPopulers'));
+        return view('post_detail', compact('post', 'title', 'description', 'categories', 'otherArticles', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 
     public function postByCategory($slug)
     {
         $categories = $this->categories;
+        $navbarCategories = $this->navbarCategories;
         $sidebarAds = $this->sidebarAds;
         $beritaPopulers = $this->beritaPopulers;
 
@@ -95,51 +104,56 @@ class FrontendController extends Controller
             ->paginate(10);
 
         // dd($posts);
-        return view('post_category', compact('category', 'posts', 'categories', 'sidebarAds', 'beritaPopulers'));
+        return view('post_category', compact('category', 'posts', 'categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 
     public function kebijakan()
     {
         $categories = $this->categories;
+        $navbarCategories = $this->navbarCategories;
         $sidebarAds = $this->sidebarAds;
         $beritaPopulers = $this->beritaPopulers;
 
-        return view('kebijakan', compact('categories', 'sidebarAds', 'beritaPopulers'));
+        return view('kebijakan', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 
     public function pedoman()
     {
         $categories = $this->categories;
+        $navbarCategories = $this->navbarCategories;
         $sidebarAds = $this->sidebarAds;
         $beritaPopulers = $this->beritaPopulers;
 
-        return view('pedoman', compact('categories', 'sidebarAds', 'beritaPopulers'));
+        return view('pedoman', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 
     public function disclaimer()
     {
         $categories = $this->categories;
+        $navbarCategories = $this->navbarCategories;
         $sidebarAds = $this->sidebarAds;
         $beritaPopulers = $this->beritaPopulers;
 
-        return view('disclaimer', compact('categories', 'sidebarAds', 'beritaPopulers'));
+        return view('disclaimer', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 
     public function about()
     {
         $categories = $this->categories;
+        $navbarCategories = $this->navbarCategories;
         $sidebarAds = $this->sidebarAds;
         $beritaPopulers = $this->beritaPopulers;
 
-        return view('about', compact('categories', 'sidebarAds', 'beritaPopulers'));
+        return view('about', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 
     public function terms()
     {
         $categories = $this->categories;
+        $navbarCategories = $this->navbarCategories;
         $sidebarAds = $this->sidebarAds;
         $beritaPopulers = $this->beritaPopulers;
 
-        return view('terms', compact('categories', 'sidebarAds', 'beritaPopulers'));
+        return view('terms', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 }
