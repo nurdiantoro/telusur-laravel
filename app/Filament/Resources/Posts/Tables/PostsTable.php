@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Posts\Tables;
 
+use App\Filament\Resources\Posts\PostResource;
 use App\Models\Post;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -50,6 +52,9 @@ class PostsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('activities')
+                    ->label('Activities')
+                    ->url(fn($record) => PostResource::getUrl('activities', ['record' => $record])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
