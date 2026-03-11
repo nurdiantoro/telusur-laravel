@@ -23,4 +23,11 @@ class PostCategory extends Model
     {
         return $this->hasMany(PostCategory::class, 'parent_id');
     }
+
+
+    // Relasi ke Post
+    public function category()
+    {
+        return $this->belongsTo(PostCategory::class, 'category_id');
+    }
 }

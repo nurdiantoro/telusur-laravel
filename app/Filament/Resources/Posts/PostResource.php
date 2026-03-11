@@ -52,18 +52,18 @@ class PostResource extends Resource
         ];
     }
 
-    public static function getNavigationItems(): array
-    {
-        return [
-            NavigationItem::make('Post')
-                ->group('News')
-                ->url(static::getUrl('index', ['type' => 'post']))
-                ->icon('heroicon-o-document-text'),
+    // public static function getNavigationItems(): array
+    // {
+    //     return [
+    //         NavigationItem::make('Post')
+    //             ->group('News')
+    //             ->url(static::getUrl('index', ['type' => 'post']))
+    //             ->icon('heroicon-o-document-text'),
 
-            NavigationItem::make('Video')
-                ->group('News')
-                ->url(static::getUrl('index', ['type' => 'video']))
-                ->icon('heroicon-o-video-camera'),
-        ];
-    }
+    //         NavigationItem::make('Video')
+    //             ->group('News')
+    //             ->url(static::getUrl('index', ['type' => 'video']))
+    //             ->icon('heroicon-o-video-camera'),
+    //     ];
+    // }
 }
