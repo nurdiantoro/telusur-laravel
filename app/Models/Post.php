@@ -65,8 +65,15 @@ class Post extends Model implements HasMedia
         return LogOptions::defaults()
             ->logOnly([
                 'title',
+                'type',
+                'cover',
+                'caption',
+                'video_url',
                 'content',
-                'status'
+                'status',
+                'category_id',
+                'author_id',
+                'publish_time',
             ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();

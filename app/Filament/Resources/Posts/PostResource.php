@@ -38,7 +38,7 @@ class PostResource extends Resource
     public static function getRelations(): array
     {
         return [
-            'categories' => PostCategoryResource::class,
+            // 'categories' => PostCategoryResource::class,
         ];
     }
 
