@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\Posts;
 
-use App\Filament\Resources\PostResource\Pages\ListPostActivities;
+use App\Filament\Resources\PostCategories\PostCategoryResource;
 use App\Filament\Resources\Posts\Pages\CreatePost;
 use App\Filament\Resources\Posts\Pages\EditPost;
-use App\Filament\Resources\Posts\Pages\ListPostActivities as PagesListPostActivities;
+use App\Filament\Resources\Posts\Pages\ListPostActivities;
 use App\Filament\Resources\Posts\Pages\ListPosts;
 use App\Filament\Resources\Posts\Schemas\PostForm;
 use App\Filament\Resources\Posts\Tables\PostsTable;
@@ -38,7 +38,7 @@ class PostResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            'categories' => PostCategoryResource::class,
         ];
     }
 
@@ -48,22 +48,22 @@ class PostResource extends Resource
             'index' => ListPosts::route('/'),
             'create' => CreatePost::route('/create'),
             'edit' => EditPost::route('/{record}/edit'),
-            'activities' => PagesListPostActivities::route('/{record}/activities'),
+            'activities' => ListPostActivities::route('/{record}/activities'),
         ];
     }
 
-    public static function getNavigationItems(): array
-    {
-        return [
-            NavigationItem::make('Post')
-                ->group('News')
-                ->url(static::getUrl('index', ['type' => 'post']))
-                ->icon('heroicon-o-document-text'),
+    // public static function getNavigationItems(): array
+    // {
+    //     return [
+    //         NavigationItem::make('Post')
+    //             ->group('News')
+    //             ->url(static::getUrl('index', ['type' => 'post']))
+    //             ->icon('heroicon-o-document-text'),
 
-            NavigationItem::make('Video')
-                ->group('News')
-                ->url(static::getUrl('index', ['type' => 'video']))
-                ->icon('heroicon-o-video-camera'),
-        ];
-    }
+    //         NavigationItem::make('Video')
+    //             ->group('News')
+    //             ->url(static::getUrl('index', ['type' => 'video']))
+    //             ->icon('heroicon-o-video-camera'),
+    //     ];
+    // }
 }
