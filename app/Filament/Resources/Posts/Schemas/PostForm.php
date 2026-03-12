@@ -88,6 +88,17 @@ class PostForm
                                 ->preload()
                                 ->searchable()
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published'),
+                            Select::make('tags')
+                                ->relationship('tags', 'name')
+                                ->multiple()
+                                ->searchable()
+                                ->searchPrompt('Cari tag...')
+                                ->preload()
+                                ->noOptionsMessage('Belum ada tag')
+                                ->createOptionForm([
+                                    TextInput::make('name')
+                                        ->required(),
+                                ]),
                             Select::make('publish_at')
                                 ->reactive()
                                 ->options([

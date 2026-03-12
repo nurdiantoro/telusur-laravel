@@ -13,6 +13,7 @@ Route::get('/terms', [FrontendController::class, 'terms'])->name('terms');
 
 
 // Prioritas untuk kategori, jika tidak ada maka akan mencari berdasarkan slug
+Route::get('/tag/{slug}', [FrontendController::class, 'postByTag'])->name('post.tag');
 Route::get('/{category}', [FrontendController::class, 'postByCategory'])->name('post.category');
 Route::get('/{category}/{slug}', [FrontendController::class, 'postDetail'])->name('post.detail');
 

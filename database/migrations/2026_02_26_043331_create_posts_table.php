@@ -12,19 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->id(); // OK, primary key
+            $table->id();
 
-            $table->string('title')->nullable(); // OK
-            $table->string('slug')->unique()->nullable(); // OK, slug unique untuk detail page
+            $table->string('title')->nullable();
+            $table->string('slug')->unique()->nullable();
 
             $table->string('type')->nullable();
             $table->index('type'); // TAMBAH: index biar filter by type lebih cepat
 
-            $table->string('cover')->nullable(); // OK
-            $table->string('caption')->nullable(); // OK
-            $table->string('video_url')->nullable(); // OK
+            $table->string('cover')->nullable();
+            $table->string('caption')->nullable();
+            $table->string('video_url')->nullable();
 
-            $table->text('content')->nullable(); // OK
+            $table->text('content')->nullable();
 
             $table->string('status')->nullable();
             $table->index('status'); // TAMBAH: index biar filter published cepat
@@ -33,12 +33,12 @@ return new class extends Migration
             $table->foreignId('category_id')->nullable()->index(); // sebelumnya integer, tambahkan index
             $table->foreignId('author_id')->nullable()->index(); // sebelumnya integer, tambahkan index
 
-            $table->integer('views')->default(0)->unsigned(); // OK
+            $table->integer('views')->default(0)->unsigned();
 
             $table->timestamp('publish_time')->nullable()->useCurrent();
             $table->index('publish_time'); // TAMBAH: index biar order/filter by publish_time cepat
 
-            $table->timestamps(); // OK
+            $table->timestamps();
 
             // TAMBAH: composite index untuk query berita terbaru
             $table->index(['status', 'publish_time']); // sering dipakai homepage

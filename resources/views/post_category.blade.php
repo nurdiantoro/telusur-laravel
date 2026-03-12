@@ -17,7 +17,7 @@
                 @foreach ($posts as $post)
                     <a href="{{ route('post.detail', ['category' => $category->slug, 'slug' => $post->slug]) }}"
                         class="flex flex-row gap-4 group">
-                        <img src="{{ $post->cover_preview ? $post->cover_preview : asset('img/no_image.webp') }}"
+                        <img src="{{ $post->spatie_preview ? $post->spatie_preview : asset('img/no_image.webp') }}"
                             alt="{{ $post->title }}" class="w-1/3 h-auto object-cover rounded-md">
                         <div class="flex flex-col">
                             <h2 class="font-bold group-hover:text-merah-01">{{ $post->title }}</h2>

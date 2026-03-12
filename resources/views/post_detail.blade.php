@@ -13,7 +13,7 @@
                 </a>
             </div>
 
-            <article>
+            <article class="border-b border-gray-200 mb-6">
                 {{-- Title --}}
                 <h1 class="text-3xl font-bold mb-2">{{ $post->title }}</h1>
 
@@ -64,7 +64,18 @@
                 </figure>
 
                 {{-- Content --}}
-                <div class="article-content border-b border-gray-200 mb-6">{!! str($post->content)->sanitizeHtml() !!}</div>
+                <div class="article-content">{!! str($post->content)->sanitizeHtml() !!}</div>
+
+                <div class="flex gap-2 flex-row flex-wrap mb-6 text-gray-700">
+                    <div class="flex flex-row justify-center items-center gap-2">
+                        <span class="w-4"> <x-fas-tag /></span>
+                        <span> tags :</span>
+                    </div>
+                    @foreach ($post->tags as $tag)
+                        <a href="{{ route('post.tag', $tag->slug) }}"
+                            class="px-1 rounded bg-gray-100 border-gray-200 border text-sm hover:bg-gray-200">{{ $tag->name }}</a>
+                    @endforeach
+                </div>
             </article>
 
             {{-- Komentar --}}

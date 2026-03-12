@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostCategory;
 use App\Models\SidebarAds;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -67,6 +68,7 @@ class FrontendController extends Controller
         $post = Post::where('slug', $postSlug)
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
+            ->with('tags')
             ->first();
 
         $title = $post->title . ' - Telusur';
@@ -109,6 +111,22 @@ class FrontendController extends Controller
             ->paginate(10);
 
         // dd($posts);
+        return view('post_category', compact('category', 'posts', 'categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+    }
+
+    public function postByTag($slug)
+    {
+        $categories = $this->categories;
+        $navbarCategories = $this->navbarCategories;
+        $sidebarAds = $this->sidebarAds;
+        $beritaPopulers = $this->beritaPopulers;
+
+        $category = Tag::where('slug', $slug)->firstOrFail();
+        $posts = $category->posts()
+            ->with(['category', 'tags'])
+            ->latest('publish_time')
+            ->paginate(10);
+
         return view('post_category', compact('category', 'posts', 'categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 

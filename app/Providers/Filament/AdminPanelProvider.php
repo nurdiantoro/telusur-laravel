@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->brandLogo(asset('img/logo-telusur.webp'))
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->colors([
