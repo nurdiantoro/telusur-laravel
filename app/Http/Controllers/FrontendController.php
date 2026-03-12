@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostCategory;
 use App\Models\SidebarAds;
@@ -83,8 +84,12 @@ class FrontendController extends Controller
             ->limit(3)
             ->get();
 
+        $comments = Comment::where('post_id', $post->id)
+            ->where('status', 'approved')
+            ->get();
+
         // dd($otherArticles[0]->category->name);
-        return view('post_detail', compact('post', 'title', 'description', 'categories', 'otherArticles', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+        return view('post_detail', compact('post', 'title', 'description', 'categories', 'otherArticles', 'sidebarAds', 'beritaPopulers', 'navbarCategories', 'comments'));
     }
 
     public function postByCategory($slug)
@@ -155,5 +160,33 @@ class FrontendController extends Controller
         $beritaPopulers = $this->beritaPopulers;
 
         return view('terms', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+    }
+
+    public function postComment(Request $request, $post_id)
+    {
+        // Honeypot: jika field ini diisi, berarti bot
+        if ($request->filled('jangan_diisi')) {
+            return redirect()->back()->with('error', 'Spam terdeteksi.');
+        }
+
+        // Validasi input
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|max:150',
+            'comment' => 'required|string|max:2000',
+        ]);
+
+        // Pastikan post ada
+        $post = Post::findOrFail($post_id);
+
+        // Simpan komentar
+        Comment::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'post_id' => $post->id,
+            'comment' => $validated['comment'],
+        ]);
+
+        return redirect()->back()->with('success', 'Komentar berhasil dikirim.');
     }
 }

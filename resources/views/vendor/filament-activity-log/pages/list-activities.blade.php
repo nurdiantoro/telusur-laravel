@@ -1,5 +1,6 @@
 @php
     use Illuminate\Support\Js;
+    use Carbon\Carbon;
     $categories = \App\Models\PostCategory::pluck('name', 'id');
 @endphp
 <x-filament-panels::page>
@@ -54,6 +55,7 @@
                             </th>
                         </thead>
 
+                        {{--  --}}
                         <tbody>
                             @foreach (data_get($changes, 'attributes', []) as $field => $change)
                                 @php
@@ -67,16 +69,24 @@
                                         width="20%">
                                         {{ $this->getFieldLabel($field) }}
                                     </td>
+
+
+                                    {{-- Data Before --}}
                                     <td width="40%"
                                         class="fi-ta-cell px-4 py-2 align-top break-all whitespace-normal">
                                         @if ($field === 'category_id' && $oldValue)
                                             {{ $categories[$oldValue] ?? $oldValue }}
+                                        @elseif ($field === 'publish_time' && $oldValue)
+                                            {{ Carbon::parse($oldValue)->translatedFormat('d F Y H:i') }}
                                         @elseif(is_array($oldValue))
                                             <pre class="text-xs text-gray-500">{{ json_encode($oldValue, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
                                         @else
                                             {{ $oldValue }}
                                         @endif
                                     </td>
+
+
+                                    {{-- Data After --}}
                                     <td width="40%"
                                         class="fi-ta-cell px-4 py-2 align-top break-all whitespace-normal">
                                         @if ($field === 'category_id' && $newValue)
@@ -84,6 +94,8 @@
                                         @elseif (is_bool($newValue))
                                             <span
                                                 class="text-xs text-gray-500">{{ $newValue ? 'true' : 'false' }}</span>
+                                        @elseif ($field === 'publish_time' && $newValue)
+                                            {{ Carbon::parse($newValue)->translatedFormat('d F Y H:i') }}
                                         @elseif(is_array($newValue))
                                             <pre class="text-xs text-gray-500">{{ json_encode($newValue, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
                                         @else

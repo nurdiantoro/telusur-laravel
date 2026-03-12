@@ -15,3 +15,8 @@ Route::get('/terms', [FrontendController::class, 'terms'])->name('terms');
 // Prioritas untuk kategori, jika tidak ada maka akan mencari berdasarkan slug
 Route::get('/{category}', [FrontendController::class, 'postByCategory'])->name('post.category');
 Route::get('/{category}/{slug}', [FrontendController::class, 'postDetail'])->name('post.detail');
+
+
+
+// Method POST
+Route::post('/comment/{post_id}', [FrontendController::class, 'postComment'])->name('post.comment');

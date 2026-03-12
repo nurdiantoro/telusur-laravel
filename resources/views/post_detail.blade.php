@@ -68,33 +68,50 @@
             </article>
 
             {{-- Komentar --}}
-            <div class="mt-6 mb-6">
-                <h2 class="font-bold mb-4">Tinggalkan Komentar</h2>
-                <article class="border-b border-gray-200 p-4 rounded-lg bg-gray-100">
-                    <h3 class="font-bold">Nama komentator</h3>
-                    <time class="text-sm text-gray-700">10 Agustus 2026 - 13:00</time>
-                    <p class="mt-2">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Praesentium laudantium
-                        at, id sequi
-                        quibusdam facere repellat modi dolores perspiciatis ipsa repellendus! Autem dignissimos veniam
-                        adipisci cumque corrupti eum mollitia hic.</p>
-                </article>
-            </div>
+            @if ($comments->count() > 0)
+                <div class="mt-6 mb-6">
+                    <h2 class="font-bold mb-4">Tinggalkan Komentar</h2>
+                    @foreach ($comments as $comment)
+                        <article class="border-b border-gray-200 p-4 rounded-lg bg-gray-100 flex flex-col gap-2">
+                            <h3 class="font-bold capitalize">{{ $comment->name }}</h3>
+                            <p class="">{{ $comment->comment }}</p>
+                            <time
+                                class="text-xs text-gray-700 self-end">{{ $comment->created_at->translatedFormat('j F Y - H:i') }}</time>
+                        </article>
+                    @endforeach
+                </div>
+            @endif
 
             {{-- Form komentar --}}
-            <form action="" class="p-4 rounded-lg bg-gray-100 flex flex-col gap-2 mb-6">
+            <form method="POST" action="{{ route('post.comment', $post->id) }}"
+                class="p-4 rounded-lg bg-gray-100 flex flex-col gap-2 mb-6">
                 @csrf
                 <h2 class="font-bold">Komentar</h2>
                 <textarea name="comment" id="comment" rows="5"
-                    class="w-full border border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:drop-shadow"></textarea>
+                    class="w-full border border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:drop-shadow">{{ old('comment') }}</textarea>
+                @error('comment')
+                    <small class="text-red-500">{{ $message }}</small>
+                @enderror
+
                 <div class="flex flex-col md:flex-row gap-2 md:gap-4">
+
                     <div class="md:w-1/2">
-                        <input type="text" name="comment" placeholder="Nama"
+                        <input type="text" name="name" placeholder="Nama" value="{{ old('name') }}"
                             class="w-full border border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:drop-shadow">
+                        @error('name')
+                            <small class="text-red-500">{{ $message }}</small>
+                        @enderror
                     </div>
+
+
                     <div class="md:w-1/2">
-                        <input type="email" name="email" placeholder="Email"
+                        <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
                             class="w-full border border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:drop-shadow">
+                        @error('email')
+                            <small class="text-red-500">{{ $message }}</small>
+                        @enderror
                     </div>
+
                     <input type="hidden" name="jangan_diisi">
                 </div>
                 <button type="submit"

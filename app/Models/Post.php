@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Dom\Comment;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -16,7 +17,6 @@ class Post extends Model implements HasMedia
     use LogsActivity;
 
     protected $guarded = [];
-
     protected $casts = ['publish_time' => 'datetime',];
 
     public function author()
@@ -26,6 +26,10 @@ class Post extends Model implements HasMedia
     public function category()
     {
         return $this->belongsTo(PostCategory::class, 'category_id');
+    }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'post_id');
     }
 
     // =======================================SPATIE MEDIA LIBRARY=======================================================
@@ -60,6 +64,8 @@ class Post extends Model implements HasMedia
     // =======================================SPATIE MEDIA LIBRARY=======================================================
 
 
+
+    // =======================================SPATIE LOG ACTIVITY========================================================
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -78,4 +84,5 @@ class Post extends Model implements HasMedia
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+    // =======================================SPATIE LOG ACTIVITY========================================================
 }
