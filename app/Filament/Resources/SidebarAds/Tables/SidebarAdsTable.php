@@ -17,14 +17,13 @@ class SidebarAdsTable
             ->reorderable('sort_order')
             ->defaultSort('sort_order')
             ->columns([
-                TextColumn::make('title')
-                    ->searchable(),
                 TextColumn::make('sort_order')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('title')
+                    ->searchable(),
                 TextColumn::make('link')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
                 SpatieMediaLibraryImageColumn::make('imagesCollection')
                     ->collection('imagesCollection')
                     ->conversion('preview')

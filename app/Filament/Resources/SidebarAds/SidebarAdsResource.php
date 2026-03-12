@@ -18,7 +18,7 @@ class SidebarAdsResource extends Resource
 {
     protected static ?string $model = SidebarAds::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
     public static function form(Schema $schema): Schema
     {

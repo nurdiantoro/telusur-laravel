@@ -20,7 +20,9 @@ class PostsTable
             ->columns([
                 TextColumn::make('title')
                     ->sortable()
+                    ->wrap()
                     ->searchable(),
+                TextColumn::make('type'),
                 TextColumn::make('publish_time')
                     ->label('Publish')
                     ->formatStateUsing(
@@ -48,6 +50,12 @@ class PostsTable
                         'draft'       => 'Draft',
                         'published'   => 'Published',
                         'unpublished' => 'Unpublished',
+                    ]),
+                SelectFilter::make('type')
+                    ->options([
+                        'post' => 'Post',
+                        'opini' => 'Opini',
+                        'video' => 'Video',
                     ])
             ])
             ->recordActions([

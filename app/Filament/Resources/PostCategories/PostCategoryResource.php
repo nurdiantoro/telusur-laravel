@@ -24,7 +24,7 @@ class PostCategoryResource extends Resource
 {
     protected static ?string $model = PostCategory::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
 
     public static function form(Schema $schema): Schema
     {
@@ -57,12 +57,13 @@ class PostCategoryResource extends Resource
                 TextColumn::make('sort_order')
                     ->sortable(),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('slug')
                     ->searchable(),
-                TextColumn::make('parent.name')
+                TextColumn::make('parent.name'),
+                ToggleColumn::make('is_navbar')
                     ->sortable(),
-                ToggleColumn::make('is_navbar'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

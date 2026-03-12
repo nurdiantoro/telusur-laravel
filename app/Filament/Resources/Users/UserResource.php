@@ -28,7 +28,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
     public static function form(Schema $schema): Schema
     {
@@ -55,8 +55,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('role_id')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
@@ -64,9 +63,6 @@ class UserResource extends Resource
                     ->searchable(),
                 TextColumn::make('username')
                     ->searchable(),
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
