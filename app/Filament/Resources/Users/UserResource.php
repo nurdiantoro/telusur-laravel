@@ -14,6 +14,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -23,6 +24,7 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -34,8 +36,10 @@ class UserResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('role_id')
-                    ->numeric(),
+                Select::make('role_id')
+                    ->relationship('role', 'name')
+                    ->required(),
+                // TextInput::make('role.name'),
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('email')
@@ -43,10 +47,10 @@ class UserResource extends Resource
                     ->email()
                     ->required(),
                 TextInput::make('username'),
-                DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()
-                    ->required(),
+                    ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                    ->dehydrated(fn($state) => filled($state)),
             ]);
     }
 
@@ -54,14 +58,13 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('role_id')
-                    ->numeric(),
+                TextColumn::make('role.name'),
                 TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('username')
                     ->searchable(),
                 TextColumn::make('email')
                     ->label('Email address')
-                    ->searchable(),
-                TextColumn::make('username')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
