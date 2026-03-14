@@ -1,9 +1,26 @@
 @include('layout.header')
-<div class="md:w-300 mx-auto px-4 py-8 min-h-[200vh] bg-white">
+
+
+
+<div class="md:max-w-300 mx-auto px-4 py-8 min-h-[200vh] bg-white">
+
+    {{-- Search Khusus di home --}}
+    <div class="w-full text-center py-24 bg-cover bg-center rounded-2xl mb-8 px-2"
+        style="background-image: url('{{ asset('img/city.webp') }}');">
+        <h2 class="text-white font-bold text-3xl mb-4">Temukan Berita Menarik</h2>
+        <form class="bg-white rounded-lg border border-gray-300 flex items-center p-2 justify-between max-w-3xl mx-auto"
+            method="GET" action="{{ route('search') }}">
+            <input type="search" required placeholder="Netanyahu meninggal..." name="search_input"
+                class="appearance-none bg-transparent border-none w-full mr-3 py-1 px-2 leading-tight focus:outline-none" />
+            <button type="submit" class="cursor-pointer ">
+                <x-fas-search class="h-[1em] opacity-50" />
+            </button>
+        </form>
+    </div>
 
     {{-- Highlight title --}}
     <div class="flex flex-row justify-between items-center gap-2 pb-3 mb-6 border-b border-gray-300">
-        <span class="px-2 py-1 bg-linear-to-r from-merah-01 to-merah-02 text-white font-bold">Hot news</span>
+        <span class="px-2 py-1 bg-linear-to-r from-warna-03 to-warna-04 text-white font-bold">Hot news</span>
         <a href="{{ $post->category->slug . '/' . $post->slug }}" class="text-lg grow">This is the
             highlight section of our application. </a>
         <div class="hidden md:flex gap-2">
@@ -29,7 +46,7 @@
 
                 <div class="relative text-white">
                     <span
-                        class="px-2 py-1 bg-linear-to-r from-merah-01 to-merah-02 text-white font-bold mb-2 inline-block">
+                        class="px-2 py-1 bg-linear-to-r from-warna-03 to-warna-04 text-white font-bold mb-2 inline-block">
                         {{ $firstCategory?->name ?? 'No Category' }}
                     </span>
 
@@ -76,7 +93,7 @@
                             {{-- Content --}}
                             <div class="flex flex-col">
                                 <div class="text-xs text-gray-500 mb-1">
-                                    <span class="text-merah-01 font-semibold">
+                                    <span class="text-warna-03 font-semibold">
                                         By {{ $author?->name ?? 'Admin' }}
                                     </span>
                                     <span class="mx-1">•</span>
@@ -84,7 +101,7 @@
                                 </div>
 
                                 <a href="{{ $url }}">
-                                    <h3 class="font-semibold text-sm leading-snug group-hover:text-merah-01 transition">
+                                    <h3 class="font-semibold text-sm leading-snug group-hover:text-warna-03 transition">
                                         {{ $post->title }}
                                     </h3>
                                 </a>
@@ -137,7 +154,7 @@
                                 {{-- Title --}}
                                 <a href="{{ $url }}">
                                     <h2
-                                        class="text-xl font-bold leading-snug mb-3 group-hover:text-merah-01 transition">
+                                        class="text-xl font-bold leading-snug mb-3 group-hover:text-warna-03 transition">
                                         {{ $post->title }}
                                     </h2>
                                 </a>

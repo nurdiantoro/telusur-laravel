@@ -10,14 +10,15 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans:
+    /* --font-sans:
         "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-        "Noto Color Emoji";
-    --color-warna-01: #10069d;
+        "Noto Color Emoji"; */
+    --font-sans: "Inter";
+    --color-warna-01: oklch(37.9% 0.146 265.522);
     --color-warna-02: #337ab7;
-    --color-merah-01: #ef4444;
-    --color-merah-02: #b91c1c;
+    --color-warna-03: #ef4444;
+    --color-warna-04: #b91c1c;
 }
 
 @layer components {

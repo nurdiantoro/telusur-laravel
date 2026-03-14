@@ -12,8 +12,14 @@
             'PT. Telusur Info Media menyediakan Kebijakan Privasi (Privacy Policy) ini untuk memberikan informasi kepada para pengguna aplikasi mobile kami tentang kebijakan dan prosedur mengenai pengumpulan, penggunaan dan pengungkapan informasi pribadi.' }}">
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+    {{-- <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" /> --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    {{-- prioritas image --}}
+    <link rel="preload" as="image" href="{{ asset('img/logo-telusur.webp') }}">
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
