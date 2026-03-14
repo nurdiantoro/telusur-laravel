@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -14,6 +14,7 @@ class Post extends Model implements HasMedia
 {
     use InteractsWithMedia;
     use LogsActivity;
+    use Searchable;
 
     protected $guarded = [];
     protected $casts = ['publish_time' => 'datetime',];
@@ -64,7 +65,6 @@ class Post extends Model implements HasMedia
     {
         return $this->getFirstMediaUrl('imagesCollection', 'thumbnail');
     }
-    // =======================================SPATIE MEDIA LIBRARY=======================================================
 
 
 
@@ -87,5 +87,21 @@ class Post extends Model implements HasMedia
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
-    // =======================================SPATIE LOG ACTIVITY========================================================
+
+    // =======================================Search Scout========================================================
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'status' => $this->status,
+            'type' => $this->type,
+            'publish_time' => $this->publish_time,
+        ];
+    }
+
+    public function searchableAs()
+    {
+        return 'posts';
+    }
 }

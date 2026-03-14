@@ -29,6 +29,7 @@ class PostForm
                     Section::make('Post Detail')
                         ->columnSpan(1)
                         ->schema([
+                            TextInput::make('id'),
                             TextInput::make('author_name')
                                 ->label('Author')
                                 ->disabled()
