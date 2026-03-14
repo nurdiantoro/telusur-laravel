@@ -20,7 +20,7 @@
                 {{-- Meta --}}
                 <div class="text-gray-500">
                     <span>by {{ $post->author->name ?: 'Admin' }}</span> -
-                    <time>{{ $post->created_at->translatedFormat('j F Y') }}</time>
+                    <time>{{ $post->publish_time->translatedFormat('j F Y') }}</time>
                 </div>
 
                 {{-- Thumbnail --}}
@@ -136,15 +136,23 @@
                 <div class="flex flex-wrap">
                     @foreach ($otherArticles as $article)
                         <div class="p-2 w-1/3">
-                            <div class="py-4 group">
-                                <img src="{{ $post->cover_preview ?: asset('img/no_image.webp') }}"
-                                    alt="{{ $post->title }}" class="w-full h-auto object-cover rounded-md">
-                                <a href="{{ route('post.detail', ['category' => $article->category->slug, 'slug' => $article->slug]) }}"
-                                    class=" text-warna-01 group-hover:text-warna-02 font-bold block mt-2">
+                            <a href="{{ route('post.detail', ['category' => $article->category->slug, 'slug' => $article->slug]) }}"
+                                class="py-4 group">
+
+                                <div class="aspect-video overflow-hidden rounded-md">
+                                    <img src="{{ $article->spatie_preview ?: asset('img/no_image.webp') }}"
+                                        alt="{{ $article->title }}" class="w-full h-full object-cover">
+                                </div>
+
+                                <div class="text-warna-01 group-hover:text-warna-02 font-bold block mt-2">
                                     {{ $article->title }}
-                                </a>
-                                <p class="text-sm text-gray-600">{{ $article->publish_time->format('F d, Y') }}</p>
-                            </div>
+                                </div>
+
+                                <p class="text-sm text-gray-600">
+                                    {{ $article->publish_time->translatedFormat('j F Y') }}
+                                </p>
+
+                            </a>
                         </div>
                     @endforeach
                 </div>

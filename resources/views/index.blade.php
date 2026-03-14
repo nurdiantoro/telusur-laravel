@@ -34,7 +34,7 @@
                     </span>
 
                     <h2 class="text-2xl font-bold mb-2">{{ $post->title }}</h2>
-                    <span>{{ $post->created_at->translatedFormat('j F Y') }}</span>
+                    <span>{{ $post->publish_time->translatedFormat('j F Y') }}</span>
                 </div>
                 {{-- Arrow --}}
                 <div
@@ -80,7 +80,7 @@
                                         By {{ $author?->name ?? 'Admin' }}
                                     </span>
                                     <span class="mx-1">•</span>
-                                    <span>{{ $post->created_at->translatedFormat('d F Y') }}</span>
+                                    <span>{{ $post->publish_time->translatedFormat('d F Y') }}</span>
                                 </div>
 
                                 <a href="{{ $url }}">
@@ -131,7 +131,7 @@
                                         By {{ $post->author->name ?? 'Admin' }}
                                     </a>
                                     <span class="mx-1">•</span>
-                                    <span>{{ $post->created_at->translatedFormat('d F Y') }}</span>
+                                    <span>{{ $post->publish_time->translatedFormat('d F Y') }}</span>
                                 </div>
 
                                 {{-- Title --}}

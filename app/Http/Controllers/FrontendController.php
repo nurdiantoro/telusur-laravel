@@ -12,6 +12,17 @@ use Illuminate\Support\Str;
 
 class FrontendController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Variable
+    |--------------------------------------------------------------------------
+    |
+    | $categories : semua category
+    | $navbarCategories : category navbar
+    | $sidebarAds$sidebarAds : sidebar ads
+    | $beritaPopulers : berita populer
+    |
+    */
     protected $categories;
     protected $navbarCategories;
     protected $sidebarAds;
@@ -32,6 +43,75 @@ class FrontendController extends Controller
             ->where('publish_time', '<=', now())
             ->limit(6)
             ->get();
+    }
+    /*
+    |
+    |
+    |
+    |
+    */
+
+    private function getOtherArticles($post, $limit)
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | Other Articles
+        |--------------------------------------------------------------------------
+        |
+        | Other Articles dicari berdasarkan tag dulu
+        | kalau gak ada atau kurang, tambahin dari category
+        | kalau masih kurang, tambahin dari latest
+        |
+        */
+        $tagIds = $post->tags->pluck('id');
+
+        $tagArticles = Post::with(['media', 'category', 'author'])
+            ->where('id', '!=', $post->id)
+            ->where('status', 'published')
+            ->where('publish_time', '<=', now())
+            ->whereHas('tags', function ($query) use ($tagIds) {
+                $query->whereIn('tags.id', $tagIds);
+            })
+            ->latest('publish_time')
+            ->limit($limit)
+            ->get();
+
+        $otherArticles = $tagArticles;
+
+        if ($otherArticles->count() < $limit) {
+
+            $remaining = $limit - $otherArticles->count();
+
+            $categoryArticles = Post::with(['media', 'category', 'author'])
+                ->where('id', '!=', $post->id)
+                ->where('category_id', $post->category_id)
+                ->whereNotIn('id', $otherArticles->pluck('id'))
+                ->where('status', 'published')
+                ->where('publish_time', '<=', now())
+                ->latest('publish_time')
+                ->limit($remaining)
+                ->get();
+
+            $otherArticles = $otherArticles->merge($categoryArticles);
+        }
+
+        if ($otherArticles->count() < $limit) {
+
+            $remaining = $limit - $otherArticles->count();
+
+            $latestArticles = Post::with(['media', 'category', 'author'])
+                ->where('id', '!=', $post->id)
+                ->whereNotIn('id', $otherArticles->pluck('id'))
+                ->where('status', 'published')
+                ->where('publish_time', '<=', now())
+                ->latest('publish_time')
+                ->limit($remaining)
+                ->get();
+
+            $otherArticles = $otherArticles->merge($latestArticles);
+        }
+
+        return $otherArticles;
     }
 
     public function index()
@@ -77,20 +157,12 @@ class FrontendController extends Controller
             155
         );
 
-        $otherArticles = Post::with(['media', 'category', 'author'])
-            ->where('id', '!=', $post->id)
-            ->latest('publish_time')
-            ->where('category_id', $post->category_id)
-            ->where('status', 'published')
-            ->where('publish_time', '<=', now())
-            ->limit(3)
-            ->get();
+        $otherArticles = $this->getOtherArticles($post, 10);
 
         $comments = Comment::where('post_id', $post->id)
             ->where('status', 'approved')
             ->get();
 
-        // dd($otherArticles[0]->category->name);
         return view('post_detail', compact('post', 'title', 'description', 'categories', 'otherArticles', 'sidebarAds', 'beritaPopulers', 'navbarCategories', 'comments'));
     }
 
@@ -226,7 +298,7 @@ class FrontendController extends Controller
             ]);
 
         if (!$request->search_input) {
-            return redirect()->route('home');
+            return redirect()->back()->with('error', 'Masukkan kata kunci pencarian.');
         }
 
         return view('post_search', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories', 'posts'));
