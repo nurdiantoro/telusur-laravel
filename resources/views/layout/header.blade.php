@@ -20,6 +20,7 @@
 
     {{-- prioritas image --}}
     <link rel="preload" as="image" href="{{ asset('img/logo-telusur.webp') }}">
+    <link rel="preload" as="image" href="{{ asset('img/city.webp') }}">
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))

@@ -124,7 +124,10 @@ class FrontendController extends Controller
         $title = 'Telusur - Jelajahi Dunia dengan Mudah';
         $description = 'Telusur adalah platform pencarian yang membantu Anda menemukan informasi, tempat, dan layanan dengan mudah. Jelajahi dunia dengan Telusur!';
 
-        $post = Post::with(['media'])->find(25);
+        $post = Post::with(['media'])->where('status', 'published')
+            ->where('publish_time', '<=', now())
+            ->latest('publish_time') // Mengambil yang paling baru dirilis
+            ->first();
 
         $beritaTerbaru = Post::with(['media', 'category', 'author',])
             ->latest('publish_time')
@@ -133,9 +136,11 @@ class FrontendController extends Controller
             ->limit(12)
             ->get();
 
+        $suggestTags = Tag::inRandomOrder()->limit(5)->get();
+
         // dd($beritaPopulers);
 
-        return view('index', compact('title', 'description', 'categories', 'post', 'beritaPopulers', 'beritaTerbaru', 'sidebarAds', 'navbarCategories'));
+        return view('index', compact('title', 'description', 'categories', 'post', 'beritaPopulers', 'beritaTerbaru', 'sidebarAds', 'navbarCategories', 'suggestTags'));
     }
 
     public function postDetail($categorySlug, $postSlug)

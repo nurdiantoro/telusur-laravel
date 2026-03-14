@@ -3,16 +3,20 @@
     <div class="border-b border-gray-200 w-full flex items-center justify-center">
         <div class="relative md:w-300 flex items-end justify-center flex-row py-4">
             <!-- Kiri (kosong) -->
-            <div class="flex-1"></div>
+            {{-- <div class="flex-1 flex justify-start items-center gap-4">
+
+            </div> --}}
 
             {{-- Tengah --}}
-            <a href="{{ route('home') }}" class="flex-1 flex justify-center">
+            <a href="{{ route('home') }}" class="flex-1 flex justify-start">
                 <img src="{{ asset('img/logo-telusur.webp') }}" alt="Logo" fetchpriority="high" loading="eager"
                     class="h-20">
             </a>
 
             {{-- Kanan --}}
-            <div class="flex-1 flex justify-end">
+            <div class="flex-1 flex justify-end items-center gap-4">
+                <a href="#" class="font-bold text-gray-500 hover:text-warna-01">Opini</a>
+                <a href="#" class="font-bold text-gray-500 hover:text-warna-01">Berita Video</a>
                 <button id="darkmode-toggle" type="button"
                     class="text-gray-500 h-10 px-3 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer">
                     <x-feathericon-sun />
