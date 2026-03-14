@@ -19,7 +19,7 @@
 
                 {{-- Meta --}}
                 <div class="text-gray-500">
-                    <span>by {{ $post->author->name }}</span> -
+                    <span>by {{ $post->author->name ?: 'Admin' }}</span> -
                     <time>{{ $post->created_at->translatedFormat('j F Y') }}</time>
                 </div>
 

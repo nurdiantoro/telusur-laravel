@@ -207,4 +207,28 @@ class FrontendController extends Controller
 
         return redirect()->back()->with('success', 'Komentar berhasil dikirim.');
     }
+
+    public function postSearch(Request $request)
+    {
+        $categories = $this->categories;
+        $navbarCategories = $this->navbarCategories;
+        $sidebarAds = $this->sidebarAds;
+        $beritaPopulers = $this->beritaPopulers;
+
+        $posts = Post::search($request->search_input)
+            ->where('type', 'post')
+            ->where('status', 'published')
+            ->where('publish_time', '<=', now())
+            ->orderBy('publish_time', 'desc')
+            ->paginate(10)
+            ->appends([
+                'search_input' => $request->search_input
+            ]);
+
+        if (!$request->search_input) {
+            return redirect()->route('home');
+        }
+
+        return view('post_search', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories', 'posts'));
+    }
 }

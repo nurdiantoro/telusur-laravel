@@ -52,8 +52,8 @@
 
     {{-- Search --}}
     <form class="bg-white rounded-lg border border-gray-300 flex items-center p-2 justify-between md:w-1/4"
-        method="post">
-        <input type="search" required placeholder="Search"
+        method="GET" action="{{ route('search') }}">
+        <input type="search" required placeholder="Search" name="search_input"
             class="appearance-none bg-transparent border-none w-full mr-3 py-1 px-2 leading-tight focus:outline-none" />
         <button type="submit" class="cursor-pointer ">
             <x-fas-search class="h-[1em] opacity-50" />
