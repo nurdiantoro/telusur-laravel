@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    {{-- Highlight title --}}
+    {{-- Hot news --}}
     <div class="flex flex-row justify-between items-center gap-2 pb-3 mb-6 border-b border-gray-300">
         <span class="px-2 py-1 bg-linear-to-r from-warna-03 to-warna-04 text-white font-bold">Hot news</span>
         <a href="{{ $post->category->slug . '/' . $post->slug }}"
@@ -45,12 +45,13 @@
         </div>
     </div>
 
+    {{-- Main --}}
     <div class="flex flex-col md:flex-row gap-8">
 
         {{-- Main Div --}}
         <div class="md:w-3/4 flex flex-col gap-12">
 
-            {{-- Card --}}
+            {{-- Berita Utama --}}
             <div class="relative aspect-2/1 bg-cover bg-center flex flex-col justify-end p-6 group rounded-lg overflow-hidden"
                 style="background-image: url('{{ $post->getFirstMediaUrl('preview', 'preview') ?: asset('img/no_image.webp') }}');">
 
@@ -80,15 +81,15 @@
                 </div>
             </div>
 
-            {{-- Berita Populer --}}
+            {{-- Berita Utama --}}
             <div>
                 <div
                     class="border-b mb-6 border-gray-200 before:absolute before:w-16 before:top-full before:h-1 before:bg-warna-01 relative">
-                    <h2 class="text-2xl font-bold mb-2">Berita Terbaru</h2>
+                    <h2 class="text-2xl font-bold mb-2">Berita Utama</h2>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    @foreach ($beritaPopulers as $post)
+                    @foreach ($beritaUtama as $post)
                         @php
                             $category = $post->category;
                             $author = $post->author;
@@ -109,7 +110,8 @@
                                         By {{ $author?->name ?? 'Admin' }}
                                     </span>
                                     <span class="mx-1">•</span>
-                                    <span>{{ $post->publish_time->translatedFormat('d F Y') }}</span>
+                                    <span>{{ $post->publish_time->diffForHumans() }}</span>
+                                    {{-- <span>{{ $post->publish_time->translatedFormat('d F Y') }}</span> --}}
                                 </div>
 
                                 <a href="{{ $url }}">
@@ -123,58 +125,59 @@
                 </div>
             </div>
 
+            {{-- Artikel Terbaru --}}
             <div>
                 <div
                     class="border-b mb-6 border-gray-200 before:absolute before:w-16 before:top-full before:h-1 before:bg-warna-01 relative">
                     <h2 class="text-2xl font-bold mb-2">Artikel Terbaru</h2>
                 </div>
 
-                <div class="flex flex-col gap-6">
-                    @foreach ($beritaTerbaru as $index => $post)
-                        <?php
-                        $url = $post->category->slug . '/' . $post->slug;
-                        ?>
-                        <article class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start group">
-                            {{-- Image --}}
-                            <a href="{{ $url }}" class="block md:col-span-1 peer">
-                                <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+                    @foreach ($beritaTerbaru as $newArticle)
+                        @php
+                            $url = $newArticle->category->slug . '/' . $newArticle->slug;
+                        @endphp
 
-                                    <img src="{{ $post->spatie_thumbnail ?: asset('img/no_image.webp') }}"
-                                        alt="{{ $post->title }}" class="w-full h-full  object-cover rounded-md">
+                        <article class="flex flex-col h-full group">
+
+                            {{-- Image --}}
+                            <a href="{{ $url }}" class="block">
+                                <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
+                                    <img src="{{ $newArticle->spatie_thumbnail ?: asset('img/no_image.webp') }}"
+                                        alt="{{ $newArticle->title }}"
+                                        class="w-full h-full object-cover block transition-transform duration-300 group-hover:scale-105">
                                 </div>
                             </a>
 
                             {{-- Content --}}
-                            <div class="flex flex-col justify-center md:col-span-2">
+                            <div class="flex flex-col grow mt-4">
 
                                 {{-- Category --}}
-                                <a href="{{ $post->category->slug }}"
+                                <a href="{{ $newArticle->category->slug }}"
                                     class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 mb-3 w-fit">
-                                    {{ strtoupper($post->category->name ?? 'No Category') }}
+                                    {{ strtoupper($newArticle->category->name ?? 'No Category') }}
                                 </a>
 
-                                {{-- Meta --}}
+                                {{-- Author & Date --}}
                                 <div class="text-xs text-gray-500 mb-2">
-                                    <a href="{{ $post->author->name }}"
-                                        class="text-red-600 font-semibold hover:underline">
-                                        By {{ $post->author->name ?? 'Admin' }}
-                                    </a>
+                                    <span>
+                                        By
+                                        <span class="text-red-600 font-semibold">
+                                            {{ $newArticle->author->name ?? 'Admin' }}
+                                        </span>
+                                    </span>
                                     <span class="mx-1">•</span>
-                                    <span>{{ $post->publish_time->translatedFormat('d F Y') }}</span>
+                                    <span>{{ $newArticle->publish_time->diffForHumans() }}</span>
                                 </div>
 
                                 {{-- Title --}}
                                 <a href="{{ $url }}">
                                     <h2
-                                        class="text-xl font-bold leading-snug mb-3 group-hover:text-warna-03 transition">
-                                        {{ $post->title }}
+                                        class="text-lg font-bold leading-snug mb-3 group-hover:text-warna-03 transition line-clamp-2">
+                                        {{ $newArticle->title }}
                                     </h2>
                                 </a>
 
-                                {{-- Excerpt --}}
-                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
-                                    {{ $post->excerpt }}
-                                </p>
                             </div>
 
                         </article>
@@ -182,6 +185,7 @@
                 </div>
             </div>
 
+            {{-- Opini --}}
             <div>
                 <div
                     class="border-b mb-6 border-gray-200 before:absolute before:w-16 before:top-full before:h-1 before:bg-warna-01 relative">
@@ -189,51 +193,36 @@
                 </div>
 
                 <div class="flex flex-col gap-6">
-                    @foreach ($beritaTerbaru as $index => $post)
-                        <?php
-                        $url = $post->category->slug . '/' . $post->slug;
-                        ?>
+                    @foreach ($opinions as $opini)
+                        <?php $url = 'opini' . '/' . $opini->slug; ?>
                         <article class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start group">
                             {{-- Image --}}
                             <a href="{{ $url }}" class="block md:col-span-1 peer">
                                 <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
 
-                                    <img src="{{ $post->spatie_thumbnail ?: asset('img/no_image.webp') }}"
-                                        alt="{{ $post->title }}" class="w-full h-full  object-cover rounded-md">
+                                    <img src="{{ $opini->spatie_thumbnail ?: asset('img/no_image.webp') }}"
+                                        alt="{{ $opini->title }}" class="w-full h-full  object-cover rounded-md">
                                 </div>
                             </a>
 
                             {{-- Content --}}
                             <div class="flex flex-col justify-center md:col-span-2">
-
-                                {{-- Category --}}
-                                <a href="{{ $post->category->slug }}"
-                                    class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 mb-3 w-fit">
-                                    {{ strtoupper($post->category->name ?? 'No Category') }}
-                                </a>
-
-                                {{-- Meta --}}
                                 <div class="text-xs text-gray-500 mb-2">
-                                    <a href="{{ $post->author->name }}"
+                                    <a href="{{ $opini->author->name }}"
                                         class="text-red-600 font-semibold hover:underline">
-                                        By {{ $post->author->name ?? 'Admin' }}
+                                        By {{ $opini->author->name ?? 'Admin' }}
                                     </a>
                                     <span class="mx-1">•</span>
-                                    <span>{{ $post->publish_time->translatedFormat('d F Y') }}</span>
+                                    <span>{{ $opini->publish_time->translatedFormat('d F Y') }}</span>
                                 </div>
 
                                 {{-- Title --}}
                                 <a href="{{ $url }}">
                                     <h2
                                         class="text-xl font-bold leading-snug mb-3 group-hover:text-warna-03 transition">
-                                        {{ $post->title }}
+                                        {{ $opini->title }}
                                     </h2>
                                 </a>
-
-                                {{-- Excerpt --}}
-                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
-                                    {{ $post->excerpt }}
-                                </p>
                             </div>
 
                         </article>
@@ -241,58 +230,54 @@
                 </div>
             </div>
 
+            {{-- Berita Video --}}
             <div>
                 <div
                     class="border-b mb-6 border-gray-200 before:absolute before:w-16 before:top-full before:h-1 before:bg-warna-01 relative">
                     <h2 class="text-2xl font-bold mb-2">Berita Video</h2>
                 </div>
 
-                <div class="flex flex-col gap-6">
-                    @foreach ($beritaTerbaru as $index => $post)
+                <div class="grid grid-cols-2 gap-6">
+                    @foreach ($videos as $video)
                         <?php
-                        $url = $post->category->slug . '/' . $post->slug;
+                        $url = $video->category->slug . '/' . $video->slug;
                         ?>
-                        <article class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start group">
+                        <article class="flex flex-col gap-4 items-start group">
                             {{-- Image --}}
-                            <a href="{{ $url }}" class="block md:col-span-1 peer">
+                            <a href="{{ $url }}" class="peer">
                                 <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
-
-                                    <img src="{{ $post->spatie_thumbnail ?: asset('img/no_image.webp') }}"
-                                        alt="{{ $post->title }}" class="w-full h-full  object-cover rounded-md">
+                                    <img src="{{ $video->video_url
+                                        ? 'https://img.youtube.com/vi/' . $video->video_url . '/hqdefault.jpg'
+                                        : asset('img/no_image.webp') }}"
+                                        alt="{{ $video->title }}" class="w-full h-full object-cover rounded-md">
                                 </div>
                             </a>
 
                             {{-- Content --}}
-                            <div class="flex flex-col justify-center md:col-span-2">
-
+                            <div class="flex flex-col gap-2 justify-center">
                                 {{-- Category --}}
-                                <a href="{{ $post->category->slug }}"
-                                    class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 mb-3 w-fit">
-                                    {{ strtoupper($post->category->name ?? 'No Category') }}
+                                <a href="{{ $video->category->slug }}"
+                                    class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 w-fit">
+                                    {{ strtoupper($video->category->name ?? 'No Category') }}
                                 </a>
-
-                                {{-- Meta --}}
-                                <div class="text-xs text-gray-500 mb-2">
-                                    <a href="{{ $post->author->name }}"
-                                        class="text-red-600 font-semibold hover:underline">
-                                        By {{ $post->author->name ?? 'Admin' }}
-                                    </a>
-                                    <span class="mx-1">•</span>
-                                    <span>{{ $post->publish_time->translatedFormat('d F Y') }}</span>
-                                </div>
 
                                 {{-- Title --}}
                                 <a href="{{ $url }}">
                                     <h2
-                                        class="text-xl font-bold leading-snug mb-3 group-hover:text-warna-03 transition">
-                                        {{ $post->title }}
+                                        class="text-lg font-bold leading-snug group-hover:text-warna-03 transition line-clamp-2">
+                                        {{ $video->title }}
                                     </h2>
                                 </a>
 
-                                {{-- Excerpt --}}
-                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
-                                    {{ $post->excerpt }}
-                                </p>
+                                {{-- Author & Date --}}
+                                <div class="text-xs text-gray-500 mb-2">
+                                    <a href="{{ $video->author->name }}"
+                                        class="text-red-600 font-semibold hover:underline">
+                                        By {{ $video->author->name ?? 'Admin' }}
+                                    </a>
+                                    <span class="mx-1">•</span>
+                                    <span>{{ $video->publish_time->translatedFormat('d F Y') }}</span>
+                                </div>
                             </div>
 
                         </article>

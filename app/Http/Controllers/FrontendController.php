@@ -8,48 +8,11 @@ use App\Models\PostCategory;
 use App\Models\SidebarAds;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class FrontendController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Variable
-    |--------------------------------------------------------------------------
-    |
-    | $categories : semua category
-    | $navbarCategories : category navbar
-    | $sidebarAds$sidebarAds : sidebar ads
-    | $beritaPopulers : berita populer
-    |
-    */
-    protected $categories;
-    protected $navbarCategories;
-    protected $sidebarAds;
-    protected $beritaPopulers;
-
-    public function __construct()
-    {
-        $this->categories = PostCategory::all();
-        $this->navbarCategories = PostCategory::whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->with('children')
-            ->orderBy('sort_order')
-            ->get();
-        $this->sidebarAds = SidebarAds::orderBy('sort_order')->get();
-        $this->beritaPopulers = Post::with(['media', 'category', 'author',])
-            ->latest('publish_time')
-            ->where('status', 'published')
-            ->where('publish_time', '<=', now())
-            ->limit(6)
-            ->get();
-    }
-    /*
-    |
-    |
-    |
-    |
-    */
 
     private function getOtherArticles($post, $limit)
     {
@@ -116,95 +79,252 @@ class FrontendController extends Controller
 
     public function index()
     {
-        $categories = $this->categories;
-        $navbarCategories = $this->navbarCategories;
-        $sidebarAds = $this->sidebarAds;
-        $beritaPopulers = $this->beritaPopulers;
+        $categories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
 
-        $title = 'Telusur - Jelajahi Dunia dengan Mudah';
-        $description = 'Telusur adalah platform pencarian yang membantu Anda menemukan informasi, tempat, dan layanan dengan mudah. Jelajahi dunia dengan Telusur!';
+        $navbarCategories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
 
-        $post = Post::with(['media'])->where('status', 'published')
-            ->where('publish_time', '<=', now())
-            ->latest('publish_time') // Mengambil yang paling baru dirilis
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $post = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->latestPublished()
             ->first();
 
-        $beritaTerbaru = Post::with(['media', 'category', 'author',])
-            ->latest('publish_time')
-            ->where('status', 'published')
-            ->where('publish_time', '<=', now())
+        $beritaTerbaru = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->post()
+            ->latestPublished()
             ->limit(12)
             ->get();
 
-        $suggestTags = Tag::inRandomOrder()->limit(5)->get();
+        $beritaUtama = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->post()
+            ->where('publish_time', '>=', now()->subDays(30))
+            ->popular()
+            ->limit(10)
+            ->get()
+            ->sortByDesc('publish_time')
+            ->values();
 
-        // dd($beritaPopulers);
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->popular()
+            ->limit(6)
+            ->get();
 
-        return view('index', compact('title', 'description', 'categories', 'post', 'beritaPopulers', 'beritaTerbaru', 'sidebarAds', 'navbarCategories', 'suggestTags'));
+        $opinions = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->opini()
+            ->latestPublished()
+            ->limit(9)
+            ->get();
+
+        $videos = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->video()
+            ->latestPublished()
+            ->limit(8)
+            ->get();
+
+        $suggestTags = Tag::inRandomOrder()
+            ->limit(5)
+            ->get();
+
+        return view('index', compact(
+            'categories',
+            'navbarCategories',
+            'sidebarAds',
+            'post',
+            'beritaTerbaru',
+            'beritaUtama',
+            'beritaPopulers',
+            'opinions',
+            'videos',
+            'suggestTags'
+        ));
     }
 
     public function postDetail($categorySlug, $postSlug)
     {
-        $categories = $this->categories;
-        $navbarCategories = $this->navbarCategories;
-        $sidebarAds = $this->sidebarAds;
-        $beritaPopulers = $this->beritaPopulers;
+        $categories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
 
-        $post = Post::where('slug', $postSlug)
+        $navbarCategories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->popular()
+            ->limit(6)
+            ->get();
+
+        $post = Post::with(['tags', 'media', 'category', 'author'])
+            ->where('slug', $postSlug)
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
-            ->with('tags')
-            ->first();
+            ->firstOrFail();
 
         $title = $post->title . ' - Telusur';
+
         $description = Str::limit(
             trim(preg_replace('/\s+/', ' ', strip_tags($post->content))),
             155
         );
 
-        $otherArticles = $this->getOtherArticles($post, 10);
+        $otherArticles = Post::with(['media', 'category'])
+            ->published()
+            ->where('id', '!=', $post->id)
+            ->latestPublished()
+            ->limit(10)
+            ->get();
 
         $comments = Comment::where('post_id', $post->id)
             ->where('status', 'approved')
             ->get();
 
-        return view('post_detail', compact('post', 'title', 'description', 'categories', 'otherArticles', 'sidebarAds', 'beritaPopulers', 'navbarCategories', 'comments'));
+        return view('post_detail', compact(
+            'post',
+            'title',
+            'description',
+            'categories',
+            'otherArticles',
+            'sidebarAds',
+            'beritaPopulers',
+            'navbarCategories',
+            'comments'
+        ));
     }
-
     public function postByCategory($slug)
     {
-        $categories = $this->categories;
-        $navbarCategories = $this->navbarCategories;
-        $sidebarAds = $this->sidebarAds;
-        $beritaPopulers = $this->beritaPopulers;
+        $categories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
 
-        $category = PostCategory::where('slug', $slug)->firstOrFail();
-        $posts = Post::with(['media'])
-            ->select('id', 'title', 'slug', 'publish_time')
-            ->latest('publish_time')
+        $navbarCategories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->popular()
+            ->limit(6)
+            ->get();
+
+        $category = PostCategory::where('slug', $slug)
+            ->firstOrFail();
+
+        $posts = Post::with(['media', 'category', 'author'])
+            ->published()
             ->where('category_id', $category->id)
-            ->where('status', 'published')
-            ->where('publish_time', '<=', now())
+            ->latestPublished()
             ->paginate(10);
 
-        // dd($posts);
-        return view('post_category', compact('category', 'posts', 'categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+        return view('post_category', compact(
+            'category',
+            'posts',
+            'categories',
+            'sidebarAds',
+            'beritaPopulers',
+            'navbarCategories'
+        ));
     }
-
     public function postByTag($slug)
     {
-        $categories = $this->categories;
-        $navbarCategories = $this->navbarCategories;
-        $sidebarAds = $this->sidebarAds;
-        $beritaPopulers = $this->beritaPopulers;
+        $categories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
 
-        $category = Tag::where('slug', $slug)->firstOrFail();
-        $posts = $category->posts()
-            ->with(['category', 'tags'])
-            ->latest('publish_time')
+        $navbarCategories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->popular()
+            ->limit(6)
+            ->get();
+
+        $tag = Tag::where('slug', $slug)->firstOrFail();
+
+        $posts = $tag->posts()
+            ->with(['media', 'category', 'tags', 'author'])
+            ->published()
+            ->latestPublished()
             ->paginate(10);
 
-        return view('post_category', compact('category', 'posts', 'categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+        return view('post_category', compact(
+            'tag',
+            'posts',
+            'categories',
+            'sidebarAds',
+            'beritaPopulers',
+            'navbarCategories'
+        ));
     }
 
     public function kebijakan()

@@ -123,4 +123,14 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | INI KONFIGURASI TAMBAHAN
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+
+    'cache_clear_on_request' => env('CACHE_CLEAR_ON_REQUEST', false),
+
 ];

@@ -25,9 +25,17 @@
 
                 {{-- Thumbnail --}}
                 <figure class="mb-6 mt-4">
-                    <img src="{{ $post->spatie_preview ? $post->spatie_preview : asset('img/no_image.webp') }}"
-                        alt="{{ $post->title }}" class="w-full h-auto">
-                    <figcaption class="text-sm italic">{{ $post->caption }}</figcaption>
+                    @if ($post->type == 'video')
+                        <div class="aspect-video w-full">
+                            <iframe src="https://www.youtube.com/embed/{{ $post->video_url }}" class="w-full h-full"
+                                frameborder="0" allowfullscreen>
+                            </iframe>
+                        </div>
+                    @else
+                        <img src="{{ $post->spatie_preview ? $post->spatie_preview : asset('img/no_image.webp') }}"
+                            alt="{{ $post->title }}" class="w-full h-auto">
+                    @endif
+                    <figcaption class="text-sm">{{ $post->caption }}</figcaption>
                     @php
                         $url = urlencode(url()->current());
                         $title = urlencode($post->title);
@@ -66,16 +74,19 @@
                 {{-- Content --}}
                 <div class="article-content">{!! str($post->content)->sanitizeHtml() !!}</div>
 
-                <div class="flex gap-2 flex-row flex-wrap mb-6 text-gray-700">
-                    <div class="flex flex-row justify-center items-center gap-2">
-                        <span class="w-4"> <x-fas-tag /></span>
-                        <span> tags :</span>
+                {{-- Tags --}}
+                @if ($post->tags->count() > 0)
+                    <div class="flex gap-2 flex-row flex-wrap mb-6 text-gray-700">
+                        <div class="flex flex-row justify-center items-center gap-2">
+                            <span class="w-4"> <x-fas-tag /></span>
+                            <span> tags :</span>
+                        </div>
+                        @foreach ($post->tags as $tag)
+                            <a href="{{ route('post.tag', $tag->slug) }}"
+                                class="px-1 rounded bg-gray-100 border-gray-200 border text-sm hover:bg-gray-200">{{ $tag->name }}</a>
+                        @endforeach
                     </div>
-                    @foreach ($post->tags as $tag)
-                        <a href="{{ route('post.tag', $tag->slug) }}"
-                            class="px-1 rounded bg-gray-100 border-gray-200 border text-sm hover:bg-gray-200">{{ $tag->name }}</a>
-                    @endforeach
-                </div>
+                @endif
             </article>
 
             {{-- Komentar --}}
@@ -131,6 +142,7 @@
                 </button>
             </form>
 
+            {{-- Artikel Terkait --}}
             <div>
                 <h2 class="font-bold">Artikel Terkait</h2>
                 <div class="flex flex-wrap">

@@ -9,7 +9,7 @@
     <title>{{ $title ?? 'Telusur' }}</title>
     <meta name="description"
         content="{{ $data['description'] ??
-            'PT. Telusur Info Media menyediakan Kebijakan Privasi (Privacy Policy) ini untuk memberikan informasi kepada para pengguna aplikasi mobile kami tentang kebijakan dan prosedur mengenai pengumpulan, penggunaan dan pengungkapan informasi pribadi.' }}">
+            'Telusur adalah platform pencarian yang membantu Anda menemukan informasi, tempat, dan layanan dengan mudah. Jelajahi dunia dengan Telusur!' }}">
 
     <!-- Fonts -->
     {{-- <link rel="preconnect" href="https://fonts.bunny.net">
