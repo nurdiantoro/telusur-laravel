@@ -329,50 +329,145 @@ class FrontendController extends Controller
 
     public function kebijakan()
     {
-        $categories = $this->categories;
-        $navbarCategories = $this->navbarCategories;
-        $sidebarAds = $this->sidebarAds;
-        $beritaPopulers = $this->beritaPopulers;
+        $categories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $navbarCategories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->popular()
+            ->limit(6)
+            ->get();
 
         return view('kebijakan', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 
     public function pedoman()
     {
-        $categories = $this->categories;
-        $navbarCategories = $this->navbarCategories;
-        $sidebarAds = $this->sidebarAds;
-        $beritaPopulers = $this->beritaPopulers;
+        $categories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $navbarCategories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->popular()
+            ->limit(6)
+            ->get();
 
         return view('pedoman', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 
     public function disclaimer()
     {
-        $categories = $this->categories;
-        $navbarCategories = $this->navbarCategories;
-        $sidebarAds = $this->sidebarAds;
-        $beritaPopulers = $this->beritaPopulers;
+        $categories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $navbarCategories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->popular()
+            ->limit(6)
+            ->get();
 
         return view('disclaimer', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 
     public function about()
     {
-        $categories = $this->categories;
-        $navbarCategories = $this->navbarCategories;
-        $sidebarAds = $this->sidebarAds;
-        $beritaPopulers = $this->beritaPopulers;
+        $categories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $navbarCategories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->popular()
+            ->limit(6)
+            ->get();
 
         return view('about', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 
     public function terms()
     {
-        $categories = $this->categories;
-        $navbarCategories = $this->navbarCategories;
-        $sidebarAds = $this->sidebarAds;
-        $beritaPopulers = $this->beritaPopulers;
+        $categories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $navbarCategories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->popular()
+            ->limit(6)
+            ->get();
 
         return view('terms', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
@@ -407,10 +502,29 @@ class FrontendController extends Controller
 
     public function postSearch(Request $request)
     {
-        $categories = $this->categories;
-        $navbarCategories = $this->navbarCategories;
-        $sidebarAds = $this->sidebarAds;
-        $beritaPopulers = $this->beritaPopulers;
+        $categories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $navbarCategories = PostCategory::with(['children'])
+            ->whereNull('parent_id')
+            ->where('is_navbar', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+            'author',
+        ])
+            ->published()
+            ->popular()
+            ->limit(6)
+            ->get();
 
         $posts = Post::search($request->search_input)
             ->where('type', 'post')
