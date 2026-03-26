@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Adsense;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostCategory;
@@ -227,6 +228,8 @@ class FrontendController extends Controller
             ->where('status', 'approved')
             ->get();
 
+        $adsense = Adsense::where('slug', 'inarticle2')->first();
+
         return view('post_detail', compact(
             'post',
             'title',
@@ -236,7 +239,8 @@ class FrontendController extends Controller
             'sidebarAds',
             'beritaPopulers',
             'navbarCategories',
-            'comments'
+            'comments',
+            'adsense'
         ));
     }
     public function postByCategory($slug)

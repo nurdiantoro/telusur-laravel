@@ -89,6 +89,12 @@
                 @endif
             </article>
 
+            @if (app()->environment('production'))
+                <div>
+                    {!! $adsense->script !!}
+                </div>
+            @endif
+
             {{-- Komentar --}}
             @if ($comments->count() > 0)
                 <div class="mt-6 mb-6">
