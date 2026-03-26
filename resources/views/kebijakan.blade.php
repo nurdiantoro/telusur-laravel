@@ -1,6 +1,5 @@
-@include('layout.header')
-<div class="w-full md:w-300 mx-auto px-4 py-8 min-h-screen bg-white">
-
+@extends('layout.app')
+@section('content')
     <h1 class="font-bold text-3xl mb-2">KEBIJAKAN PRIVASI (PRIVACY POLICY) :</h1>
     <p align="justify">PT. Telusur Info Media menyediakan Kebijakan Privasi (Privacy Policy) ini untuk memberikan
         informasi kepada para pengguna aplikasi mobile kami tentang kebijakan dan prosedur mengenai pengumpulan,
@@ -76,6 +75,4 @@
         elektronik, dan prosedural, maka kami membatasi akses mengenai informasi tentang Anda hanya kepada karyawan
         yang berwenang saja untuk mengembangkan dan meningkatkan layanan kami.
     </p>
-
-</div>
-@include('layout.footer')
+@endsection

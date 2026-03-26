@@ -1,17 +1,12 @@
-@include('layout.header')
-
-
-
-<div class="md:max-w-300 mx-auto px-4 py-8 min-h-[200vh] bg-white">
-
+@extends('layout.app')
+@section('content')
     {{-- Search Khusus di home --}}
     <div class="w-full text-center py-24 bg-cover bg-center rounded-2xl mb-8 px-2"
         style="background-image: url('{{ asset('img/city.webp') }}');">
 
         <h2 class="text-white font-bold text-3xl mb-4">Temukan Berita Menarik</h2>
 
-        <form
-            class="bg-white rounded-lg border border-gray-300 flex items-center p-2 justify-between max-w-3xl mx-auto mb-4"
+        <form class="bg-white rounded-lg border border-gray-300 flex items-center p-2 justify-between max-w-3xl mx-auto mb-4"
             method="GET" action="{{ route('search') }}">
 
             <input type="search" required autocomplete="off" placeholder="Netanyahu meninggal..." name="search_input"
@@ -58,8 +53,7 @@
                 <div class="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent"></div>
 
                 <div class="relative text-white">
-                    <span
-                        class="px-2 py-1 bg-linear-to-r from-warna-03 to-warna-04 text-white font-bold mb-2 inline-block">
+                    <span class="px-2 py-1 bg-linear-to-r from-warna-03 to-warna-04 text-white font-bold mb-2 inline-block">
                         {{ $firstCategory?->name ?? 'No Category' }}
                     </span>
 
@@ -251,8 +245,7 @@
                             $url = $video->category->slug . '/' . $video->slug;
                         @endphp
 
-                        <a href="{{ $url }}"
-                            class="group relative flex flex-col gap-4 items-start rounded-xl">
+                        <a href="{{ $url }}" class="group relative flex flex-col gap-4 items-start rounded-xl">
 
                             {{-- Image --}}
                             <div class="w-full">
@@ -310,6 +303,4 @@
             {{-- </div> --}}
         </aside>
     </div>
-
-</div>
-@include('layout.footer')
+@endsection

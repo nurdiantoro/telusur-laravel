@@ -1,6 +1,5 @@
-@include('layout.header')
-<div class="w-full md:w-300 mx-auto px-4 py-8 min-h-screen bg-white">
-
+@extends('layout.app')
+@section('content')
     <div class="text-center">
         telusur.co.id diterbitkan 17 Februari 2017 oleh PT Telusur Info Media, dan telah Terverifikasi Administrasi
         dan Faktual oleh Dewan Pers No. 302/DP-Terverifikasi/K/X/2018 pada tanggal 5 Oktober 2018, juga Terdaftar di
@@ -11,7 +10,7 @@
         <br><br>
 
         <!--<b>Pemi<b>Pemimpin Umum</b><br>
-Fahri Haidar<br><br>-->
+    Fahri Haidar<br><br>-->
         <b>Pemimpin Redaksi / Penanggung jawab</b><br>
         Fahri Haidar <br>
         <b>Redaktur Pelaksana</b>
@@ -50,6 +49,4 @@ Fahri Haidar<br><br>-->
         <br>
         partnership.telusur@gmail.com <br>
     </div>
-
-</div>
-@include('layout.footer')
+@endsection

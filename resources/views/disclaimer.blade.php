@@ -1,6 +1,5 @@
-@include('layout.header')
-<div class="w-full md:w-300 mx-auto px-4 py-8 min-h-screen bg-white">
-
+@extends('layout.app')
+@section('content')
     <h1 class="font-bold text-3xl mb-2">Penolakan (Disclaimer) | telusur.co.id | </h1>
     <p align="justify">
         <b>telusur.co.id</b> tidak bertanggung jawab atas isi opini pembaca yang disampaikan dalam bentuk surat
@@ -18,6 +17,4 @@
         Redaksi telusur.co.id bila dipandang perlu akan melakukan pengeditan untuk memutakhirkan data/informasi yang
         terkandung dalam berita. Juga untuk meningkatkan kualitas reportase.
     </p>
-
-</div>
-@include('layout.footer')
+@endsection

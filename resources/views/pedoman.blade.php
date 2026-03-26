@@ -1,6 +1,5 @@
-@include('layout.header')
-<div class="w-full md:w-300 mx-auto px-4 py-8 min-h-screen bg-white">
-
+@extends('layout.app')
+@section('content')
     <h1 class="font-bold text-3xl mb-2">Pedoman Pemberitaan Media Siber | telusur.co.id </h1>
     <p align="justify">
         <b>Kemerdekaan Berpendapat, Kemerdekaan Berekspresi, dan Kemerdekaan Pers</b> adalah hak asasi manusia yang
@@ -113,6 +112,4 @@
         <br>
         Jakarta, 3 Februari 2012
     </p>
-
-</div>
-@include('layout.footer')
+@endsection

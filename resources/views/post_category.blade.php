@@ -1,6 +1,5 @@
-@include('layout.header')
-<div class="md:w-300 mx-auto px-4 py-8 min-h-[200vh] bg-white">
-
+@extends('layout.app')
+@section('content')
     <div class="flex flex-col md:flex-row gap-8">
 
         {{-- Main Content --}}
@@ -38,5 +37,4 @@
             @include('layout.sidebar')
         </div>
     </div>
-</div>
-@include('layout.footer')
+@endsection

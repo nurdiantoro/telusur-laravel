@@ -1,8 +1,7 @@
-@include('layout.header')
-<div class="md:w-300 mx-auto px-4 py-8 min-h-[200vh] bg-white">
+@extends('layout.app')
+@section('content')
 
     <div class="flex flex-col md:flex-row gap-8">
-
         {{-- Main Content --}}
         <div class="md:w-3/4 flex flex-col">
             <div class="hidden md:flex flex-row gap-2 items-center mb-4">
@@ -63,8 +62,8 @@
                         </a>
 
                         <!-- Telegram -->
-                        <a href="https://t.me/share/url?url={{ $url }}&text={{ $title }}"
-                            target="_blank" rel="noopener"
+                        <a href="https://t.me/share/url?url={{ $url }}&text={{ $title }}" target="_blank"
+                            rel="noopener"
                             class="px-3 py-2 text-sm bg-sky-500 text-white hover:bg-sky-600 flex flex-row items-center gap-1">
                             <div class="w-4 h-4"><x-fab-telegram /></div> Telegram
                         </a>
@@ -183,5 +182,4 @@
             @include('layout.sidebar')
         </div>
     </div>
-</div>
-@include('layout.footer')
+@endsection

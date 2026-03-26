@@ -1,6 +1,5 @@
-@include('layout.header')
-<div class="w-full md:w-300 mx-auto px-4 py-8 min-h-screen bg-white">
-
+@extends('layout.app')
+@section('content')
     <h1 class="font-bold text-3xl mb-2">Terms Of Use | telusur.co.id | </h1>
     <p align="justify">
         <b>telusur.co.id</b> adalah situs berita yang dipublikasikan oleh PT Telusur Info Media di Jakarta. Terms of
@@ -57,6 +56,4 @@
         <b>telusur.co.id </b>akan menimbang setiap laporan yang masuk dan dapat memutuskan untuk tetap menayangkan
         atau menghapus komentar tersebut.
     </p>
-
-</div>
-@include('layout.footer')
+@endsection
