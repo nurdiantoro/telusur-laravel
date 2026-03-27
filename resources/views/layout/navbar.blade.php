@@ -2,7 +2,9 @@
     {{-- Navbar Mobile --}}
     <div class="flex w-full items-center justify-center border-gray-200 bg-white md:border-b" x-data="{ showSearch: false }"
         x-init="$watch('showSearch', val => {
-            document.body.classList.toggle('overflow-hidden', val)
+            if (window.innerWidth < 768) {
+                document.body.classList.toggle('overflow-hidden', val)
+            }
         })">
         <div
             class="md:w-300 z-100 relative flex w-full flex-col items-center px-4 py-2 shadow-lg md:flex-row md:items-end md:justify-center md:px-0 md:py-4 md:shadow-none">
@@ -14,21 +16,25 @@
             </a>
 
             {{-- Kanan --}}
-            <div class="mt-2 flex w-full flex-row items-center justify-between gap-4 md:flex-1 md:justify-end">
-                <div class="flex gap-4">
+            <div class="relative mt-2 flex w-full flex-row items-center justify-between gap-4 md:flex-1 md:justify-end">
+                <div class="flex gap-4 transition-all duration-500 ease-in-out"
+                    :class="showSearch ? 'opacity-0' : 'opacity-100'">
                     <a href="#" class="md:hover:text-warna-01 font-semibold text-black md:text-gray-500">Index</a>
                     <a href="#" class="md:hover:text-warna-01 font-semibold text-black md:text-gray-500">Opini</a>
                     <a href="#" class="md:hover:text-warna-01 font-semibold text-black md:text-gray-500">Berita
                         Video</a>
                 </div>
 
-                {{-- Darkmode --}}
-                {{-- <div>
-                    <button id="darkmode-toggle" type="button"
-                        class="cursor-pointer rounded-lg px-3 text-gray-500 hover:bg-gray-100">
-                        <x-heroicon-c-sun class="h-6" />
+                <form method="GET" action="{{ route('search') }}" x-cloak x-data x-init="$watch('showSearch', val => val && $nextTick(() => $refs.searchInput.focus()))"
+                    :class="showSearch ? 'max-w-120 mt-2 opacity-100' : 'max-w-0 opacity-0'"
+                    class="border-warna-02 absolute -bottom-1 right-10 z-50 hidden w-full flex-row gap-2 overflow-hidden rounded-lg border-2 bg-white shadow transition-all duration-500 ease-in-out md:flex">
+
+                    <input type="text" placeholder="Cari..." x-ref="searchInput" name="search_input" required
+                        class="w-full px-3 py-2 focus:outline-none">
+                    <button type="submit" class="hover:text-warna-03 cursor-pointer p-2 text-gray-500">
+                        <x-heroicon-c-magnifying-glass class="h-6" />
                     </button>
-                </div> --}}
+                </form>
 
                 <button type="button" @click="showSearch = !showSearch"
                     class="hover:text-warna-03 relative h-8 w-8 text-gray-500">

@@ -1,76 +1,81 @@
 @extends('layout.app')
 @section('content')
     {{-- Search Khusus di home --}}
-    <div class="w-full text-center py-24 bg-cover bg-center rounded-2xl mb-8 px-2"
+    <div class="mb-8 w-full rounded-2xl bg-cover bg-center px-2 py-24 text-center"
         style="background-image: url('{{ asset('img/city.webp') }}');">
 
-        <h2 class="text-white font-bold text-3xl mb-4">Temukan Berita Menarik</h2>
+        <h2 class="mb-4 text-3xl font-bold text-white">Temukan Berita Menarik</h2>
 
-        <form class="bg-white rounded-lg border border-gray-300 flex items-center p-2 justify-between max-w-3xl mx-auto mb-4"
+        <form class="mx-auto mb-4 flex max-w-3xl items-center justify-between rounded-lg border border-gray-300 bg-white p-2"
             method="GET" action="{{ route('search') }}">
 
             <input type="search" required autocomplete="off" placeholder="Netanyahu meninggal..." name="search_input"
-                class="appearance-none bg-transparent border-none w-full mr-3 py-1 px-2 leading-tight focus:outline-none" />
+                class="mr-3 w-full appearance-none border-none bg-transparent px-2 py-1 leading-tight focus:outline-none" />
 
-            <button type="submit" class="cursor-pointer text-gray-500 hover:text-warna-03 p-2">
+            <button type="submit" class="hover:text-warna-03 cursor-pointer p-2 text-gray-500">
                 <x-fas-search class="h-[1em]" />
             </button>
         </form>
 
-        <div class="flex flex-row flex-wrap gap-6 justify-center">
+        <div class="flex flex-row flex-wrap justify-center gap-6">
             @foreach ($suggestTags as $suggestTag)
                 <a href="{{ route('post.tag', $suggestTag->slug) }}"
-                    class="text-sm text-white hover:text-warna-03">#{{ $suggestTag->slug }}</a>
+                    class="hover:text-warna-03 text-sm text-white">#{{ $suggestTag->slug }}</a>
             @endforeach
         </div>
     </div>
 
     {{-- Hot news --}}
-    <div class="flex flex-row justify-between items-center gap-2 pb-3 mb-6 border-b border-gray-300">
-        <span class="px-2 py-1 bg-linear-to-r from-warna-03 to-warna-04 text-white font-bold">Hot news</span>
+    <div class="mb-6 flex flex-row items-center justify-between gap-2 border-b border-gray-300 pb-3">
+        <div
+            class="bg-linear-to-r from-warna-03 to-warna-04 text-nowrap px-2 py-1 text-sm font-bold text-white md:text-base">
+            Hot
+            news</div>
+
         <a href="{{ $post->category->slug . '/' . $post->slug }}"
-            class="text-lg grow hover:text-warna-03">{{ $post->title }}</a>
-        <div class="hidden md:flex gap-2">
+            class="hover:text-warna-03 line-clamp-1 grow md:text-lg">{{ $post->title }}</a>
+
+        <div class="hidden gap-2 md:flex">
             <button type="button" class="cursor-pointer text-gray-500 hover:text-gray-700">
-                {{ svg('feathericon-arrow-left-circle') }}
+                <x-heroicon-o-arrow-up-circle class="h-8" />
             </button>
             <button type="button" class="cursor-pointer text-gray-500 hover:text-gray-700">
-                {{ svg('feathericon-arrow-right-circle') }}
+                <x-heroicon-o-arrow-down-circle class="h-8" />
             </button>
         </div>
     </div>
 
     {{-- Main --}}
-    <div class="flex flex-col md:flex-row gap-8">
+    <div class="flex flex-col gap-8 md:flex-row">
 
         {{-- Main Div --}}
-        <div class="md:w-3/4 flex flex-col gap-12">
+        <div class="flex flex-col gap-12 md:w-3/4">
 
             {{-- Berita Utama --}}
-            <div class="relative aspect-2/1 bg-cover bg-center flex flex-col justify-end p-6 group rounded-lg overflow-hidden"
+            <div class="aspect-2/1 group relative flex flex-col justify-end overflow-hidden rounded-lg bg-cover bg-center p-6"
                 style="background-image: url('{{ $post->getFirstMediaUrl('preview', 'preview') ?: asset('img/no_image.webp') }}');">
 
-                <div class="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent"></div>
+                <div class="bg-linear-to-t absolute inset-0 from-black/60 via-black/20 to-transparent"></div>
 
                 <div class="relative text-white">
-                    <span class="px-2 py-1 bg-linear-to-r from-warna-03 to-warna-04 text-white font-bold mb-2 inline-block">
+                    <span class="bg-linear-to-r from-warna-03 to-warna-04 mb-2 inline-block px-2 py-1 font-bold text-white">
                         {{ $firstCategory?->name ?? 'No Category' }}
                     </span>
 
-                    <h2 class="text-2xl font-bold mb-2">{{ $post->title }}</h2>
+                    <h2 class="mb-2 text-2xl font-bold">{{ $post->title }}</h2>
                     <span>{{ $post->publish_time->translatedFormat('j F Y') }}</span>
                 </div>
                 {{-- Arrow --}}
                 <div
-                    class="absolute top-0 bottom-0 right-0 text-white transition-opacity cursor-pointer z-10 flex items-center justify-center">
+                    class="absolute bottom-0 right-0 top-0 z-10 flex cursor-pointer items-center justify-center text-white transition-opacity">
                     <div
-                        class="w-8 h-8 text-xl translate-x-1/2 group-hover:-translate-x-1/2 opacity-0 group-hover:opacity-100 duration-400 ease-out">
+                        class="duration-400 h-8 w-8 translate-x-1/2 text-xl opacity-0 ease-out group-hover:-translate-x-1/2 group-hover:opacity-100">
                         {{ svg('fas-arrow-right') }}</div>
                 </div>
                 <div
-                    class="absolute top-0 bottom-0 left-0 text-white transition-opacity cursor-pointer z-10 flex items-center justify-center">
+                    class="absolute bottom-0 left-0 top-0 z-10 flex cursor-pointer items-center justify-center text-white transition-opacity">
                     <div
-                        class="w-8 h-8 text-xl -translate-x-1/2 group-hover:translate-x-1/2 opacity-0 group-hover:opacity-100 duration-400 ease-out">
+                        class="duration-400 h-8 w-8 -translate-x-1/2 text-xl opacity-0 ease-out group-hover:translate-x-1/2 group-hover:opacity-100">
                         {{ svg('fas-arrow-left') }}</div>
                 </div>
             </div>
@@ -78,11 +83,11 @@
             {{-- Berita Utama --}}
             <div>
                 <div
-                    class="border-b mb-6 border-gray-200 before:absolute before:w-16 before:top-full before:h-1 before:bg-warna-01 relative">
-                    <h2 class="text-2xl font-bold mb-2">Berita Utama</h2>
+                    class="before:bg-warna-01 relative mb-6 border-b border-gray-200 before:absolute before:top-full before:h-1 before:w-16">
+                    <h2 class="mb-2 text-2xl font-bold">Berita Utama</h2>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     @foreach ($beritaUtama as $post)
                         @php
                             $category = $post->category;
@@ -90,20 +95,20 @@
                             $url = ($category?->slug ?? '#') . '/' . $post->slug;
                         @endphp
 
-                        <a href="{{ $url }}" class="group flex gap-4 items-start">
+                        <a href="{{ $url }}" class="group flex items-start gap-4">
 
                             {{-- Thumbnail --}}
                             <div class="shrink-0">
                                 <img src="{{ $post->spatie_thumbnail ?: asset('img/no_image.webp') }}"
                                     alt="{{ $post->title }}"
-                                    class="w-28 h-20 object-cover rounded-md transition duration-300 group-hover:scale-105">
+                                    class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
                             </div>
 
                             {{-- Content --}}
                             <div class="flex flex-col">
 
                                 {{-- Author & Date --}}
-                                <div class="text-xs text-gray-500 mb-1">
+                                <div class="mb-1 text-xs text-gray-500">
                                     <span class="text-warna-03 font-semibold">
                                         By {{ $author?->name ?? 'Admin' }}
                                     </span>
@@ -114,7 +119,7 @@
                                 </div>
 
                                 {{-- Title --}}
-                                <h3 class="font-semibold text-sm leading-snug group-hover:text-warna-03 transition">
+                                <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition">
                                     {{ $post->title }}
                                 </h3>
 
@@ -128,30 +133,30 @@
             {{-- Artikel Terbaru --}}
             <div>
                 <div
-                    class="border-b mb-6 border-gray-200 before:absolute before:w-16 before:top-full before:h-1 before:bg-warna-01 relative">
-                    <h2 class="text-2xl font-bold mb-2">Artikel Terbaru</h2>
+                    class="before:bg-warna-01 relative mb-6 border-b border-gray-200 before:absolute before:top-full before:h-1 before:w-16">
+                    <h2 class="mb-2 text-2xl font-bold">Artikel Terbaru</h2>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+                <div class="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
                     @foreach ($beritaTerbaru as $newArticle)
                         @php
                             $url = $newArticle->category->slug . '/' . $newArticle->slug;
                         @endphp
 
-                        <a href="{{ $url }}" class="group flex flex-col h-full">
+                        <a href="{{ $url }}" class="group flex h-full flex-col">
 
                             {{-- Image --}}
                             <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
                                 <img src="{{ $newArticle->spatie_thumbnail ?: asset('img/no_image.webp') }}"
                                     alt="{{ $newArticle->title }}"
-                                    class="w-full h-full object-cover transition duration-300 ease-out group-hover:scale-105">
+                                    class="h-full w-full object-cover transition duration-300 ease-out group-hover:scale-105">
                             </div>
 
                             {{-- Content --}}
-                            <div class="flex flex-col grow mt-4">
+                            <div class="mt-4 flex grow flex-col">
 
                                 {{-- Category --}}
-                                <span class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 mb-3 w-fit">
+                                <span class="mb-3 inline-block w-fit bg-red-600 px-3 py-1 text-xs font-bold text-white">
                                     {{ strtoupper($newArticle->category->name ?? 'No Category') }}
                                 </span>
 
@@ -159,7 +164,7 @@
                                 <div class="text-xs text-gray-500">
                                     <span>
                                         By
-                                        <span class="text-red-600 font-semibold">
+                                        <span class="font-semibold text-red-600">
                                             {{ $newArticle->author->name ?? 'Admin' }}
                                         </span>
                                     </span>
@@ -171,7 +176,7 @@
 
                                 {{-- Title --}}
                                 <h2
-                                    class="text-lg font-bold leading-snug mb-3 group-hover:text-warna-03 transition line-clamp-2">
+                                    class="group-hover:text-warna-03 mb-3 line-clamp-2 text-lg font-bold leading-snug transition">
                                     {{ $newArticle->title }}
                                 </h2>
 
@@ -185,8 +190,8 @@
             {{-- Opini --}}
             <div>
                 <div
-                    class="border-b mb-6 border-gray-200 before:absolute before:w-16 before:top-full before:h-1 before:bg-warna-01 relative">
-                    <h2 class="text-2xl font-bold mb-2">Opini</h2>
+                    class="before:bg-warna-01 relative mb-6 border-b border-gray-200 before:absolute before:top-full before:h-1 before:w-16">
+                    <h2 class="mb-2 text-2xl font-bold">Opini</h2>
                 </div>
 
                 <div class="flex flex-col gap-6">
@@ -195,14 +200,14 @@
                             $url = 'opini/' . $opini->slug;
                         @endphp
 
-                        <a href="{{ $url }}" class="group grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+                        <a href="{{ $url }}" class="group grid grid-cols-1 items-start gap-6 md:grid-cols-3">
 
                             {{-- Image --}}
                             <div class="md:col-span-1">
                                 <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
                                     <img src="{{ $opini->spatie_thumbnail ?: asset('img/no_image.webp') }}"
                                         alt="{{ $opini->title }}"
-                                        class="w-full h-full object-cover rounded-md transition duration-300 group-hover:scale-105">
+                                        class="h-full w-full rounded-md object-cover transition duration-300 group-hover:scale-105">
                                 </div>
                             </div>
 
@@ -210,8 +215,8 @@
                             <div class="flex flex-col justify-center md:col-span-2">
 
                                 {{-- Author & Date --}}
-                                <div class="text-xs text-gray-500 mb-2">
-                                    <span class="text-red-600 font-semibold">
+                                <div class="mb-2 text-xs text-gray-500">
+                                    <span class="font-semibold text-red-600">
                                         By {{ $opini->author->name ?? 'Admin' }}
                                     </span>
                                     <span class="mx-1">•</span>
@@ -221,7 +226,7 @@
                                 </div>
 
                                 {{-- Title --}}
-                                <h2 class="text-xl font-bold leading-snug mb-3 group-hover:text-warna-03 transition">
+                                <h2 class="group-hover:text-warna-03 mb-3 text-xl font-bold leading-snug transition">
                                     {{ $opini->title }}
                                 </h2>
 
@@ -235,8 +240,8 @@
             {{-- Berita Video --}}
             <div>
                 <div
-                    class="border-b mb-6 border-gray-200 before:absolute before:w-16 before:top-full before:h-1 before:bg-warna-01 relative">
-                    <h2 class="text-2xl font-bold mb-2">Berita Video</h2>
+                    class="before:bg-warna-01 relative mb-6 border-b border-gray-200 before:absolute before:top-full before:h-1 before:w-16">
+                    <h2 class="mb-2 text-2xl font-bold">Berita Video</h2>
                 </div>
 
                 <div class="grid grid-cols-2 gap-6">
@@ -245,7 +250,7 @@
                             $url = $video->category->slug . '/' . $video->slug;
                         @endphp
 
-                        <a href="{{ $url }}" class="group relative flex flex-col gap-4 items-start rounded-xl">
+                        <a href="{{ $url }}" class="group relative flex flex-col items-start gap-4 rounded-xl">
 
                             {{-- Image --}}
                             <div class="w-full">
@@ -254,27 +259,27 @@
                                         ? 'https://img.youtube.com/vi/' . $video->video_url . '/hqdefault.jpg'
                                         : asset('img/no_image.webp') }}"
                                         alt="{{ $video->title }}"
-                                        class="w-full h-full object-cover transition duration-300">
+                                        class="h-full w-full object-cover transition duration-300">
                                 </div>
                             </div>
 
                             {{-- Content --}}
-                            <div class="flex flex-col gap-2 justify-center">
+                            <div class="flex flex-col justify-center gap-2">
 
                                 {{-- Category --}}
-                                <span class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 w-fit">
+                                <span class="inline-block w-fit bg-red-600 px-3 py-1 text-xs font-bold text-white">
                                     {{ strtoupper($video->category->name ?? 'No Category') }}
                                 </span>
 
                                 {{-- Title --}}
                                 <h2
-                                    class="text-lg font-bold leading-snug group-hover:text-warna-03 transition line-clamp-2">
+                                    class="group-hover:text-warna-03 line-clamp-2 text-lg font-bold leading-snug transition">
                                     {{ $video->title }}
                                 </h2>
 
                                 {{-- Author & Date --}}
                                 <div class="text-xs text-gray-500">
-                                    <span class="text-red-600 font-semibold">
+                                    <span class="font-semibold text-red-600">
                                         By {{ $video->author->name ?? 'Admin' }}
                                     </span>
                                     <span class="mx-1">•</span>
@@ -287,7 +292,7 @@
 
                             {{-- Hover Effect --}}
                             <div
-                                class="absolute inset-0 bg-gray-400 opacity-0 scale-90 group-hover:scale-105 group-hover:opacity-10 transition duration-300 ease-out rounded-xl pointer-events-none">
+                                class="pointer-events-none absolute inset-0 scale-90 rounded-xl bg-gray-400 opacity-0 transition duration-300 ease-out group-hover:scale-105 group-hover:opacity-10">
                             </div>
 
                         </a>
