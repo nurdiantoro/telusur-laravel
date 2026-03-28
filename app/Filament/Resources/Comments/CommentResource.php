@@ -44,10 +44,9 @@ class CommentResource extends Resource
                     ->label('Email address')
                     ->email()
                     ->required(),
-                TextInput::make('post_id')
+                TextInput::make('post.title')
                     ->disabled()
-                    ->required()
-                    ->numeric(),
+                    ->formatStateUsing(fn($record) => $record?->post?->title),
                 TextInput::make('comment')
                     ->disabled()
                     ->required(),
@@ -66,7 +65,6 @@ class CommentResource extends Resource
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('post.title')
-                    ->numeric()
                     ->wrap()
                     ->searchable(),
                 TextColumn::make('comment')
