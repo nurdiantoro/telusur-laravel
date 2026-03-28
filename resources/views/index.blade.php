@@ -26,21 +26,26 @@
     </div>
 
     {{-- Hot news --}}
-    <div class="mb-6 flex flex-row items-center justify-between gap-2 border-b border-gray-300 pb-3">
+    <div class="mb-6 hidden flex-row items-center justify-between gap-2 border-b border-gray-300 pb-3 md:flex">
         <div
             class="bg-linear-to-r from-warna-03 to-warna-04 text-nowrap px-2 py-1 text-sm font-bold text-white md:text-base">
-            Hot
-            news</div>
+            Hot news</div>
 
-        <a href="{{ $post->category->slug . '/' . $post->slug }}"
-            class="hover:text-warna-03 line-clamp-1 grow md:text-lg">{{ $post->title }}</a>
+        <div class="swiper hotNews hidden min-w-0 flex-1 overflow-hidden">
+            <div class="swiper-wrapper">
+                @foreach ($beritaUtama as $post)
+                    <a href="{{ $post->category->slug . '/' . $post->slug }}"
+                        class="swiper-slide hover:text-warna-03 min-w-0 truncate md:text-lg">{{ $post->title }}</a>
+                @endforeach
+            </div>
+        </div>
 
-        <div class="hidden gap-2 md:flex">
-            <button type="button" class="cursor-pointer text-gray-500 hover:text-gray-700">
-                <x-heroicon-o-arrow-up-circle class="h-8" />
+        <div class="hidden md:flex">
+            <button type="button" class="hotNews-prev cursor-pointer text-gray-500 hover:text-gray-700">
+                <x-heroicon-o-arrow-left-circle class="h-8" />
             </button>
-            <button type="button" class="cursor-pointer text-gray-500 hover:text-gray-700">
-                <x-heroicon-o-arrow-down-circle class="h-8" />
+            <button type="button" class="hotNews-next cursor-pointer text-gray-500 hover:text-gray-700">
+                <x-heroicon-o-arrow-right-circle class="h-8" />
             </button>
         </div>
     </div>
@@ -51,8 +56,8 @@
         {{-- Main Div --}}
         <div class="flex flex-col gap-12 md:w-3/4">
 
-            {{-- Berita Utama --}}
-            <div class="aspect-2/1 group relative flex flex-col justify-end overflow-hidden rounded-lg bg-cover bg-center p-6"
+            {{-- Berita Utama Carousel --}}
+            {{-- <div class="aspect-2/1 group relative flex flex-col justify-end overflow-hidden rounded-lg bg-cover bg-center p-6"
                 style="background-image: url('{{ $post->getFirstMediaUrl('preview', 'preview') ?: asset('img/no_image.webp') }}');">
 
                 <div class="bg-linear-to-t absolute inset-0 from-black/60 via-black/20 to-transparent"></div>
@@ -65,7 +70,7 @@
                     <h2 class="mb-2 text-2xl font-bold">{{ $post->title }}</h2>
                     <span>{{ $post->publish_time->translatedFormat('j F Y') }}</span>
                 </div>
-                {{-- Arrow --}}
+
                 <div
                     class="absolute bottom-0 right-0 top-0 z-10 flex cursor-pointer items-center justify-center text-white transition-opacity">
                     <div
@@ -77,6 +82,47 @@
                     <div
                         class="duration-400 h-8 w-8 -translate-x-1/2 text-xl opacity-0 ease-out group-hover:translate-x-1/2 group-hover:opacity-100">
                         {{ svg('fas-arrow-left') }}</div>
+                </div>
+            </div> --}}
+
+            <div class="hidden md:block">
+                <div class="swiper highlightNews group relative hidden aspect-video w-full overflow-hidden rounded-xl">
+                    <div class="swiper-wrapper">
+                        @foreach ($beritaUtama as $post)
+                            <a href="{{ $post->category->slug . '/' . $post->slug }}" class="swiper-slide">
+                                <img src="{{ $post->spatie_preview ?: asset('img/no_image.webp') }}"
+                                    alt="{{ $post->title }}" class="h-full w-full object-cover" loading="lazy">
+
+                                <div class="bg-linear-to-t absolute inset-0 from-black/60 via-black/20 to-transparent">
+                                </div>
+                                <div class="absolute bottom-4 left-4 right-4 text-white">
+                                    <div class="text" data-swiper-parallax="-90%">
+                                        {{ $post->category?->name ?? 'No Category' }}</div>
+                                    <div class="text" data-swiper-parallax-x="100">{{ $post->title }}</div>
+                                    <div class="text" data-swiper-parallax-x="-300" data-swiper-parallax-duration="600">
+                                        {{ $post->publish_time->translatedFormat('j F Y') }}</div>
+                                </div>
+
+                            </a>
+                        @endforeach
+                    </div>
+
+                    {{-- Masih Ada Bug, gak mau muncul --}}
+                    {{-- <div class="absolute bottom-4 right-4 z-10">
+                        <div class="highlightNews-pagination"></div>
+                    </div> --}}
+
+                    <div
+                        class="absolute -left-2 bottom-0 top-0 z-10 flex items-center justify-center text-white opacity-0 transition-all duration-300 group-hover:left-4 group-hover:opacity-100">
+                        <button class="highlightNews-prev cursor-pointer rounded-full bg-black/20 p-3 hover:bg-black/40">
+                            <x-heroicon-c-chevron-left class="h-6 text-white" />
+                        </button>
+                    </div>
+                    <div
+                        class="absolute -right-2 bottom-0 top-0 z-10 flex items-center justify-center text-white opacity-0 transition-all duration-300 group-hover:right-4 group-hover:opacity-100">
+                        <button class="highlightNews-next cursor-pointer rounded-full bg-black/20 p-3 hover:bg-black/40">
+                            <x-heroicon-c-chevron-right class="h-6 text-white" /></button>
+                    </div>
                 </div>
             </div>
 

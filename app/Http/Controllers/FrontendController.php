@@ -114,6 +114,7 @@ class FrontendController extends Controller
             ->limit(12)
             ->get();
 
+        // Views Terbanyak dalam 1 bulan terakhir
         $beritaUtama = Post::with([
             'media',
             'category',
