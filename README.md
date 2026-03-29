@@ -31,7 +31,8 @@
 8c. jika 8b tidak berjalan, jalankan di terminal  : <b>nohup meilisearch > meili.log 2>&1 &</b><br>
 8d. <b>php artisan scout:import "App\Models\Post"</b><br>
 8e. cek apakah sudah jalan, jalankan di terminal : <b>curl http://127.0.0.1:7700</b><br>
-9. <b>php artisan optimize</b><br>
+9. <b>php artisan storage:link</b><br>
+10. <b>php artisan optimize</b><br>
 </p>
 
 ###
