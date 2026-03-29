@@ -1,59 +1,35 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="left">
+  <img height="104" src="https://telusur.co.id/img/logo.png"  />
+</div>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+###
 
-## About Laravel
+<h1 align="left">Telusur Laravel</h1>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+###
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<p align="left">Telusur (Laravel) adalah aplikasi web berbasis Laravel 12 yang berfungsi sebagai sistem manajemen konten dan berita dengan admin panel menggunakan Filament.<br><br>Aplikasi ini dirancang untuk mengelola proses editorial secara terstruktur, mulai dari pembuatan konten, pengaturan user dan role, hingga publikasi berita.<br><br>Fitur utamanya mencakup:<br><br>Admin panel menggunakan Filament<br>Sistem role & permission (RBAC)<br>Manajemen berita/post<br>Activity logging untuk tracking perubahan data<br>Search engine menggunakan Laravel Scout + Meilisearch<br>Media management untuk file dan gambar<br>Workflow konten (draft, publish, dll)<br><br>Intinya, Telusur adalah CMS berita modern berbasis Laravel yang sudah dilengkapi sistem admin, search, dan audit log siap production.</p>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+###
 
-## Learning Laravel
+<h2 align="left">Cara Install</h2>
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+###
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+<p align="left">1. composer install<br>2. npm install<br>3. cp .env.example .env<br>4. isi key .env seperti project yang lama, biar gak reset password<br>5. php artisan migrate<br>6. Import db lama ke db baru (manual di phpmyadmin)<br>7. php artisan db:seed (tabel db lama aman di hapus)<br>8. Jalankan Meilisearch<br>8a. ubah .env SCOUT_DRIVER=meilisearch<br>8b. jalankan di terminal  : meilisearch<br>8c. jika 8b tidak berjalan, jalankan di terminal  : nohup meilisearch > meili.log 2>&1 &<br>8d. php artisan scout:import "App\Models\Post"<br>8e. cek apakah sudah jalan, jalankan di terminal : curl http://127.0.0.1:7700</p>
 
-## Laravel Sponsors
+###
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+<h2 align="left">Technology</h2>
 
-### Premium Partners
+###
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+<div align="left">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg" height="40" alt="laravel logo"  />
+  <img width="12" />
+  <img src="https://skillicons.dev/icons?i=php" height="40" alt="php logo"  />
+  <img width="12" />
+  <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" height="40" alt="tailwindcss logo"  />
+</div>
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+###
