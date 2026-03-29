@@ -18,20 +18,21 @@
 ###
 
 <p align="left">
-1. **composer install**<br>
-2. **npm install**<br>
-3. **cp .env.example .env**<br>
+1. <b>composer install</b><br>
+2. <b>npm install</b><br>
+3. <b>cp .env.example .env</b><br>
 4. isi key .env seperti project yang lama, biar gak reset password<br>
-5. **php artisan migrate**<br>
+5. <b>php artisan migrate</b><br>
 6. Import db lama ke db baru (manual di phpmyadmin)<br>
-7. **php artisan db:seed** (tabel db lama aman di hapus)<br>
+7. <b>php artisan db:seed</b> (tabel db lama aman di hapus)<br>
 8. Jalankan Meilisearch<br>
 8a. ubah .env SCOUT_DRIVER=meilisearch<br>
-8b. jalankan di terminal  : **meilisearch**<br>
-8c. jika 8b tidak berjalan, jalankan di terminal  : **nohup meilisearch > meili.log 2>&1 &**<br>
-8d. **php artisan scout:import "App\Models\Post"**<br>
-8e. cek apakah sudah jalan, jalankan di terminal : **curl http://127.0.0.1:7700**</p>
-9. **php artisan optimize**<br>
+8b. jalankan di terminal  : <b>meilisearch</b><br>
+8c. jika 8b tidak berjalan, jalankan di terminal  : <b>nohup meilisearch > meili.log 2>&1 &</b><br>
+8d. <b>php artisan scout:import "App\Models\Post"</b><br>
+8e. cek apakah sudah jalan, jalankan di terminal : <b>curl http://127.0.0.1:7700</b><br>
+9. <b>php artisan optimize</b><br>
+</p>
 
 ###
 
