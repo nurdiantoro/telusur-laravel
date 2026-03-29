@@ -26,6 +26,26 @@ class PostCategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->hasPermission('post_categories.read');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->hasPermission('post_categories.create');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()?->hasPermission('post_categories.update');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->hasPermission('post_categories.delete');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

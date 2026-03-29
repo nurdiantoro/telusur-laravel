@@ -15,13 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call(TblAdsenseTableSeeder::class);
-        // $this->call(TblCommentsTableSeeder::class);
-        // $this->call(TblImageHeaderTableSeeder::class);
-
-        // tabel baru
-        $this->call(UsersTableSeeder::class);
-        $this->call(PostsTableSeeder::class);
-        $this->call(CategoriesSeeder::class);
+        $this->call([
+            UsersTableSeeder::class,
+            PostsTableSeeder::class,
+            CategoriesSeeder::class,
+            RoleTableSeeder::class,
+            PermissionSeeder::class,
+            RolePermissionSeeder::class,
+            UserTelusurSeeder::class,
+            UserRoleSeeder::class,
+        ]);
     }
 }

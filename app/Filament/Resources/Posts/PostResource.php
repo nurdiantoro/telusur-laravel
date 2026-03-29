@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Posts;
 
-use App\Filament\Resources\PostCategories\PostCategoryResource;
 use App\Filament\Resources\Posts\Pages\CreatePost;
 use App\Filament\Resources\Posts\Pages\EditPost;
 use App\Filament\Resources\Posts\Pages\ListPostActivities;
@@ -11,7 +10,6 @@ use App\Filament\Resources\Posts\Schemas\PostForm;
 use App\Filament\Resources\Posts\Tables\PostsTable;
 use App\Models\Post;
 use BackedEnum;
-use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -25,15 +23,78 @@ class PostResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'Post';
 
+    /*
+    |--------------------------------------------------------------------------
+    | Resource Authorization
+    |--------------------------------------------------------------------------
+    |
+    | Bagian ini mengatur semua akses CRUD untuk resource Post.
+    | Semua permission diambil dari sistem permission custom:
+    | post.read, post.create, post.update, post.delete
+    |
+    | Controller akses sepenuhnya dikendalikan oleh role permission
+    |
+    */
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->hasPermission('post.read');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->hasPermission('post.create');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()?->hasPermission('post.update');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->hasPermission('post.delete');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Form Schema
+    |--------------------------------------------------------------------------
+    |
+    | Definisi form untuk create dan edit Post.
+    | Dipisahkan ke class PostForm agar lebih modular.
+    |
+    */
+
     public static function form(Schema $schema): Schema
     {
         return PostForm::configure($schema);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Table Schema
+    |--------------------------------------------------------------------------
+    |
+    | Definisi tabel listing data Post di admin panel.
+    | Menggunakan class terpisah PostsTable untuk maintainability.
+    |
+    */
+
     public static function table(Table $table): Table
     {
         return PostsTable::configure($table);
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relations
+    |--------------------------------------------------------------------------
+    |
+    | Relasi antar resource (misal categories, tags, dll).
+    | Saat ini belum digunakan.
+    |
+    */
 
     public static function getRelations(): array
     {
@@ -41,6 +102,16 @@ class PostResource extends Resource
             // 'categories' => PostCategoryResource::class,
         ];
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Page Routing
+    |--------------------------------------------------------------------------
+    |
+    | Mapping halaman-halaman yang tersedia dalam PostResource.
+    | Semua route Filament didefinisikan di sini.
+    |
+    */
 
     public static function getPages(): array
     {
@@ -51,19 +122,4 @@ class PostResource extends Resource
             'activities' => ListPostActivities::route('/{record}/activities'),
         ];
     }
-
-    // public static function getNavigationItems(): array
-    // {
-    //     return [
-    //         NavigationItem::make('Post')
-    //             ->group('News')
-    //             ->url(static::getUrl('index', ['type' => 'post']))
-    //             ->icon('heroicon-o-document-text'),
-
-    //         NavigationItem::make('Video')
-    //             ->group('News')
-    //             ->url(static::getUrl('index', ['type' => 'video']))
-    //             ->icon('heroicon-o-video-camera'),
-    //     ];
-    // }
 }

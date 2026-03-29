@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,14 +10,17 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-    use SoftDeletes;
+    /**
+     * Trait yang digunakan:
+     * - HasFactory     : untuk keperluan factory (seeder/testing)
+     * - Notifiable     : untuk fitur notifikasi (email, dll)
+     * - SoftDeletes    : agar data tidak benar-benar dihapus (pakai deleted_at)
+     */
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Kolom yang boleh diisi secara mass assignment
+     * (misalnya saat create / update dengan request)
      */
     protected $fillable = [
         'name',
@@ -26,9 +29,8 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Kolom yang disembunyikan saat model di-serialize
+     * (misalnya dikirim ke API / JSON)
      */
     protected $hidden = [
         'password',
@@ -36,9 +38,9 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Casting tipe data otomatis
+     * - email_verified_at → datetime
+     * - password → otomatis di-hash
      */
     protected function casts(): array
     {
@@ -48,8 +50,45 @@ class User extends Authenticatable
         ];
     }
 
-    public function role()
+    /**
+     * Relasi Many-to-Many:
+     * User bisa punya banyak Role
+     */
+    public function roles()
     {
-        return $this->belongsTo(Role::class, 'role_id');
+        return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * Cek apakah user punya role tertentu
+     *
+     * contoh pemakaian:
+     * if ($user->hasRole('admin')) {
+     */
+    public function hasRole($role)
+    {
+        return $this->roles->contains('name', $role);
+    }
+
+    /**
+     * Cek apakah user punya permission tertentu
+     * (diambil dari semua role yang dimiliki user)
+     *
+     * contoh pemakaian:
+     * if ($user->hasPermission('edit-post')) {
+     */
+    public function hasPermission($permission)
+    {
+        return $this->roles
+            ->flatMap->permissions // gabungkan semua permission dari tiap role
+            ->contains('name', $permission);
+    }
+
+    /**
+     * Cek apakah user boleh mengakses panel
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 }

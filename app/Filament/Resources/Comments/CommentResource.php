@@ -32,6 +32,21 @@ class CommentResource extends Resource
         return false;
     }
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->hasPermission('comments.read');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()?->hasPermission('comments.update');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->hasPermission('comments.delete');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

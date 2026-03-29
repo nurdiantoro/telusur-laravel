@@ -20,6 +20,26 @@ class SidebarAdsResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->hasPermission('sidebar_ads.read');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->hasPermission('sidebar_ads.create');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()?->hasPermission('sidebar_ads.update');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->hasPermission('sidebar_ads.delete');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return SidebarAdsForm::configure($schema);

@@ -32,12 +32,33 @@ class UserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->hasPermission('users.read');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->hasPermission('users.create');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()?->hasPermission('users.update');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->hasPermission('users.delete');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 Select::make('role_id')
-                    ->relationship('role', 'name')
+                    ->relationship('roles', 'name')
+                    ->native(false)
                     ->required(),
                 // TextInput::make('role.name'),
                 TextInput::make('name')
@@ -58,7 +79,8 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('role.name'),
+                TextColumn::make('roles.name')
+                    ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('username')

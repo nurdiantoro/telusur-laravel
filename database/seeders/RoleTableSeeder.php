@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -13,12 +14,15 @@ class RoleTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement("
-            INSERT INTO roles (id,name)
+        $roleNames = DB::table('set_libraries')
+            ->where('category_id', 10)
+            ->pluck('name')
+            ->map(fn($name) => strtolower(trim($name)))
+            ->filter()
+            ->unique();
 
-            SELECT id,name
-            FROM set_libraries
-            WHERE category_id = 10
-        ");
+        Role::insertOrIgnore(
+            $roleNames->map(fn($name) => ['name' => $name])->toArray()
+        );
     }
 }
