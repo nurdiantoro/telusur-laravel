@@ -211,7 +211,7 @@ class Post extends Model implements HasMedia
             'title' => $this->title,
             'status' => $this->status,
             'type' => $this->type,
-            'publish_time' => $this->publish_time,
+            'publish_time' => optional($this->publish_time)->timestamp,
         ];
     }
 
