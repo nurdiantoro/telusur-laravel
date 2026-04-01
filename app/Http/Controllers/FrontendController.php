@@ -534,7 +534,7 @@ class FrontendController extends Controller
         $posts = Post::search($request->search_input)
             ->where('type', 'post')
             ->where('status', 'published')
-            ->where('publish_time', '<=', now())
+            ->where('publish_time', '<=', now()->timestamp)
             ->orderBy('publish_time', 'desc')
             ->paginate(10)
             ->appends([
