@@ -66,6 +66,9 @@ class CommentResource extends Resource
                     ->disabled()
                     ->required(),
                 Select::make('status')
+                    ->native(false)
+                    ->required()
+                    ->selectablePlaceholder(false)
                     ->options([
                         'approved' => 'Approved',
                         'rejected' => 'Rejected',

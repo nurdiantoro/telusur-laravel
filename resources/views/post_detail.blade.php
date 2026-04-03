@@ -1,20 +1,22 @@
 @extends('layout.app')
 @section('content')
 
-    <div class="flex flex-col md:flex-row gap-8">
+    <div class="flex flex-col gap-8 md:flex-row">
         {{-- Main Content --}}
-        <div class="md:w-3/4 flex flex-col">
-            <div class="hidden md:flex flex-row gap-2 items-center mb-4">
-                <a href="{{ route('home') }}" class="text-sm text-warna-01 font-bold hover:underline">Home</a>
-                <span class="w-2 h-auto"><x-fas-angle-right /></span>
+        <div class="flex flex-col md:w-3/4">
+
+            {{-- Breadcrumb --}}
+            <div class="mb-4 flex flex-row items-center gap-2">
+                <a href="{{ route('home') }}" class="text-warna-01 text-sm font-bold hover:underline">Home</a>
+                <span><x-fas-angle-right class="h-2 w-2" /></span>
                 <a href="{{ $post->category->slug }}" class="text-sm text-gray-600 hover:underline">
                     {{ $post->category->name }}
                 </a>
             </div>
 
-            <article class="border-b border-gray-200 mb-6">
+            <article class="mb-4">
                 {{-- Title --}}
-                <h1 class="text-3xl font-bold mb-2">{{ $post->title }}</h1>
+                <h1 class="mb-2 text-3xl font-bold">{{ $post->title }}</h1>
 
                 {{-- Meta --}}
                 <div class="text-gray-500">
@@ -26,63 +28,63 @@
                 <figure class="mb-6 mt-4">
                     @if ($post->type == 'video')
                         <div class="aspect-video w-full">
-                            <iframe src="https://www.youtube.com/embed/{{ $post->video_url }}" class="w-full h-full"
+                            <iframe src="https://www.youtube.com/embed/{{ $post->video_url }}" class="h-full w-full"
                                 frameborder="0" allowfullscreen>
                             </iframe>
                         </div>
                     @else
                         <img src="{{ $post->spatie_preview ? $post->spatie_preview : asset('img/no_image.webp') }}"
-                            alt="{{ $post->title }}" class="w-full h-auto">
+                            alt="{{ $post->title }}" class="h-auto w-full">
                     @endif
                     <figcaption class="text-sm">{{ $post->caption }}</figcaption>
                     @php
                         $url = urlencode(url()->current());
                         $title = urlencode($post->title);
                     @endphp
-                    <div class="flex items-center justify-end gap-1 mt-2">
+                    <div class="mt-2 flex items-center justify-end gap-1">
                         <!-- Facebook -->
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ $url }}" target="_blank"
                             rel="noopener"
-                            class="px-3 py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 flex flex-row items-center gap-1">
-                            <div class="w-4 h-4"><x-fab-facebook /></div> Facebook
+                            class="flex flex-row items-center gap-1 bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700">
+                            <div class="h-4 w-4"><x-fab-facebook /></div> Facebook
                         </a>
 
                         <!-- Twitter / X -->
                         <a href="https://twitter.com/intent/tweet?url={{ $url }}&text={{ $title }}"
                             target="_blank" rel="noopener"
-                            class="px-3 py-2 text-sm bg-black text-white hover:bg-gray-800 flex flex-row items-center gap-1">
-                            <div class="w-4 h-4"><x-fab-x-twitter /></div> X
+                            class="flex flex-row items-center gap-1 bg-black px-3 py-2 text-sm text-white hover:bg-gray-800">
+                            <div class="h-4 w-4"><x-fab-x-twitter /></div> X
                         </a>
 
                         <!-- WhatsApp -->
                         <a href="https://wa.me/?text={{ $title }}%20{{ $url }}" target="_blank"
                             rel="noopener"
-                            class="px-3 py-2 text-sm bg-green-600 text-white hover:bg-green-700 flex flex-row items-center gap-1">
-                            <div class="w-4 h-4"><x-fab-whatsapp /></div> WhatsApp
+                            class="flex flex-row items-center gap-1 bg-green-600 px-3 py-2 text-sm text-white hover:bg-green-700">
+                            <div class="h-4 w-4"><x-fab-whatsapp /></div> WhatsApp
                         </a>
 
                         <!-- Telegram -->
                         <a href="https://t.me/share/url?url={{ $url }}&text={{ $title }}" target="_blank"
                             rel="noopener"
-                            class="px-3 py-2 text-sm bg-sky-500 text-white hover:bg-sky-600 flex flex-row items-center gap-1">
-                            <div class="w-4 h-4"><x-fab-telegram /></div> Telegram
+                            class="flex flex-row items-center gap-1 bg-sky-500 px-3 py-2 text-sm text-white hover:bg-sky-600">
+                            <div class="h-4 w-4"><x-fab-telegram /></div> Telegram
                         </a>
                     </div>
                 </figure>
 
                 {{-- Content --}}
-                <div class="article-content">{!! str($post->content)->sanitizeHtml() !!}</div>
+                <div class="article-content">{!! $post->content !!}</div>
 
                 {{-- Tags --}}
                 @if ($post->tags->count() > 0)
-                    <div class="flex gap-2 flex-row flex-wrap mb-6 text-gray-700">
-                        <div class="flex flex-row justify-center items-center gap-2">
+                    <div class="mb-6 flex flex-row flex-wrap gap-2 text-gray-700">
+                        <div class="flex flex-row items-center justify-center gap-2">
                             <span class="w-4"> <x-fas-tag /></span>
                             <span> tags :</span>
                         </div>
                         @foreach ($post->tags as $tag)
                             <a href="{{ route('post.tag', $tag->slug) }}"
-                                class="px-1 rounded bg-gray-100 border-gray-200 border text-sm hover:bg-gray-200">{{ $tag->name }}</a>
+                                class="rounded border border-gray-200 bg-gray-100 px-1 text-sm hover:bg-gray-200">{{ $tag->name }}</a>
                         @endforeach
                     </div>
                 @endif
@@ -96,14 +98,14 @@
 
             {{-- Komentar --}}
             @if ($comments->count() > 0)
-                <div class="mt-6 mb-6">
-                    <h2 class="font-bold mb-4">Tinggalkan Komentar</h2>
+                <div class="mb-6 mt-6">
+                    <h2 class="mb-4 font-bold">Tinggalkan Komentar</h2>
                     @foreach ($comments as $comment)
-                        <article class="border-b border-gray-200 p-4 rounded-lg bg-gray-100 flex flex-col gap-2">
+                        <article class="flex flex-col gap-2 rounded-lg border-b border-gray-200 bg-gray-100 p-4">
                             <h3 class="font-bold capitalize">{{ $comment->name }}</h3>
                             <p class="">{{ $comment->comment }}</p>
                             <time
-                                class="text-xs text-gray-700 self-end">{{ $comment->created_at->translatedFormat('j F Y - H:i') }}</time>
+                                class="self-end text-xs text-gray-700">{{ $comment->created_at->translatedFormat('j F Y - H:i') }}</time>
                         </article>
                     @endforeach
                 </div>
@@ -111,29 +113,28 @@
 
             {{-- Form komentar --}}
             <form method="POST" action="{{ route('post.comment', $post->id) }}"
-                class="p-4 rounded-lg bg-gray-100 flex flex-col gap-2 mb-6">
+                class="mb-8 flex flex-col gap-2 rounded-lg bg-gray-100 p-4">
                 @csrf
                 <h2 class="font-bold">Komentar</h2>
                 <textarea name="comment" id="comment" rows="5"
-                    class="w-full border border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:drop-shadow">{{ old('comment') }}</textarea>
+                    class="w-full rounded-md border border-gray-300 bg-white p-2 focus:outline-none focus:drop-shadow">{{ old('comment') }}</textarea>
                 @error('comment')
                     <small class="text-red-500">{{ $message }}</small>
                 @enderror
 
-                <div class="flex flex-col md:flex-row gap-2 md:gap-4">
+                <div class="flex flex-col gap-2 md:flex-row md:gap-4">
 
                     <div class="md:w-1/2">
                         <input type="text" name="name" placeholder="Nama" value="{{ old('name') }}"
-                            class="w-full border border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:drop-shadow">
+                            class="w-full rounded-md border border-gray-300 bg-white p-2 focus:outline-none focus:drop-shadow">
                         @error('name')
                             <small class="text-red-500">{{ $message }}</small>
                         @enderror
                     </div>
 
-
                     <div class="md:w-1/2">
                         <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
-                            class="w-full border border-gray-300 bg-white rounded-md p-2 focus:outline-none focus:drop-shadow">
+                            class="w-full rounded-md border border-gray-300 bg-white p-2 focus:outline-none focus:drop-shadow">
                         @error('email')
                             <small class="text-red-500">{{ $message }}</small>
                         @enderror
@@ -142,35 +143,41 @@
                     <input type="hidden" name="jangan_diisi">
                 </div>
                 <button type="submit"
-                    class="bg-warna-02 text-white px-4 py-2 rounded-md hover:bg-warna-01 self-end w-full md:w-auto block">
+                    class="bg-warna-02 hover:bg-warna-01 block w-full self-end rounded-md px-4 py-2 text-white md:w-auto">
                     Kirim
                 </button>
             </form>
 
             {{-- Artikel Terkait --}}
             <div>
-                <h2 class="font-bold">Artikel Terkait</h2>
-                <div class="flex flex-wrap">
+                <h2 class="mb-6 font-bold">Artikel Terkait</h2>
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     @foreach ($otherArticles as $article)
-                        <div class="p-2 w-1/3">
-                            <a href="{{ route('post.detail', ['category' => $article->category->slug, 'slug' => $article->slug]) }}"
-                                class="py-4 group">
+                        <a href="{{ ($article->category?->slug ?? '#') . '/' . $article->slug }}"
+                            class="group flex items-start gap-4">
 
-                                <div class="aspect-video overflow-hidden rounded-md">
-                                    <img src="{{ $article->spatie_preview ?: asset('img/no_image.webp') }}"
-                                        alt="{{ $article->title }}" class="w-full h-full object-cover">
+                            {{-- Thumbnail --}}
+                            <div class="shrink-0">
+                                <img src="{{ $article->spatie_thumbnail ?: asset('img/no_image.webp') }}"
+                                    alt="{{ $article->title }}"
+                                    class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
+                            </div>
+
+                            {{-- Content --}}
+                            <div class="flex flex-col">
+
+                                {{-- Author & Date --}}
+                                <div class="mb-1 text-xs text-gray-500">
+                                    {{ $article->publish_time->diffForHumans() }}
                                 </div>
 
-                                <div class="text-warna-01 group-hover:text-warna-02 font-bold block mt-2">
+                                {{-- Title --}}
+                                <h3
+                                    class="group-hover:text-warna-03 line-clamp-3 text-sm font-semibold leading-snug transition">
                                     {{ $article->title }}
-                                </div>
-
-                                <p class="text-sm text-gray-600">
-                                    {{ $article->publish_time->translatedFormat('j F Y') }}
-                                </p>
-
-                            </a>
-                        </div>
+                                </h3>
+                            </div>
+                        </a>
                     @endforeach
                 </div>
             </div>

@@ -42,15 +42,6 @@ class PostForm
                                 ->default(fn() => Auth::id())
                                 ->required(),
 
-                            TextInput::make('title')
-                                ->required(fn($livewire) => $livewire->submitStatus === 'published')
-                                ->live(onBlur: true)
-                                ->afterStateUpdated(function ($state, callable $set, $record) {
-                                    if (! $record) {
-                                        $set('slug', Str::slug($state));
-                                    }
-                                }),
-
                             TextInput::make('slug')
                                 ->disabled()
                                 ->dehydrated()
@@ -136,10 +127,18 @@ class PostForm
                     Section::make('Content')
                         ->columnSpan(2)
                         ->schema([
+                            TextInput::make('title')
+                                ->required(fn($livewire) => $livewire->submitStatus === 'published')
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(function ($state, callable $set, $record) {
+                                    if (! $record) {
+                                        $set('slug', Str::slug($state));
+                                    }
+                                }),
                             RichEditor::make('content')
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published')
                                 ->toolbarButtons([
-                                    ['bold', 'italic', 'underline', 'strike', 'link'],
+                                    ['h2', 'h3', 'bold', 'italic', 'underline', 'strike', 'link'],
                                     ['alignStart', 'alignCenter', 'alignEnd'],
                                     ['attachFiles'],
                                     ['undo', 'redo'],

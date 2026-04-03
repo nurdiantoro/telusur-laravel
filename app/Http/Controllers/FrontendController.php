@@ -9,75 +9,10 @@ use App\Models\PostCategory;
 use App\Models\SidebarAds;
 use App\Models\Tag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class FrontendController extends Controller
 {
-
-    private function getOtherArticles($post, $limit)
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | Other Articles
-        |--------------------------------------------------------------------------
-        |
-        | Other Articles dicari berdasarkan tag dulu
-        | kalau gak ada atau kurang, tambahin dari category
-        | kalau masih kurang, tambahin dari latest
-        |
-        */
-        $tagIds = $post->tags->pluck('id');
-
-        $tagArticles = Post::with(['media', 'category', 'author'])
-            ->where('id', '!=', $post->id)
-            ->where('status', 'published')
-            ->where('publish_time', '<=', now())
-            ->whereHas('tags', function ($query) use ($tagIds) {
-                $query->whereIn('tags.id', $tagIds);
-            })
-            ->latest('publish_time')
-            ->limit($limit)
-            ->get();
-
-        $otherArticles = $tagArticles;
-
-        if ($otherArticles->count() < $limit) {
-
-            $remaining = $limit - $otherArticles->count();
-
-            $categoryArticles = Post::with(['media', 'category', 'author'])
-                ->where('id', '!=', $post->id)
-                ->where('category_id', $post->category_id)
-                ->whereNotIn('id', $otherArticles->pluck('id'))
-                ->where('status', 'published')
-                ->where('publish_time', '<=', now())
-                ->latest('publish_time')
-                ->limit($remaining)
-                ->get();
-
-            $otherArticles = $otherArticles->merge($categoryArticles);
-        }
-
-        if ($otherArticles->count() < $limit) {
-
-            $remaining = $limit - $otherArticles->count();
-
-            $latestArticles = Post::with(['media', 'category', 'author'])
-                ->where('id', '!=', $post->id)
-                ->whereNotIn('id', $otherArticles->pluck('id'))
-                ->where('status', 'published')
-                ->where('publish_time', '<=', now())
-                ->latest('publish_time')
-                ->limit($remaining)
-                ->get();
-
-            $otherArticles = $otherArticles->merge($latestArticles);
-        }
-
-        return $otherArticles;
-    }
-
     public function index()
     {
         $categories = PostCategory::with(['children'])
@@ -500,6 +435,7 @@ class FrontendController extends Controller
             'email' => $validated['email'],
             'post_id' => $post->id,
             'comment' => $validated['comment'],
+            'status' => 'approved',
         ]);
 
         return redirect()->back()->with('success', 'Komentar berhasil dikirim.');

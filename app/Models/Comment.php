@@ -6,7 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'email',
+        'post_id',
+        'comment',
+        'status',
+    ];
 
     public function post()
     {
