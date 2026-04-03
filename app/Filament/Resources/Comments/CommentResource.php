@@ -47,6 +47,11 @@ class CommentResource extends Resource
         return auth()->user()?->hasPermission('comments.delete');
     }
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Post Management';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

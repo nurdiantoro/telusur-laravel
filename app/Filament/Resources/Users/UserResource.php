@@ -52,6 +52,11 @@ class UserResource extends Resource
         return auth()->user()?->hasPermission('users.delete');
     }
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'User Manajemen';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

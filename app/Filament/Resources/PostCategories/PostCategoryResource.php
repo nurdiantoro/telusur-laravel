@@ -46,6 +46,13 @@ class PostCategoryResource extends Resource
         return auth()->user()?->hasPermission('post_categories.delete');
     }
 
+    protected static ?string $modelLabel = 'Category';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Post Management';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

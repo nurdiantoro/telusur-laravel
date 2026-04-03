@@ -23,6 +23,11 @@ class RoleResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'User Manajemen';
+    }
+
     /*
      | =========================================
      | ACCESS CONTROL (Permission Check)

@@ -4,3 +4,27 @@
 @source '../../../../resources/views/filament/**/*';
 
 @import "../../../../vendor/pxlrbt/filament-activity-log/resources/css/styles.css";
+
+.fi-body {
+    @apply bg-blue-50;
+}
+
+.fi-topbar {
+    @apply bg-blue-50;
+    @apply ring-0 shadow-none;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    @apply bg-transparent;
+}
+.fi-sidebar-item.fi-hover > .fi-sidebar-item-btn {
+    @apply bg-transparent;
+}
+
+.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover {
+    @apply bg-blue-100;
+}
+
+.fi-sidebar-group-label {
+    @apply font-bold text-gray-600;
+}

@@ -23,6 +23,11 @@ class PostResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'Post';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Post Management';
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Resource Authorization
