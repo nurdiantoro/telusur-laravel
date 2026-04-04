@@ -34,4 +34,14 @@ class Gallery extends Model implements HasMedia
             ->sharpen(2)
             ->nonQueued();
     }
+
+    public function getSpatiePreviewAttribute()
+    {
+        return $this->getFirstMediaUrl('imagesCollection', 'preview');
+    }
+
+    public function getSpatieThumbnailAttribute()
+    {
+        return $this->getFirstMediaUrl('imagesCollection', 'thumbnail');
+    }
 }

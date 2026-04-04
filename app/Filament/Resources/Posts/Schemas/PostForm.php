@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Models\Gallery;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Schemas\Components\Grid;
@@ -10,6 +11,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -58,19 +60,25 @@ class PostForm
                                 ->reactive()
                                 ->required(),
 
-                            SpatieMediaLibraryFileUpload::make('image')
-                                ->disk('public')
-                                ->collection('imagesCollection')
-                                ->maxSize(2480)
-                                ->image()
-                                ->imageEditor()
-                                ->required(fn($livewire) => $livewire->submitStatus === 'published'),
+                            // SpatieMediaLibraryFileUpload::make('image')
+                            //     ->disk('public')
+                            //     ->collection('imagesCollection')
+                            //     ->maxSize(2480)
+                            //     ->image()
+                            //     ->imageEditor()
+                            //     ->required(fn($livewire) => $livewire->submitStatus === 'published'),
 
-                            Select::make('gallery_id')
-                                ->label('Gallery')
-                                ->relationship('gallery', 'title')
-                                ->searchable()
-                                ->preload(),
+                            // Select::make('gallery_id')
+                            //     ->label('Gallery')
+                            //     ->relationship('gallery', 'title')
+                            //     ->searchable()
+                            //     ->preload(),
+
+                            Hidden::make('gallery_id'),
+                            View::make('.filament.gallery-picker')
+                                ->viewData([
+                                    'galleries' => Gallery::with('media')->get(),
+                                ]),
 
                             TextInput::make('video_url')
                                 ->label('Video URL')
