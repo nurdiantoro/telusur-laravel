@@ -66,6 +66,12 @@ class PostForm
                                 ->imageEditor()
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published'),
 
+                            Select::make('gallery_id')
+                                ->label('Gallery')
+                                ->relationship('gallery', 'title')
+                                ->searchable()
+                                ->preload(),
+
                             TextInput::make('video_url')
                                 ->label('Video URL')
                                 ->disabled(fn($get) => $get('type') !== 'video'),

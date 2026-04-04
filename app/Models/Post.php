@@ -69,6 +69,11 @@ class Post extends Model implements HasMedia
         return $this->belongsToMany(Tag::class);
     }
 
+    public function gallery()
+    {
+        return $this->belongsTo(Gallery::class);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Spatie Media Library Configuration
