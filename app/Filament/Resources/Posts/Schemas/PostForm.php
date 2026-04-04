@@ -60,20 +60,6 @@ class PostForm
                                 ->reactive()
                                 ->required(),
 
-                            // SpatieMediaLibraryFileUpload::make('image')
-                            //     ->disk('public')
-                            //     ->collection('imagesCollection')
-                            //     ->maxSize(2480)
-                            //     ->image()
-                            //     ->imageEditor()
-                            //     ->required(fn($livewire) => $livewire->submitStatus === 'published'),
-
-                            // Select::make('gallery_id')
-                            //     ->label('Gallery')
-                            //     ->relationship('gallery', 'title')
-                            //     ->searchable()
-                            //     ->preload(),
-
                             Hidden::make('gallery_id'),
                             View::make('.filament.gallery-picker')
                                 ->viewData([

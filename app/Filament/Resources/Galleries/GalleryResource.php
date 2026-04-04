@@ -29,6 +29,10 @@ class GalleryResource extends Resource
     {
         return 'Post Management';
     }
+    public static function getNavigationSort(): ?int
+    {
+        return 2;
+    }
 
     public static function form(Schema $schema): Schema
     {

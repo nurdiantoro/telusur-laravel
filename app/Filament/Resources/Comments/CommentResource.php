@@ -52,6 +52,11 @@ class CommentResource extends Resource
         return 'Post Management';
     }
 
+    public static function getNavigationSort(): ?int
+    {
+        return 4;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
