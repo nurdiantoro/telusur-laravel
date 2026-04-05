@@ -24,7 +24,7 @@
                     <time>{{ $post->publish_time->translatedFormat('j F Y') }}</time>
                 </div>
 
-                {{-- Thumbnail --}}
+                {{-- Cover Image --}}
                 <figure class="mb-6 mt-4">
                     @if ($post->type == 'video')
                         <div class="aspect-video w-full">
@@ -33,7 +33,7 @@
                             </iframe>
                         </div>
                     @else
-                        <img src="{{ $post->spatie_preview ? $post->spatie_preview : asset('img/no_image.webp') }}"
+                        <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
                             alt="{{ $post->title }}" class="h-auto w-full">
                     @endif
                     <figcaption class="text-sm">{{ $post->caption }}</figcaption>
@@ -100,20 +100,22 @@
             @if ($comments->count() > 0)
                 <div class="mb-6 mt-6">
                     <h2 class="mb-4 font-bold">Tinggalkan Komentar</h2>
-                    @foreach ($comments as $comment)
-                        <article class="flex flex-col gap-2 rounded-lg border-b border-gray-200 bg-gray-100 p-4">
-                            <h3 class="font-bold capitalize">{{ $comment->name }}</h3>
-                            <p class="">{{ $comment->comment }}</p>
-                            <time
-                                class="self-end text-xs text-gray-700">{{ $comment->created_at->translatedFormat('j F Y - H:i') }}</time>
-                        </article>
-                    @endforeach
+                    <div class="flex flex-col gap-4">
+                        @foreach ($comments as $comment)
+                            <article class="flex flex-col gap-2 rounded-lg bg-gray-50 p-4">
+                                <h3 class="font-bold capitalize">{{ $comment->name }}</h3>
+                                <p class="">{{ $comment->comment }}</p>
+                                <time
+                                    class="self-end text-xs text-gray-700">{{ $comment->created_at->translatedFormat('j F Y - H:i') }}</time>
+                            </article>
+                        @endforeach
+                    </div>
                 </div>
             @endif
 
             {{-- Form komentar --}}
             <form method="POST" action="{{ route('post.comment', $post->id) }}"
-                class="mb-8 flex flex-col gap-2 rounded-lg bg-gray-100 p-4">
+                class="mb-8 flex flex-col gap-2 rounded-lg bg-blue-50 p-4">
                 @csrf
                 <h2 class="font-bold">Komentar</h2>
                 <textarea name="comment" id="comment" rows="5"

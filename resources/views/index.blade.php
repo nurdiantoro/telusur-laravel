@@ -112,7 +112,7 @@
 
                             {{-- Thumbnail --}}
                             <div class="shrink-0">
-                                <img src="{{ $post->spatie_thumbnail ?: asset('img/no_image.webp') }}"
+                                <img src="{{ $post->gallery?->spatie_thumbnail ?: asset('img/no_image.webp') }}"
                                     alt="{{ $post->title }}"
                                     class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
                             </div>
@@ -149,7 +149,7 @@
 
                             {{-- Image --}}
                             <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
-                                <img src="{{ $newArticle->spatie_thumbnail ?: asset('img/no_image.webp') }}"
+                                <img src="{{ $newArticle->gallery?->spatie_thumbnail ?: asset('img/no_image.webp') }}"
                                     alt="{{ $newArticle->title }}"
                                     class="h-full w-full object-cover transition duration-300 ease-out group-hover:scale-105">
                             </div>
@@ -249,7 +249,7 @@
                             {{-- Image --}}
                             <div class="md:col-span-1">
                                 <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
-                                    <img src="{{ $opini->spatie_thumbnail ?: asset('img/no_image.webp') }}"
+                                    <img src="{{ $opini->gallery?->spatie_thumbnail ?: asset('img/no_image.webp') }}"
                                         alt="{{ $opini->title }}"
                                         class="h-full w-full rounded-md object-cover transition duration-300 group-hover:scale-105">
                                 </div>

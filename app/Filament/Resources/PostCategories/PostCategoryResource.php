@@ -52,6 +52,10 @@ class PostCategoryResource extends Resource
     {
         return 'Post Management';
     }
+    public static function getNavigationSort(): ?int
+    {
+        return 3;
+    }
 
     public static function form(Schema $schema): Schema
     {

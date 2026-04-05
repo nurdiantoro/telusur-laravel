@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Models\Gallery;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Schemas\Components\Grid;
@@ -10,8 +11,10 @@ use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class PostForm
@@ -53,29 +56,30 @@ class PostForm
                                     'post' => 'Post',
                                     'video' => 'Video',
                                 ])
+                                ->selectablePlaceholder(false)
                                 ->default('post')
                                 ->native(false)
                                 ->reactive()
                                 ->required(),
 
-                            SpatieMediaLibraryFileUpload::make('image')
-                                ->disk('public')
-                                ->collection('imagesCollection')
-                                ->maxSize(2480)
-                                ->image()
-                                ->imageEditor()
-                                ->required(fn($livewire) => $livewire->submitStatus === 'published'),
+                            Hidden::make('gallery_id'),
+                            View::make('.filament.gallery-picker')
+                                ->viewData([
+                                    'galleries' => Gallery::with('media')->get(),
+                                ]),
 
                             TextInput::make('video_url')
                                 ->label('Video URL')
-                                ->disabled(fn($get) => $get('type') !== 'video'),
+                                ->prefix('youtube.com/watch?v=')
+                                ->helperText(new HtmlString('youtube.com/watch?v=<b>ya7cXK71z4A</b>'))
+                                ->hidden(fn($get) => $get('type') !== 'video'),
 
                             TextInput::make('caption'),
 
                             Select::make('category_id')
                                 ->label('Kategori')
                                 ->relationship('category', 'name')
-                                // ->multiple()
+                                ->selectablePlaceholder(false)
                                 ->preload()
                                 ->searchable()
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published'),
