@@ -53,7 +53,7 @@ class ApiController extends Controller
         ]);
 
         $gallery = new Gallery();
-        $gallery->title = $request->file('file')->getClientOriginalName();
+        $gallery->title = $request->title;
         $gallery->save();
 
         $gallery

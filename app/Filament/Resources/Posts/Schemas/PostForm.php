@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class PostForm
@@ -55,6 +56,7 @@ class PostForm
                                     'post' => 'Post',
                                     'video' => 'Video',
                                 ])
+                                ->selectablePlaceholder(false)
                                 ->default('post')
                                 ->native(false)
                                 ->reactive()
@@ -68,14 +70,16 @@ class PostForm
 
                             TextInput::make('video_url')
                                 ->label('Video URL')
-                                ->disabled(fn($get) => $get('type') !== 'video'),
+                                ->prefix('youtube.com/watch?v=')
+                                ->helperText(new HtmlString('youtube.com/watch?v=<b>ya7cXK71z4A</b>'))
+                                ->hidden(fn($get) => $get('type') !== 'video'),
 
                             TextInput::make('caption'),
 
                             Select::make('category_id')
                                 ->label('Kategori')
                                 ->relationship('category', 'name')
-                                // ->multiple()
+                                ->selectablePlaceholder(false)
                                 ->preload()
                                 ->searchable()
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published'),
