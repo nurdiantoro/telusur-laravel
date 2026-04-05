@@ -115,7 +115,7 @@
 
             {{-- Form komentar --}}
             <form method="POST" action="{{ route('post.comment', $post->id) }}"
-                class="mb-8 flex flex-col gap-2 rounded-lg bg-blue-50 p-4">
+                class="mb-8 flex flex-col gap-2 rounded-lg bg-gray-50 p-4">
                 @csrf
                 <h2 class="font-bold">Komentar</h2>
                 <textarea name="comment" id="comment" rows="5"

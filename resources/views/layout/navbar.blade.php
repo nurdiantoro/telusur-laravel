@@ -11,7 +11,7 @@
 
             {{-- Tengah / Logo --}}
             <a href="{{ route('home') }}" class="md:flex md:flex-1 md:justify-start">
-                <img src="{{ asset('img/logo-telusur.webp') }}" alt="Logo" fetchpriority="high" loading="eager"
+                <img src="{{ asset('img/logo-telusur-new.png') }}" alt="Logo" fetchpriority="high" loading="eager"
                     class="h-12 md:h-20">
             </a>
 
