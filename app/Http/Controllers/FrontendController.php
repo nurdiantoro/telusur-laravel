@@ -42,6 +42,7 @@ class FrontendController extends Controller
             'media',
             'category',
             'author',
+            'gallery',
         ])
             ->published()
             ->post()
@@ -49,11 +50,14 @@ class FrontendController extends Controller
             ->limit(12)
             ->get();
 
+        // dd($beritaTerbaru->first()->gallery_id, $beritaTerbaru->first()->gallery);
+
         // Views Terbanyak dalam 1 bulan terakhir
         $beritaUtama = Post::with([
             'media',
             'category',
             'author',
+            'gallery',
         ])
             ->published()
             ->post()
@@ -68,6 +72,7 @@ class FrontendController extends Controller
             'media',
             'category',
             'author',
+            'gallery',
         ])
             ->published()
             ->popular()
@@ -78,6 +83,7 @@ class FrontendController extends Controller
             'media',
             'category',
             'author',
+            'gallery',
         ])
             ->published()
             ->opini()
