@@ -39,11 +39,11 @@ class Gallery extends Model implements HasMedia
 
     public function getSpatiePreviewAttribute()
     {
-        return $this->getFirstMediaUrl('imagesCollection', 'preview');
+        return $this->getFirstMediaUrl('imagesCollection', 'preview') ?: asset('img/no_image.webp');
     }
 
     public function getSpatieThumbnailAttribute()
     {
-        return $this->getFirstMediaUrl('imagesCollection', 'thumbnail');
+        return $this->getFirstMediaUrl('imagesCollection', 'thumbnail') ?: asset('img/no_image.webp');
     }
 }

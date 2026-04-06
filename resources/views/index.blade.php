@@ -62,7 +62,7 @@
                     <div class="swiper-wrapper">
                         @foreach ($beritaUtama as $post)
                             <a href="{{ $post->category->slug . '/' . $post->slug }}" class="swiper-slide">
-                                <img src="{{ $post->spatie_preview ?: asset('img/no_image.webp') }}"
+                                <img src="{{ $post->gallery->spatie_preview ?: asset('img/no_image.webp') }}"
                                     alt="{{ $post->title }}" class="h-full w-full object-cover" loading="lazy">
 
                                 <div class="bg-linear-to-t absolute inset-0 from-black/60 via-black/20 to-transparent">
@@ -243,7 +243,7 @@
 
                 <div class="flex flex-col gap-6">
                     @foreach ($opinions as $opini)
-                        <a href="{{ 'opini/' . $opini->slug }}"
+                        <a href="{{ ($opini->category?->slug ?: 'opini') . '/' . $opini->slug }}"
                             class="group grid grid-cols-1 items-start gap-6 md:grid-cols-3">
 
                             {{-- Image --}}

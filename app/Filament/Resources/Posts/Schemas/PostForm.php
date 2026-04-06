@@ -38,7 +38,7 @@ class PostForm
                                 ->dehydrated(false)
                                 ->formatStateUsing(
                                     fn($state, $record) =>
-                                    $record?->author?->name ?? Auth::user()?->name
+                                    $record?->author?->name
                                 ),
 
                             Hidden::make('author_id')
@@ -55,6 +55,7 @@ class PostForm
                                 ->options([
                                     'post' => 'Post',
                                     'video' => 'Video',
+                                    'opini' => 'Opini',
                                 ])
                                 ->selectablePlaceholder(false)
                                 ->default('post')

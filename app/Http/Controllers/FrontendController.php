@@ -12,6 +12,8 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+use function Pest\Laravel\json;
+
 class FrontendController extends Controller
 {
     public function index()
@@ -33,7 +35,6 @@ class FrontendController extends Controller
         $post = Post::with([
             'media',
             'category',
-            'author',
         ])
             ->published()
             ->latestPublished()
@@ -42,7 +43,6 @@ class FrontendController extends Controller
         $beritaTerbaru = Post::with([
             'media',
             'category',
-            'author',
             'gallery',
         ])
             ->published()
@@ -51,13 +51,10 @@ class FrontendController extends Controller
             ->limit(12)
             ->get();
 
-        // dd($beritaTerbaru->first()->gallery_id, $beritaTerbaru->first()->gallery);
-
         // Views Terbanyak dalam 1 bulan terakhir
         $beritaUtama = Post::with([
             'media',
             'category',
-            'author',
             'gallery',
         ])
             ->published()
@@ -72,7 +69,6 @@ class FrontendController extends Controller
         $beritaPopulers = Post::with([
             'media',
             'category',
-            'author',
             'gallery',
         ])
             ->published()
@@ -83,7 +79,6 @@ class FrontendController extends Controller
         $opinions = Post::with([
             'media',
             'category',
-            'author',
             'gallery',
         ])
             ->published()
@@ -95,7 +90,6 @@ class FrontendController extends Controller
         $videos = Post::with([
             'media',
             'category',
-            'author',
         ])
             ->published()
             ->video()
@@ -121,6 +115,8 @@ class FrontendController extends Controller
         ));
     }
 
+    public function index_post() {}
+
     public function postDetail($categorySlug, $postSlug)
     {
         $categories = PostCategory::with(['children'])
@@ -140,14 +136,13 @@ class FrontendController extends Controller
         $beritaPopulers = Post::with([
             'media',
             'category',
-            'author',
         ])
             ->published()
             ->popular()
             ->limit(6)
             ->get();
 
-        $post = Post::with(['tags', 'media', 'category', 'author'])
+        $post = Post::with(['tags', 'media', 'category'])
             ->where('slug', $postSlug)
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
@@ -205,7 +200,6 @@ class FrontendController extends Controller
         $beritaPopulers = Post::with([
             'media',
             'category',
-            'author',
         ])
             ->published()
             ->popular()
@@ -215,13 +209,13 @@ class FrontendController extends Controller
         $category = PostCategory::where('slug', $slug)
             ->firstOrFail();
 
-        $posts = Post::with(['media', 'category', 'author'])
+        $posts = Post::with(['media', 'category'])
             ->published()
             ->where('category_id', $category->id)
             ->latestPublished()
             ->paginate(10);
 
-        return view('post_category', compact(
+        return view('post_index', compact(
             'category',
             'posts',
             'categories',
@@ -249,7 +243,6 @@ class FrontendController extends Controller
         $beritaPopulers = Post::with([
             'media',
             'category',
-            'author',
         ])
             ->published()
             ->popular()
@@ -259,7 +252,7 @@ class FrontendController extends Controller
         $tag = Tag::where('slug', $slug)->firstOrFail();
 
         $posts = $tag->posts()
-            ->with(['media', 'category', 'tags', 'author'])
+            ->with(['media', 'category', 'tags'])
             ->published()
             ->latestPublished()
             ->paginate(10);
@@ -293,7 +286,6 @@ class FrontendController extends Controller
         $beritaPopulers = Post::with([
             'media',
             'category',
-            'author',
         ])
             ->published()
             ->popular()
@@ -322,7 +314,6 @@ class FrontendController extends Controller
         $beritaPopulers = Post::with([
             'media',
             'category',
-            'author',
         ])
             ->published()
             ->popular()
@@ -351,7 +342,6 @@ class FrontendController extends Controller
         $beritaPopulers = Post::with([
             'media',
             'category',
-            'author',
         ])
             ->published()
             ->popular()
@@ -380,7 +370,6 @@ class FrontendController extends Controller
         $beritaPopulers = Post::with([
             'media',
             'category',
-            'author',
         ])
             ->published()
             ->popular()
@@ -409,7 +398,6 @@ class FrontendController extends Controller
         $beritaPopulers = Post::with([
             'media',
             'category',
-            'author',
         ])
             ->published()
             ->popular()
@@ -467,7 +455,6 @@ class FrontendController extends Controller
         $beritaPopulers = Post::with([
             'media',
             'category',
-            'author',
         ])
             ->published()
             ->popular()

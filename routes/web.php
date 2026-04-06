@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\MigrationController;
+use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
+
+// Route::get('/test', [TestController::class, 'index'])->name('test');
 
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 Route::get('/kebijakan', [FrontendController::class, 'kebijakan'])->name('kebijakan');
@@ -12,6 +15,8 @@ Route::get('/about', [FrontendController::class, 'about'])->name('about');
 Route::get('/terms', [FrontendController::class, 'terms'])->name('terms');
 Route::get('/search', [FrontendController::class, 'postSearch'])->name('search');
 
+Route::get('/index', [FrontendController::class, 'index'])->name('index');
+Route::get('/opini', [FrontendController::class, 'opini'])->name('opini');
 
 // Prioritas untuk kategori, jika tidak ada maka akan mencari berdasarkan slug
 Route::get('/tag/{slug}', [FrontendController::class, 'postByTag'])->name('post.tag');
