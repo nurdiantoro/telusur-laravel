@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostCategory;
 use App\Models\SidebarAds;
+use App\Models\Subscriber;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -488,5 +489,26 @@ class FrontendController extends Controller
         }
 
         return view('post_search', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories', 'posts'));
+    }
+
+    public function postSubscriber(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email|unique:subscribers,email',
+        ]);
+
+        if ($request->filled('jangan_diisi')) {
+            return redirect()->back()->with('error', 'Spam terdeteksi.');
+        }
+
+        if (Subscriber::where('email', $validated['email'])->exists()) {
+            return redirect()->back()->with('success', 'Berhasil berlangganan.');
+        }
+
+        Subscriber::create([
+            'email' => $validated['email'],
+        ]);
+
+        return redirect()->back()->with('success', 'Berhasil berlangganan.');
     }
 }

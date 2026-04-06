@@ -82,5 +82,15 @@ class PermissionSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'users.read']);
         Permission::firstOrCreate(['name' => 'users.update']);
         Permission::firstOrCreate(['name' => 'users.delete']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | table subscribers
+        |--------------------------------------------------------------------------
+        */
+        Permission::firstOrCreate(['name' => 'subscribers.create']);
+        Permission::firstOrCreate(['name' => 'subscribers.read']);
+        Permission::firstOrCreate(['name' => 'subscribers.update']);
+        Permission::firstOrCreate(['name' => 'subscribers.delete']);
     }
 }

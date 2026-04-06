@@ -21,3 +21,4 @@ Route::get('/{category}/{slug}', [FrontendController::class, 'postDetail'])->nam
 
 // Method POST
 Route::post('/comment/{post_id}', [FrontendController::class, 'postComment'])->name('post.comment');
+Route::post('/subscriber', [FrontendController::class, 'postSubscriber'])->name('post.subscriber');

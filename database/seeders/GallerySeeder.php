@@ -15,20 +15,15 @@ class GallerySeeder extends Seeder
     {
         Gallery::factory(50)->create()->each(function ($gallery) {
 
-            $count = rand(8, 20);
+            $url = 'https://picsum.photos/800/600?random=' . rand();
 
-            for ($i = 0; $i < $count; $i++) {
-
-                $url = 'https://picsum.photos/800/600?random=' . rand();
-
-                try {
-                    $gallery
-                        ->addMediaFromUrl($url)
-                        ->usingName($gallery->name . '-' . Str::random(5))
-                        ->toMediaCollection('imagesCollection');
-                } catch (\Exception $e) {
-                    // skip error
-                }
+            try {
+                $gallery
+                    ->addMediaFromUrl($url)
+                    ->usingName($gallery->name . '-' . Str::random(5))
+                    ->toMediaCollection('imagesCollection');
+            } catch (\Exception $e) {
+                // skip error
             }
         });
     }
