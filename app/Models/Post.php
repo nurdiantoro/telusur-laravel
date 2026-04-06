@@ -150,6 +150,11 @@ class Post extends Model implements HasMedia
         ];
     }
 
+    public function shouldBeSearchable()
+    {
+        return $this->status === 'published';
+    }
+
     public function searchableAs()
     {
         return 'posts';
@@ -169,31 +174,6 @@ class Post extends Model implements HasMedia
     | - Meningkatkan readability pada controller
     | - Memudahkan maintenance & scaling
     |
-    | Daftar Scope:
-    |
-    | 1. published()
-    |    - Filter hanya post dengan status 'published'
-    |    - Menghindari post yang publish_time-nya masih di masa depan
-    |
-    | 2. type($type)
-    |    - Filter berdasarkan tipe konten (post, opini, video, dll)
-    |    - Digunakan jika ingin fleksibel dalam filtering
-    |
-    | 3. latestPublished()
-    |    - Mengurutkan berdasarkan publish_time terbaru (descending)
-    |
-    | 4. popular()
-    |    - Mengurutkan berdasarkan jumlah views terbanyak
-    |
-    | 5. withRelations()
-    |    - Eager load relasi utama:
-    |      media, category, author
-    |    - Menghindari N+1 query problem saat render frontend
-    |
-    | 6. post(), opini(), video()
-    |    - Shortcut untuk filtering type tertentu
-    |    - Lebih readable dibanding type('post'), dll
-    |
     | Contoh penggunaan:
     |
     | Post::withRelations()
@@ -204,36 +184,51 @@ class Post extends Model implements HasMedia
     |     ->get();
     |
     */
-    public function scopePublished(Builder $query): Builder
-    {
-        return $query->where('status', 'published')->where('publish_time', '<=', now());
-    }
-    public function scopeType(Builder $query, string $type): Builder
-    {
-        return $query->where('type', $type);
-    }
-    public function scopeLatestPublished(Builder $query): Builder
-    {
-        return $query->orderByDesc('publish_time');
-    }
-    public function scopePopular(Builder $query): Builder
-    {
-        return $query->orderByDesc('views');
-    }
-    public function scopeWithRelations(Builder $query): Builder
-    {
-        return $query->with(['media', 'category', 'author']);
-    }
     public function scopePost(Builder $query): Builder
     {
-        return $query->where('type', 'post');
+        return $query
+            ->where('type', 'post')
+            ->where('status', 'published')
+            ->where('publish_time', '<=', now())
+            ->with(['media', 'category', 'gallery'])
+            ->orderByDesc('publish_time');
     }
     public function scopeOpini(Builder $query): Builder
     {
-        return $query->where('type', 'opini');
+        return $query
+            ->where('type', 'opini')
+            ->where('status', 'published')
+            ->where('publish_time', '<=', now())
+            ->with(['media', 'category', 'gallery'])
+            ->orderByDesc('publish_time');
     }
     public function scopeVideo(Builder $query): Builder
     {
-        return $query->where('type', 'video');
+        return $query
+            ->where('type', 'video')
+            ->where('status', 'published')
+            ->where('publish_time', '<=', now())
+            ->with(['media', 'category', 'gallery'])
+            ->orderByDesc('publish_time');
     }
+    // public function scopePublished(Builder $query): Builder
+    // {
+    //     return $query->where('status', 'published')->where('publish_time', '<=', now());
+    // }
+    // public function scopeType(Builder $query, string $type): Builder
+    // {
+    //     return $query->where('type', $type);
+    // }
+    // public function scopeLatestPublished(Builder $query): Builder
+    // {
+    //     return $query->orderByDesc('publish_time');
+    // }
+    // public function scopePopular(Builder $query): Builder
+    // {
+    //     return $query->orderByDesc('views');
+    // }
+    // public function scopeWithRelations(Builder $query): Builder
+    // {
+    //     return $query->with(['media', 'category', 'author']);
+    // }
 }

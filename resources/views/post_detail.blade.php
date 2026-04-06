@@ -165,7 +165,7 @@
                 <h2 class="mb-6 font-bold">Artikel Terkait</h2>
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     @foreach ($otherArticles as $article)
-                        <a href="{{ ($article->category?->slug ?? '#') . '/' . $article->slug }}"
+                        <a href="{{ route('post.detail', [$article->category->slug ?: 'no_category', $article->slug]) }}"
                             class="group flex items-start gap-4">
 
                             {{-- Thumbnail --}}

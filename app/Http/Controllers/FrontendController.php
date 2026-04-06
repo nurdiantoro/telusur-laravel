@@ -18,12 +18,6 @@ class FrontendController extends Controller
 {
     public function index()
     {
-        $categories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
-
         $navbarCategories = PostCategory::with(['children'])
             ->whereNull('parent_id')
             ->where('is_navbar', true)
@@ -32,68 +26,30 @@ class FrontendController extends Controller
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
-        $post = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->latestPublished()
+        $post = Post::post()
             ->first();
 
-        $beritaTerbaru = Post::with([
-            'media',
-            'category',
-            'gallery',
-        ])
-            ->published()
-            ->post()
-            ->latestPublished()
+        $beritaTerbaru = Post::post()
             ->limit(12)
             ->get();
 
         // Views Terbanyak dalam 1 bulan terakhir
-        $beritaUtama = Post::with([
-            'media',
-            'category',
-            'gallery',
-        ])
-            ->published()
-            ->post()
-            ->where('publish_time', '>=', now()->subDays(30))
-            ->popular()
+        $beritaUtama = Post::post()
+            ->orderByDesc('views')
             ->limit(10)
             ->get()
-            ->sortByDesc('publish_time')
             ->values();
 
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-            'gallery',
-        ])
-            ->published()
-            ->popular()
+        $beritaPopulers = Post::post()
+            ->orderByDesc('views')
             ->limit(6)
             ->get();
 
-        $opinions = Post::with([
-            'media',
-            'category',
-            'gallery',
-        ])
-            ->published()
-            ->opini()
-            ->latestPublished()
+        $opinions = Post::opini()
             ->limit(9)
             ->get();
 
-        $videos = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->video()
-            ->latestPublished()
+        $videos = Post::video()
             ->limit(8)
             ->get();
 
@@ -102,7 +58,6 @@ class FrontendController extends Controller
             ->get();
 
         return view('index', compact(
-            'categories',
             'navbarCategories',
             'sidebarAds',
             'post',
@@ -133,19 +88,13 @@ class FrontendController extends Controller
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->popular()
+        $beritaPopulers = Post::post()
+            ->orderByDesc('views')
             ->limit(6)
             ->get();
 
-        $post = Post::with(['tags', 'media', 'category'])
+        $post = Post::post()
             ->where('slug', $postSlug)
-            ->where('status', 'published')
-            ->where('publish_time', '<=', now())
             ->firstOrFail();
 
         $title = $post->title . ' - Telusur';
@@ -155,10 +104,9 @@ class FrontendController extends Controller
             155
         );
 
-        $otherArticles = Post::with(['media', 'category'])
-            ->published()
+        $otherArticles = Post::post()
             ->where('id', '!=', $post->id)
-            ->latestPublished()
+            ->where('category_id', $post->category_id)
             ->limit(10)
             ->get();
 
@@ -197,22 +145,16 @@ class FrontendController extends Controller
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->popular()
+        $beritaPopulers = Post::post()
+            ->orderByDesc('views')
             ->limit(6)
             ->get();
 
         $category = PostCategory::where('slug', $slug)
             ->firstOrFail();
 
-        $posts = Post::with(['media', 'category'])
-            ->published()
+        $posts = Post::post()
             ->where('category_id', $category->id)
-            ->latestPublished()
             ->paginate(10);
 
         return view('post_index', compact(
@@ -224,6 +166,7 @@ class FrontendController extends Controller
             'navbarCategories'
         ));
     }
+
     public function postByTag($slug)
     {
         $categories = PostCategory::with(['children'])
@@ -240,21 +183,15 @@ class FrontendController extends Controller
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->popular()
+        $beritaPopulers = Post::post()
+            ->orderByDesc('views')
             ->limit(6)
             ->get();
 
         $tag = Tag::where('slug', $slug)->firstOrFail();
 
-        $posts = $tag->posts()
-            ->with(['media', 'category', 'tags'])
-            ->published()
-            ->latestPublished()
+        $posts = Post::post()
+            ->where('tag')
             ->paginate(10);
 
         return view('post_category', compact(
@@ -288,7 +225,7 @@ class FrontendController extends Controller
             'category',
         ])
             ->published()
-            ->popular()
+            ->orderByDesc('views')
             ->limit(6)
             ->get();
 
@@ -316,7 +253,7 @@ class FrontendController extends Controller
             'category',
         ])
             ->published()
-            ->popular()
+            ->orderByDesc('views')
             ->limit(6)
             ->get();
 
@@ -344,7 +281,7 @@ class FrontendController extends Controller
             'category',
         ])
             ->published()
-            ->popular()
+            ->orderByDesc('views')
             ->limit(6)
             ->get();
 
@@ -372,7 +309,7 @@ class FrontendController extends Controller
             'category',
         ])
             ->published()
-            ->popular()
+            ->orderByDesc('views')
             ->limit(6)
             ->get();
 
@@ -400,7 +337,7 @@ class FrontendController extends Controller
             'category',
         ])
             ->published()
-            ->popular()
+            ->orderByDesc('views')
             ->limit(6)
             ->get();
 
@@ -452,12 +389,8 @@ class FrontendController extends Controller
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->popular()
+        $beritaPopulers = Post::post()
+            ->orderByDesc('views')
             ->limit(6)
             ->get();
 

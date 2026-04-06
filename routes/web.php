@@ -15,7 +15,7 @@ Route::get('/about', [FrontendController::class, 'about'])->name('about');
 Route::get('/terms', [FrontendController::class, 'terms'])->name('terms');
 Route::get('/search', [FrontendController::class, 'postSearch'])->name('search');
 
-Route::get('/index', [FrontendController::class, 'index'])->name('index');
+Route::get('/index', [FrontendController::class, 'index_post'])->name('index_post');
 Route::get('/opini', [FrontendController::class, 'opini'])->name('opini');
 
 // Prioritas untuk kategori, jika tidak ada maka akan mencari berdasarkan slug

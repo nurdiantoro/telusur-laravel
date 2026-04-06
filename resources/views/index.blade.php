@@ -62,7 +62,7 @@
                     <div class="swiper-wrapper">
                         @foreach ($beritaUtama as $post)
                             <a href="{{ $post->category->slug . '/' . $post->slug }}" class="swiper-slide">
-                                <img src="{{ $post->gallery->spatie_preview ?: asset('img/no_image.webp') }}"
+                                <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
                                     alt="{{ $post->title }}" class="h-full w-full object-cover" loading="lazy">
 
                                 <div class="bg-linear-to-t absolute inset-0 from-black/60 via-black/20 to-transparent">
