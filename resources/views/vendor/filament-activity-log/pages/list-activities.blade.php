@@ -2,6 +2,8 @@
     use Illuminate\Support\Js;
     use Carbon\Carbon;
     $categories = \App\Models\PostCategory::pluck('name', 'id');
+    // $galleries = \App\Models\Gallery::pluck('id', 'id');
+    $galleries = \App\Models\Gallery::select('id', 'title')->get()->keyBy('id');
 @endphp
 <x-filament-panels::page>
     <div class="space-y-6">
@@ -29,7 +31,7 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="flex flex-col text-xs text-gray-500 justify-end">
+                        <div class="flex flex-col justify-end text-xs text-gray-500">
                             @if ($this->canRestoreActivity() && $changes->isNotEmpty())
                                 <x-filament::button tag="button" icon="heroicon-o-arrow-path-rounded-square"
                                     labeled-from="sm" color="gray" class="right"
@@ -70,12 +72,26 @@
                                         {{ $this->getFieldLabel($field) }}
                                     </td>
 
-
                                     {{-- Data Before --}}
                                     <td width="40%"
-                                        class="fi-ta-cell px-4 py-2 align-top break-all whitespace-normal">
+                                        class="fi-ta-cell whitespace-normal break-all px-4 py-2 align-top">
+
                                         @if ($field === 'category_id' && $oldValue)
                                             {{ $categories[$oldValue] ?? $oldValue }}
+                                        @elseif ($field === 'gallery_id' && $oldValue)
+                                            @php
+                                                $gallery = $galleries[$oldValue] ?? null;
+                                            @endphp
+
+                                            @if ($gallery && $gallery->spatie_thumbnail)
+                                                <div class="flex flex-wrap items-center gap-2">
+                                                    <img src="{{ $gallery->spatie_thumbnail }}"
+                                                        style="height:50px;border-radius:6px;" />
+                                                    <span>{{ $gallery->title }}</span>
+                                                </div>
+                                            @else
+                                                {{ $oldValue }}
+                                            @endif
                                         @elseif ($field === 'publish_time' && $oldValue)
                                             {{ Carbon::parse($oldValue)->translatedFormat('d F Y H:i') }}
                                         @elseif(is_array($oldValue))
@@ -85,12 +101,24 @@
                                         @endif
                                     </td>
 
-
                                     {{-- Data After --}}
                                     <td width="40%"
-                                        class="fi-ta-cell px-4 py-2 align-top break-all whitespace-normal">
+                                        class="fi-ta-cell whitespace-normal break-all px-4 py-2 align-top">
                                         @if ($field === 'category_id' && $newValue)
                                             {{ $categories[$newValue] ?? $newValue }}
+                                        @elseif ($field === 'gallery_id' && $newValue)
+                                            @php
+                                                $gallery = $galleries[$newValue] ?? null;
+                                            @endphp
+                                            @if ($gallery && $gallery->spatie_thumbnail)
+                                                <div class="flex flex-wrap items-center gap-2">
+                                                    <img src="{{ $gallery->spatie_thumbnail }}"
+                                                        style="height:50px;border-radius:6px;" />
+                                                    <span>{{ $gallery->title }}</span>
+                                                </div>
+                                            @else
+                                                {{ $newValue }}
+                                            @endif
                                         @elseif (is_bool($newValue))
                                             <span
                                                 class="text-xs text-gray-500">{{ $newValue ? 'true' : 'false' }}</span>

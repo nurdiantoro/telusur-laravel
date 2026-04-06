@@ -24,6 +24,9 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             UserTelusurSeeder::class,
             UserRoleSeeder::class,
+
+            // Dipake saat development aja
+            // GallerySeeder::class,
         ]);
     }
 }

@@ -71,78 +71,7 @@ class Post extends Model implements HasMedia
 
     public function gallery()
     {
-        return $this->belongsTo(Gallery::class);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Spatie Media Library Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Mengatur media conversion untuk gambar pada Post.
-    | Digunakan untuk menghasilkan berbagai ukuran gambar otomatis.
-    |
-    | Conversion:
-    |
-    | 1. preview
-    |    - Ukuran: 1200x1200
-    |    - Format: webp
-    |    - Digunakan untuk tampilan utama / detail artikel
-    |
-    | 2. thumbnail
-    |    - Ukuran: 600x300
-    |    - Format: webp
-    |    - Digunakan untuk list / card / sidebar
-    |
-    | nonQueued():
-    | - Proses dilakukan secara synchronous (langsung)
-    | - Cocok untuk development, tapi untuk production besar
-    |   sebaiknya pakai queue agar tidak membebani request
-    |
-    */
-
-    public function registerMediaConversions(?Media $media = null): void
-    {
-        $this->addMediaConversion('preview')
-            ->format('webp')
-            ->width(1200)
-            ->height(1200)
-            ->quality(80)
-            ->nonQueued();
-
-        $this->addMediaConversion('thumbnail')
-            ->format('webp')
-            ->width(600)
-            ->height(300)
-            ->quality(80)
-            ->nonQueued();
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Accessor for Media URL (Spatie)
-    |--------------------------------------------------------------------------
-    |
-    | Shortcut untuk mengambil URL gambar dari Spatie Media Library.
-    | Bisa langsung dipanggil di blade tanpa harus menulis logic panjang.
-    |
-    | Contoh penggunaan:
-    | - $post->spatie_preview
-    | - $post->spatie_thumbnail
-    |
-    | imagesCollection:
-    | - Nama collection media yang digunakan saat upload gambar
-    |
-    */
-
-    public function getSpatiePreviewAttribute()
-    {
-        return $this->getFirstMediaUrl('imagesCollection', 'preview');
-    }
-
-    public function getSpatieThumbnailAttribute()
-    {
-        return $this->getFirstMediaUrl('imagesCollection', 'thumbnail');
+        return $this->belongsTo(Gallery::class, 'gallery_id');
     }
 
     /*
@@ -177,6 +106,7 @@ class Post extends Model implements HasMedia
                 'title',
                 'type',
                 'cover',
+                'gallery_id',
                 'caption',
                 'video_url',
                 'content',
