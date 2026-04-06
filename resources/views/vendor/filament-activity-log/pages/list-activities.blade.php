@@ -84,9 +84,9 @@
                                             @endphp
 
                                             @if ($gallery && $gallery->spatie_thumbnail)
-                                                <div class="flex flex-wrap items-center gap-2">
+                                                <div class="flex flex-col gap-2">
                                                     <img src="{{ $gallery->spatie_thumbnail }}"
-                                                        style="height:50px;border-radius:6px;" />
+                                                        class="aspect-video w-full rounded-lg" />
                                                     <span>{{ $gallery->title }}</span>
                                                 </div>
                                             @else
@@ -111,9 +111,9 @@
                                                 $gallery = $galleries[$newValue] ?? null;
                                             @endphp
                                             @if ($gallery && $gallery->spatie_thumbnail)
-                                                <div class="flex flex-wrap items-center gap-2">
+                                                <div class="flex flex-col gap-2">
                                                     <img src="{{ $gallery->spatie_thumbnail }}"
-                                                        style="height:50px;border-radius:6px;" />
+                                                        class="aspect-video w-full rounded-lg" />
                                                     <span>{{ $gallery->title }}</span>
                                                 </div>
                                             @else

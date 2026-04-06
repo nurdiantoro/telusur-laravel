@@ -35,6 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Blue,
             ])
+            ->globalSearch(false)
             ->darkMode(false)
             ->favicon(asset('img/icon-telusur.webp'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
