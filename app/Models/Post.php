@@ -189,8 +189,7 @@ class Post extends Model implements HasMedia
         return $query
             ->where('type', 'post')
             ->where('status', 'published')
-            ->where('publish_time', '<=', now())
-            ->with(['media', 'category', 'gallery'])
+            ->with(['category:id,name,slug', 'gallery.media'])
             ->orderByDesc('publish_time');
     }
     public function scopeOpini(Builder $query): Builder

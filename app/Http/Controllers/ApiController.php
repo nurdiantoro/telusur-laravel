@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gallery;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class ApiController extends Controller
@@ -31,6 +32,22 @@ class ApiController extends Controller
                 'last_page' => $galleries->lastPage(),
             ]
         ]);
+    }
+
+    public function test()
+    {
+        // dd(
+        //     DB::select("
+        //             EXPLAIN SELECT
+        //     id, title, slug, category_id, gallery_id, publish_time
+        // FROM posts
+        // WHERE type = 'post'
+        // AND status = 'published'
+        // ORDER BY publish_time DESC
+        // LIMIT 8
+
+        //         ")
+        // );
     }
 
     public function show($id)
@@ -67,5 +84,102 @@ class ApiController extends Controller
                 'thumbnail' => $gallery->spatie_thumbnail,
             ]
         ]);
+    }
+
+    public function berita_utama()
+    {
+        $posts = Post::post()
+            ->where('publish_time', '>=', now()->subDays(7))
+            ->select([
+                'id',
+                'title',
+                'slug',
+                'category_id',
+                'gallery_id',
+                'publish_time'
+            ])
+            ->limit(10)
+            ->get();
+
+        if ($posts->count() < 10) {
+            $excludeIds = $posts->pluck('id');
+
+            $morePosts = Post::post()
+                ->whereNotIn('id', $excludeIds)
+                ->select([
+                    'id',
+                    'title',
+                    'slug',
+                    'category_id',
+                    'gallery_id',
+                    'publish_time'
+                ])
+                ->limit(10 - $posts->count())
+                ->get();
+
+            $posts = $posts->merge($morePosts);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $posts
+        ], 200);
+    }
+
+    // API untuk Artikel Terbaru (pagination)
+    public function artikel_terbaru(Request $request)
+    {
+        $perPage = 9;
+        $artikelTerbaru = Post::post()
+            ->orderByDesc('publish_time')
+            ->paginate($perPage);
+
+        return response()->json([
+            'data' => $artikelTerbaru->items(),
+            'meta' => [
+                'current_page' => $artikelTerbaru->currentPage(),
+                'last_page' => $artikelTerbaru->lastPage(),
+            ]
+        ]);
+    }
+
+    public function berita_populer()
+    {
+        $berita_populer = Post::post()
+            ->orderByDesc('views')
+            ->limit(6)
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil mengambil berita populer',
+            'data' => $berita_populer
+        ], 200);
+    }
+
+    public function berita_video($limit)
+    {
+        $berita_video = Post::video()
+            ->limit($limit)
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil mengambil berita video',
+            'data' => $berita_video
+        ], 200);
+    }
+
+    public function berita_opini($limit)
+    {
+        $berita_opini = Post::opini()
+            ->limit($limit)
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil mengambil berita opini',
+            'data' => $berita_opini
+        ], 200);
     }
 }
