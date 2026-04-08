@@ -189,8 +189,8 @@ class Post extends Model implements HasMedia
         return $query
             ->where('type', 'post')
             ->where('status', 'published')
-            ->where('publish_time', '<=', now())
-            ->with(['media', 'category', 'gallery'])
+            // ->where('publish_time', '<=', now())
+            ->with(['category:id,name,slug', 'gallery.media'])
             ->orderByDesc('publish_time');
     }
     public function scopeOpini(Builder $query): Builder
@@ -199,7 +199,7 @@ class Post extends Model implements HasMedia
             ->where('type', 'opini')
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
-            ->with(['media', 'category', 'gallery'])
+            ->with(['category', 'gallery'])
             ->orderByDesc('publish_time');
     }
     public function scopeVideo(Builder $query): Builder
@@ -208,7 +208,7 @@ class Post extends Model implements HasMedia
             ->where('type', 'video')
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
-            ->with(['media', 'category', 'gallery'])
+            ->with(['category', 'gallery'])
             ->orderByDesc('publish_time');
     }
     // public function scopePublished(Builder $query): Builder

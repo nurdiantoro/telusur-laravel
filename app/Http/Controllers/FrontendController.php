@@ -12,8 +12,6 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-use function Pest\Laravel\json;
-
 class FrontendController extends Controller
 {
     public function index()
@@ -26,47 +24,21 @@ class FrontendController extends Controller
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
-        $post = Post::post()
-            ->first();
-
-        $beritaTerbaru = Post::post()
-            ->limit(12)
+        $suggestTags = Tag::inRandomOrder()
+            ->limit(5)
             ->get();
 
-        // Views Terbanyak dalam 1 bulan terakhir
         $beritaUtama = Post::post()
             ->orderByDesc('views')
             ->limit(10)
             ->get()
             ->values();
 
-        $beritaPopulers = Post::post()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        $opinions = Post::opini()
-            ->limit(9)
-            ->get();
-
-        $videos = Post::video()
-            ->limit(8)
-            ->get();
-
-        $suggestTags = Tag::inRandomOrder()
-            ->limit(5)
-            ->get();
-
         return view('index', compact(
             'navbarCategories',
             'sidebarAds',
-            'post',
-            'beritaTerbaru',
-            'beritaUtama',
-            'beritaPopulers',
-            'opinions',
-            'videos',
-            'suggestTags'
+            'suggestTags',
+            'beritaUtama'
         ));
     }
 
