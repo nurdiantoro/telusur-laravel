@@ -7,13 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Post extends Model implements HasMedia
+class Post extends Model
 {
-    use InteractsWithMedia;
     use LogsActivity;
     use Searchable;
 
@@ -189,12 +185,12 @@ class Post extends Model implements HasMedia
         return $query
             ->where('type', 'post')
             ->where('status', 'published')
-            // ->where('publish_time', '<=', now())
-            ->with([
-                'category:id,name,slug',
-                'gallery:id',
-                'gallery.media:id,model_id,file_name,collection_name,disk,conversions_disk'
-            ])
+            ->where('publish_time', '<=', now())
+            // ->with([
+            //     'category:id,name,slug',
+            //     'gallery:id',
+            //     'gallery.media:id,model_id,file_name,collection_name,disk,conversions_disk'
+            // ])
             ->orderByDesc('publish_time');
     }
     public function scopeOpini(Builder $query): Builder

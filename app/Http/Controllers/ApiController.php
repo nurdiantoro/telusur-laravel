@@ -38,21 +38,27 @@ class ApiController extends Controller
 
     public function test()
     {
-
-
-        // dd(
-        //     DB::select("
-        //             EXPLAIN SELECT
-        //     id, title, slug, category_id, gallery_id, publish_time
-        // FROM posts
-        // WHERE type = 'post'
-        // AND status = 'published'
-        // ORDER BY publish_time DESC
-        // LIMIT 8
-
-        //         ")
-        // );
+        $start = microtime(true);
+        register_shutdown_function(function () use ($start) {
+            $total = (microtime(true) - $start) * 1000;
+            // Log waktu eksekusi ke file sementara
+            file_put_contents('timer.txt', "Total Boot Time: " . round($total, 2) . " ms\n", FILE_APPEND);
+        });
+        return [
+            'memory_usage' => round(memory_get_usage() / 1024 / 1024, 2) . ' MB',
+            'laravel_start' => round((microtime(true) - LARAVEL_START) * 1000, 2) . ' ms'
+        ];
     }
+    // dd(
+    // DB::select("
+    // EXPLAIN (
+    // SELECT id, title, slug, category_id, gallery_id, publish_time, 1 AS priority
+    // FROM posts
+    // WHERE publish_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+    // LIMIT 10
+    // )
+    // ")
+    // );
 
     public function show($id)
     {
@@ -93,10 +99,17 @@ class ApiController extends Controller
     // API untuk Berita Utama (pagination)
     public function berita_utama()
     {
-        $data = Cache::remember('berita_utama', 60, function () {
+        // clear cache
+        // Cache::forget('post_cache');
+        $data = Cache::remember('post_cache', 60, function () {
             return
 
                 $posts = Post::post()
+                ->with([
+                    'category:id,name,slug',
+                    'gallery:id',
+                    'gallery.media:id,model_id,file_name,collection_name,disk,conversions_disk'
+                ])
                 ->where('publish_time', '>=', now()->subDays(7))
                 ->select([
                     'id',

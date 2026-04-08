@@ -13,7 +13,7 @@
                 class="mr-3 w-full appearance-none border-none bg-transparent px-2 py-1 leading-tight focus:outline-none" />
 
             <button type="submit" class="hover:text-warna-03 cursor-pointer p-2 text-gray-500">
-                <x-fas-search class="h-[1em]" />
+                {{-- <x-fas-search class="h-[1em]" /> --}}
             </button>
         </form>
 
