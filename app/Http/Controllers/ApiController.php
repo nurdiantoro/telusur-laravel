@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Gallery;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
@@ -37,42 +38,7 @@ class ApiController extends Controller
 
     public function test()
     {
-        $posts = Post::post()
-            ->where('publish_time', '>=', now()->subDays(7))
-            ->select([
-                'id',
-                'title',
-                'slug',
-                'category_id',
-                'gallery_id',
-                'publish_time'
-            ])
-            ->limit(10)
-            ->get();
 
-        // if ($posts->count() < 10) {
-        //     $excludeIds = $posts->pluck('id');
-
-        //     $morePosts = Post::post()
-        //         ->whereNotIn('id', $excludeIds)
-        //         ->select([
-        //             'id',
-        //             'title',
-        //             'slug',
-        //             'category_id',
-        //             'gallery_id',
-        //             'publish_time'
-        //         ])
-        //         ->limit(10 - $posts->count())
-        //         ->get();
-
-        //     $posts = $posts->merge($morePosts);
-        // }
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $posts
-        ]);
 
         // dd(
         //     DB::select("
@@ -127,19 +93,46 @@ class ApiController extends Controller
     // API untuk Berita Utama (pagination)
     public function berita_utama()
     {
-        $beritaUtama = Post::post()
-            ->orderByDesc('views')
-            ->limit(10)
-            ->get();
+        $data = Cache::remember('berita_utama', 60, function () {
+            return
 
-        return response()->json(
-            [
-                'status' => 'success',
-                'message' => 'Berhasil mengambil berita utama',
-                'data' => $beritaUtama
-            ],
-            200
-        );
+                $posts = Post::post()
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->select([
+                    'id',
+                    'title',
+                    'slug',
+                    'category_id',
+                    'gallery_id',
+                    'publish_time'
+                ])
+                ->limit(10)
+                ->get();
+
+            if ($posts->count() < 10) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = Post::post()
+                    ->whereNotIn('id', $excludeIds)
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time'
+                    ])
+                    ->limit(10 - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ]);
     }
 
     // API untuk Artikel Terbaru (pagination)
