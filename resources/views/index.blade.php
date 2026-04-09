@@ -105,41 +105,35 @@
                     <h2 class="mb-2 text-2xl font-bold">Berita Utama</h2>
                 </div>
 
-                {{-- <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div class="hidden md:block">
-                        <div class="flex animate-pulse gap-4">
-                            <div class="h-20 w-28 rounded-md bg-gray-200"></div>
-                            <div class="flex-1 space-y-2">
-                                <div class="h-4 w-1/3 rounded bg-gray-200"></div>
-                                <div class="h-4 w-1/2 rounded bg-gray-200"></div>
-                                <div class="h-4 w-3/4 rounded bg-gray-200"></div>
-                            </div>
-                        </div>
-                    </div>
-                    @foreach ($beritaUtama as $post)
-                        <a href="{{ ($post->category?->slug ?? '#') . '/' . $post->slug }}"
-                            class="group flex items-start gap-4">
-                            <div class="shrink-0">
-                                <img src="{{ $post->gallery?->spatie_thumbnail ?: asset('img/no_image.webp') }}"
-                                    alt="{{ $post->title }}"
-                                    class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
-                            </div>
-                            <div class="flex flex-col">
-                                <div class="mb-1 text-xs text-gray-500">
-                                    {{ $post->publish_time->diffForHumans() }}
-                                </div>
-                                <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition">
-                                    {{ $post->title }}
-                                </h3>
-                            </div>
-                        </a>
-                    @endforeach
-                </div> --}}
-                <div x-data="beritaUtama()" x-init="load()" class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div x-data="beritaUtama()" x-init="init()">
 
                     <!-- Skeleton -->
-                    <template x-if="loading">
-                        <div class="hidden md:block">
+                    <template x-if="isLoading">
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <div class="flex animate-pulse gap-4">
+                                <div class="h-20 w-28 rounded-md bg-gray-200"></div>
+                                <div class="flex-1 space-y-2">
+                                    <div class="h-4 w-1/3 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-1/2 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-3/4 rounded bg-gray-200"></div>
+                                </div>
+                            </div>
+                            <div class="flex animate-pulse gap-4">
+                                <div class="h-20 w-28 rounded-md bg-gray-200"></div>
+                                <div class="flex-1 space-y-2">
+                                    <div class="h-4 w-1/3 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-1/2 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-3/4 rounded bg-gray-200"></div>
+                                </div>
+                            </div>
+                            <div class="flex animate-pulse gap-4">
+                                <div class="h-20 w-28 rounded-md bg-gray-200"></div>
+                                <div class="flex-1 space-y-2">
+                                    <div class="h-4 w-1/3 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-1/2 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-3/4 rounded bg-gray-200"></div>
+                                </div>
+                            </div>
                             <div class="flex animate-pulse gap-4">
                                 <div class="h-20 w-28 rounded-md bg-gray-200"></div>
                                 <div class="flex-1 space-y-2">
@@ -152,27 +146,29 @@
                     </template>
 
                     <!-- Content -->
-                    <template x-for="post in posts" :key="post.id">
-                        <a :href="(post.category?.slug ?? '#') + '/' + post.slug" class="group flex items-start gap-4">
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <template x-for="post in dataList" :key="post.id">
+                            <a :href="(post.category?.slug) + '/' + post.slug" class="group flex items-start gap-4">
 
-                            <!-- Thumbnail -->
-                            <div class="shrink-0">
-                                <img :src="post.thumbnail ?? '/img/no_image.webp'" :alt="post.title"
-                                    class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
-                            </div>
+                                <!-- Thumbnail -->
+                                <div class="shrink-0">
+                                    <img :src="post.thumbnail" :alt="post.title"
+                                        class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
+                                </div>
 
-                            <!-- Content -->
-                            <div class="flex flex-col">
+                                <!-- Content -->
+                                <div class="flex flex-col">
 
-                                <!-- ✅ langsung pakai -->
-                                <div class="mb-1 text-xs text-gray-500" x-text="post.publish_time_human"></div>
+                                    <!-- ✅ langsung pakai -->
+                                    <div class="mb-1 text-xs text-gray-500" x-text="post.publish_time"></div>
 
-                                <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition"
-                                    x-text="post.title">
-                                </h3>
-                            </div>
-                        </a>
-                    </template>
+                                    <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition"
+                                        x-text="post.title">
+                                    </h3>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
                 </div>
             </div>
 

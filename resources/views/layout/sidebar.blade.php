@@ -18,7 +18,7 @@
     {{-- ===================== --}}
     {{-- Popular News --}}
     {{-- ===================== --}}
-    <section class="flex flex-col" x-data="popularNews()" x-init="load()">
+    <section class="flex flex-col" x-data="beritaPopuler()" x-init="init()">
 
         <h2 class="text-merah-01 mb-4 border-b pb-2 text-sm font-bold uppercase tracking-wide">
             Berita Populer
@@ -42,18 +42,18 @@
             </template>
 
             <!-- Content -->
-            <template x-for="popularPost in popularPosts" :key="popularPost.id">
+            <template x-for="beritaPopuler in dataList" :key="beritaPopuler.id">
                 <article class="group flex gap-3">
                     <!-- Thumbnail -->
-                    <a :href="`/post/${popularPost.category.slug}/${popularPost.slug}`" class="shrink-0">
-                        <img :src="popularPost.thumbnail ?? '/img/no_image.webp'" :alt="popularPost.title"
+                    <a :href="`/post/${beritaPopuler.category.slug}/${beritaPopuler.slug}`" class="shrink-0">
+                        <img :src="beritaPopuler.thumbnail" :alt="beritaPopuler.title"
                             class="h-20 w-24 rounded-md object-cover transition duration-300 group-hover:scale-105">
                     </a>
                     <!-- Content -->
                     <div class="flex flex-col">
-                        <a :href="`/post/${popularPost.category.slug}/${popularPost.slug}`">
+                        <a :href="`/post/${beritaPopuler.category.slug}/${beritaPopuler.slug}`">
                             <h3 class="group-hover:text-merah-01 line-clamp-3 text-sm font-semibold leading-snug transition"
-                                x-text="popularPost.title"></h3>
+                                x-text="beritaPopuler.title"></h3>
                         </a>
                     </div>
                 </article>

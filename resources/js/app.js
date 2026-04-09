@@ -1,33 +1,64 @@
 import './bootstrap';
 import Swiper from 'swiper';
-import { Navigation, Autoplay } from 'swiper/modules';
+import {
+    Navigation,
+    Autoplay
+} from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import Alpine from 'alpinejs';
 
+function createFetcher(urlApi) {
+    return () => ({
+        isLoading: false,
+        isLoaded: false,
+        dataList: [],
+        error: null,
+
+        async fetchData() {
+            if (this.isLoaded) return;
+
+            try {
+                this.isLoading = true;
+
+                const response = await fetch(urlApi);
+                const {
+                    data
+                } = await response.json();
+
+                console.log('Data dari API:', data);
+
+                this.dataList = data;
+                this.isLoaded = true;
+            } catch (error) {
+                this.error = error;
+                console.error(error);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        init() {
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    this.fetchData();
+                    observer.disconnect();
+                }
+            }, {
+                rootMargin: '200px'
+            });
+
+            observer.observe(this.$el);
+        }
+    });
+}
+
+
 window.Alpine = Alpine;
 
-// Data Alpine: Berita Utama (Lazy Loading)
 document.addEventListener('alpine:init', () => {
-    Alpine.data('beritaUtama', () => ({
-        loading: true,
-        posts: [],
-
-        async load() {
-            try {
-                const res = await fetch('/api/berita-utama')
-                const json = await res.json()
-
-                // 🔥 langsung pakai dari API (udah clean)
-                this.posts = json.data
-
-            } catch (e) {
-                console.error('Gagal load berita utama:', e)
-            } finally {
-                this.loading = false
-            }
-        }
-    }))
+    Alpine.data('beritaUtama', createFetcher('/api/berita-utama'));
+    Alpine.data('beritaPopuler', createFetcher('/api/berita-populer'));
 });
 
 Alpine.start();

@@ -109,7 +109,7 @@ class ApiController extends Controller
     public function berita_utama()
     {
         // clear cache
-        // Cache::forget('berita_utama_cache');
+        Cache::forget('berita_utama_cache');
         $data = Cache::remember('berita_utama_cache', 60, function () {
             $posts = Post::post()
                 ->where('publish_time', '>=', now()->subDays(7))
@@ -150,8 +150,7 @@ class ApiController extends Controller
                     'id' => $post->id,
                     'title' => $post->title,
                     'slug' => $post->slug,
-                    'publish_time' => $post->publish_time,
-                    'publish_time_human' => $post->publish_time->diffForHumans(),
+                    'publish_time' => $post->publish_time->diffForHumans(),
                     'category' => [
                         'slug' => $post->category?->slug
                     ],
