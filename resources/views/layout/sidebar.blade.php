@@ -18,7 +18,7 @@
     {{-- ===================== --}}
     {{-- Popular News --}}
     {{-- ===================== --}}
-    <section class="flex flex-col" x-data="beritaPopuler()" x-init="muat()">
+    <section class="flex flex-col" x-data="popularNews()" x-init="load()">
 
         <h2 class="text-merah-01 mb-4 border-b pb-2 text-sm font-bold uppercase tracking-wide">
             Berita Populer
@@ -27,7 +27,7 @@
         <div class="flex flex-col gap-4">
 
             <!-- Skeleton -->
-            <template x-if="memuat">
+            <template x-if="isLoading">
                 <div class="flex flex-col gap-4">
                     <template x-for="i in 4">
                         <div class="flex animate-pulse gap-3">
@@ -42,18 +42,18 @@
             </template>
 
             <!-- Content -->
-            <template x-for="populer in daftarPopuler" :key="populer.id">
+            <template x-for="popularPost in popularPosts" :key="popularPost.id">
                 <article class="group flex gap-3">
                     <!-- Thumbnail -->
-                    <a :href="`/post/${populer.category.slug}/${populer.slug}`" class="shrink-0">
-                        <img :src="populer.thumbnail ?? '/img/no_image.webp'" :alt="populer.title"
+                    <a :href="`/post/${popularPost.category.slug}/${popularPost.slug}`" class="shrink-0">
+                        <img :src="popularPost.thumbnail ?? '/img/no_image.webp'" :alt="popularPost.title"
                             class="h-20 w-24 rounded-md object-cover transition duration-300 group-hover:scale-105">
                     </a>
                     <!-- Content -->
                     <div class="flex flex-col">
-                        <a :href="`/post/${populer.category.slug}/${populer.slug}`">
+                        <a :href="`/post/${popularPost.category.slug}/${popularPost.slug}`">
                             <h3 class="group-hover:text-merah-01 line-clamp-3 text-sm font-semibold leading-snug transition"
-                                x-text="populer.title"></h3>
+                                x-text="popularPost.title"></h3>
                         </a>
                     </div>
                 </article>

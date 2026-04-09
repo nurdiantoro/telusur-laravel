@@ -186,11 +186,11 @@ class Post extends Model
             ->where('type', 'post')
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
-            // ->with([
-            //     'category:id,name,slug',
-            //     'gallery:id',
-            //     'gallery.media:id,model_id,file_name,collection_name,disk,conversions_disk'
-            // ])
+            ->with([
+                'category:id,name,slug',
+                'gallery:id',
+                'gallery.media:id,model_id,file_name,collection_name,disk,conversions_disk'
+            ])
             ->orderByDesc('publish_time');
     }
     public function scopeOpini(Builder $query): Builder
@@ -208,7 +208,11 @@ class Post extends Model
             ->where('type', 'video')
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
-            ->with(['category', 'gallery'])
+            ->with([
+                'category:id,name,slug',
+                'gallery:id',
+                'gallery.media:id,model_id,file_name,collection_name,disk,conversions_disk'
+            ])
             ->orderByDesc('publish_time');
     }
     // public function scopePublished(Builder $query): Builder
