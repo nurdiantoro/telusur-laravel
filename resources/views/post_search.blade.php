@@ -6,7 +6,9 @@
         <div class="flex flex-col md:w-3/4">
             <div class="mb-4 hidden flex-row items-center gap-2 md:flex">
                 <a href="{{ route('home') }}" class="text-warna-01 text-sm font-bold hover:underline">Search</a>
-                <span class="h-auto w-2"><x-fas-angle-right /></span>
+                <span class="h-auto w-2">
+                    {{-- <x-fas-angle-right /> --}}
+                </span>
                 <span href="" class="text-sm text-gray-600 hover:underline">
                     {{ request('search_input') }}
                 </span>

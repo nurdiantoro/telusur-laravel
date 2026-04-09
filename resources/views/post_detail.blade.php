@@ -18,7 +18,9 @@
             {{-- Breadcrumb --}}
             <div class="mb-4 flex flex-row items-center gap-2">
                 <a href="{{ route('home') }}" class="text-warna-01 text-sm font-bold hover:underline">Home</a>
-                <span><x-fas-angle-right class="h-2 w-2" /></span>
+                <span>
+                    {{-- <x-fas-angle-right class="h-2 w-2" /> --}}
+                </span>
                 <a href="{{ route('post.category', $category->slug) }}" class="text-sm text-gray-600 hover:underline">
                     {{ $category->name }}
                 </a>
@@ -56,28 +58,36 @@
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ $url }}" target="_blank"
                             rel="noopener"
                             class="flex flex-row items-center gap-1 bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700">
-                            <div class="h-4 w-4"><x-fab-facebook /></div> Facebook
+                            <div class="h-4 w-4">
+                                {{-- <x-fab-facebook /> --}}
+                            </div> Facebook
                         </a>
 
                         <!-- Twitter / X -->
                         <a href="https://twitter.com/intent/tweet?url={{ $url }}&text={{ $title }}"
                             target="_blank" rel="noopener"
                             class="flex flex-row items-center gap-1 bg-black px-3 py-2 text-sm text-white hover:bg-gray-800">
-                            <div class="h-4 w-4"><x-fab-x-twitter /></div> X
+                            <div class="h-4 w-4">
+                                {{-- <x-fab-x-twitter /> --}}
+                            </div> X
                         </a>
 
                         <!-- WhatsApp -->
                         <a href="https://wa.me/?text={{ $title }}%20{{ $url }}" target="_blank"
                             rel="noopener"
                             class="flex flex-row items-center gap-1 bg-green-600 px-3 py-2 text-sm text-white hover:bg-green-700">
-                            <div class="h-4 w-4"><x-fab-whatsapp /></div> WhatsApp
+                            <div class="h-4 w-4">
+                                {{-- <x-fab-whatsapp /> --}}
+                            </div> WhatsApp
                         </a>
 
                         <!-- Telegram -->
                         <a href="https://t.me/share/url?url={{ $url }}&text={{ $title }}" target="_blank"
                             rel="noopener"
                             class="flex flex-row items-center gap-1 bg-sky-500 px-3 py-2 text-sm text-white hover:bg-sky-600">
-                            <div class="h-4 w-4"><x-fab-telegram /></div> Telegram
+                            <div class="h-4 w-4">
+                                {{-- <x-fab-telegram /> --}}
+                            </div> Telegram
                         </a>
                     </div>
                 </figure>
@@ -89,7 +99,9 @@
                 @if ($post->tags->count() > 0)
                     <div class="mb-6 flex flex-row flex-wrap gap-2 text-gray-700">
                         <div class="flex flex-row items-center justify-center gap-2">
-                            <span class="w-4"> <x-fas-tag /></span>
+                            <span class="w-4">
+                                {{-- <x-fas-tag /> --}}
+                            </span>
                             <span> tags :</span>
                         </div>
                         @foreach ($post->tags as $tag)
