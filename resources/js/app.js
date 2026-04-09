@@ -10,29 +10,30 @@ import Alpine from 'alpinejs';
 
 function createFetcher(urlApi) {
     return () => ({
-        isLoading: false,
+        isLoading: true,
         isLoaded: false,
-        dataList: [],
+        apiPosts: [],
         error: null,
 
         async fetchData() {
             if (this.isLoaded) return;
 
             try {
-                this.isLoading = true;
 
                 const response = await fetch(urlApi);
                 const {
                     data
                 } = await response.json();
 
-                console.log('Data dari API:', data);
-
-                this.dataList = data;
+                // console.log('Data dari API:', data);
+                this.$refs.skeleton.style.display = 'none';
+                this.apiPosts = data;
                 this.isLoaded = true;
             } catch (error) {
                 this.error = error;
-                console.error(error);
+
+                // console.error(error);
+
             } finally {
                 this.isLoading = false;
             }
@@ -59,6 +60,9 @@ window.Alpine = Alpine;
 document.addEventListener('alpine:init', () => {
     Alpine.data('beritaUtama', createFetcher('/api/berita-utama'));
     Alpine.data('beritaPopuler', createFetcher('/api/berita-populer'));
+    Alpine.data('beritaTerbaru', createFetcher('/api/berita-terbaru'));
+    Alpine.data('beritaVideo', createFetcher('/api/berita-video'));
+    Alpine.data('beritaOpini', createFetcher('/api/berita-opini'));
 });
 
 Alpine.start();

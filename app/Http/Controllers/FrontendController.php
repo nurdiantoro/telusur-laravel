@@ -11,23 +11,26 @@ use App\Models\Subscriber;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-
-use function Pest\Laravel\json;
+use Illuminate\Support\Facades\Cache;
 
 class FrontendController extends Controller
 {
     public function index()
     {
-        $navbarCategories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
 
-        $post = Post::post()
-            ->first();
+        // $post = Post::post()
+        //     ->first();
 
         $beritaTerbaru = Post::post()
             ->limit(12)
@@ -60,7 +63,6 @@ class FrontendController extends Controller
         return view('index', compact(
             'navbarCategories',
             'sidebarAds',
-            'post',
             'beritaTerbaru',
             'beritaUtama',
             'beritaPopulers',
@@ -129,6 +131,7 @@ class FrontendController extends Controller
             'adsense'
         ));
     }
+
     public function postByCategory($slug)
     {
         $categories = PostCategory::with(['children'])

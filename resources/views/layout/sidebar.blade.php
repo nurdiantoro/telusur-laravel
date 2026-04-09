@@ -24,36 +24,36 @@
             Berita Populer
         </h2>
 
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4" x-ref="skeleton">
 
             <!-- Skeleton -->
-            <template x-if="isLoading">
-                <div class="flex flex-col gap-4">
-                    <template x-for="i in 4">
-                        <div class="flex animate-pulse gap-3">
-                            <div class="h-20 w-24 rounded-md bg-gray-200"></div>
-                            <div class="flex-1 space-y-2">
-                                <div class="h-4 w-3/4 rounded bg-gray-200"></div>
-                                <div class="h-4 w-1/2 rounded bg-gray-200"></div>
-                            </div>
+            <div class="flex flex-col gap-4">
+                @for ($i = 0; $i < 6; $i++)
+                    <div class="flex animate-pulse gap-3">
+                        <div class="h-20 w-24 rounded-md bg-gray-200"></div>
+                        <div class="flex-1 space-y-2">
+                            <div class="h-4 w-3/4 rounded bg-gray-200"></div>
+                            <div class="h-4 w-1/2 rounded bg-gray-200"></div>
                         </div>
-                    </template>
-                </div>
-            </template>
+                    </div>
+                @endfor
+            </div>
+        </div>
 
+        <div class="flex flex-col gap-4">
             <!-- Content -->
-            <template x-for="beritaPopuler in dataList" :key="beritaPopuler.id">
+            <template x-for="post in apiPosts" :key="post.id">
                 <article class="group flex gap-3">
                     <!-- Thumbnail -->
-                    <a :href="`/post/${beritaPopuler.category.slug}/${beritaPopuler.slug}`" class="shrink-0">
-                        <img :src="beritaPopuler.thumbnail" :alt="beritaPopuler.title"
+                    <a :href="`/post/${post.category.slug}/${post.slug}`" class="shrink-0">
+                        <img :src="post.thumbnail" :alt="post.title"
                             class="h-20 w-24 rounded-md object-cover transition duration-300 group-hover:scale-105">
                     </a>
                     <!-- Content -->
                     <div class="flex flex-col">
-                        <a :href="`/post/${beritaPopuler.category.slug}/${beritaPopuler.slug}`">
+                        <a :href="`/post/${post.category.slug}/${post.slug}`">
                             <h3 class="group-hover:text-merah-01 line-clamp-3 text-sm font-semibold leading-snug transition"
-                                x-text="beritaPopuler.title"></h3>
+                                x-text="post.title"></h3>
                         </a>
                     </div>
                 </article>

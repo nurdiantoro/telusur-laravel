@@ -109,7 +109,7 @@ class ApiController extends Controller
     public function berita_utama()
     {
         // clear cache
-        Cache::forget('berita_utama_cache');
+        // Cache::forget('berita_utama_cache');
         $data = Cache::remember('berita_utama_cache', 60, function () {
             $posts = Post::post()
                 ->where('publish_time', '>=', now()->subDays(7))
@@ -335,7 +335,8 @@ class ApiController extends Controller
                         'slug' => $post->category?->slug
                     ],
                     'video_url' => 'https://www.youtube.com/embed/' . $post->video_url,
-                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                    'thumbnail' => 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg' ?? asset('img/no_image.webp')
+                    // 'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
                 ];
             });
         });
