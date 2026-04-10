@@ -18,4 +18,4 @@
 <link rel="preload" as="image" href="{{ asset('img/logo-telusur.webp') }}">
 <link rel="preload" as="image" href="{{ asset('img/city.webp') }}">
 
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+{{-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> --}}

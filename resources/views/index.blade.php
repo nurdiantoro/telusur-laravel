@@ -105,33 +105,46 @@
                     <h2 class="mb-2 text-2xl font-bold">Berita Utama</h2>
                 </div>
 
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    @foreach ($beritaUtama as $post)
-                        <a href="{{ ($post->category?->slug ?? '#') . '/' . $post->slug }}"
-                            class="group flex items-start gap-4">
+                <div x-data="beritaUtama()" x-init="init()">
 
-                            {{-- Thumbnail --}}
-                            <div class="shrink-0">
-                                <img src="{{ $post->gallery?->spatie_thumbnail ?: asset('img/no_image.webp') }}"
-                                    alt="{{ $post->title }}"
-                                    class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
+                    <!-- Skeleton -->
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2" x-ref="skeleton">
+                        @for ($n = 0; $n < 6; $n++)
+                            <div class="flex animate-pulse gap-4">
+                                <div class="h-20 w-28 rounded-md bg-gray-200"></div>
+                                <div class="flex-1 space-y-2">
+                                    <div class="h-4 w-1/3 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-1/2 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-3/4 rounded bg-gray-200"></div>
+                                </div>
                             </div>
+                        @endfor
+                    </div>
 
-                            {{-- Content --}}
-                            <div class="flex flex-col">
+                    <!-- Content -->
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <template x-for="post in apiPosts" :key="post.id">
+                            <a :href="(post.category?.slug) + '/' + post.slug" class="group flex items-start gap-4">
 
-                                {{-- Author & Date --}}
-                                <div class="mb-1 text-xs text-gray-500">
-                                    {{ $post->publish_time->diffForHumans() }}
+                                <!-- Thumbnail -->
+                                <div class="shrink-0">
+                                    <img :src="post.thumbnail" :alt="post.title"
+                                        class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
                                 </div>
 
-                                {{-- Title --}}
-                                <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition">
-                                    {{ $post->title }}
-                                </h3>
-                            </div>
-                        </a>
-                    @endforeach
+                                <!-- Content -->
+                                <div class="flex flex-col">
+
+                                    <!-- ✅ langsung pakai -->
+                                    <div class="mb-1 text-xs text-gray-500" x-text="post.publish_time"></div>
+
+                                    <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition"
+                                        x-text="post.title">
+                                    </h3>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
                 </div>
             </div>
 
@@ -142,41 +155,42 @@
                     <h2 class="mb-2 text-2xl font-bold">Artikel Terbaru</h2>
                 </div>
 
-                <div class="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    @foreach ($beritaTerbaru as $newArticle)
-                        <a href="{{ $newArticle->category->slug . '/' . $newArticle->slug }}"
-                            class="group mb-2 flex h-full flex-col">
-
-                            {{-- Image --}}
-                            <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
-                                <img src="{{ $newArticle->gallery?->spatie_thumbnail ?: asset('img/no_image.webp') }}"
-                                    alt="{{ $newArticle->title }}"
-                                    class="h-full w-full object-cover transition duration-300 ease-out group-hover:scale-105">
-                            </div>
-
-                            {{-- Content --}}
-                            <div class="mt-4 flex grow flex-col gap-1">
-
-                                {{-- Category --}}
-                                <span class="inline-block w-fit bg-red-600 px-3 py-1 text-xs font-bold text-white">
-                                    {{ strtoupper($newArticle->category->name ?? 'No Category') }}
-                                </span>
-
-                                {{-- Title --}}
-                                <h2
-                                    class="group-hover:text-warna-03 line-clamp-2 text-lg font-bold leading-snug transition">
-                                    {{ $newArticle->title }}
-                                </h2>
-
-                                {{-- Author & Date --}}
-                                <div class="text-xs text-gray-500">
-                                    {{ $newArticle->publish_time->diffForHumans() }}
+                <div x-data="beritaTerbaru()" x-init="init()">
+                    {{-- Skeleton --}}
+                    <div class="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3" x-ref="skeleton">
+                        @for ($n = 0; $n < 6; $n++)
+                            <div class="animate-pulse">
+                                <div class="aspect-video w-full rounded-md bg-gray-200"></div>
+                                <div class="mt-4 space-y-2">
+                                    <div class="h-4 w-1/3 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-1/2 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-3/4 rounded bg-gray-200"></div>
                                 </div>
-
                             </div>
+                        @endfor
+                    </div>
 
-                        </a>
-                    @endforeach
+                    <!-- Content -->
+                    <div class="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        <template x-for="post in apiPosts" :key="post.id">
+                            <a :href="post.category.slug + '/' + post.slug" class="group mb-2 flex h-full flex-col">
+                                <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
+                                    <img :src="post.thumbnail" :alt="post.title"
+                                        class="h-full w-full object-cover transition duration-300 ease-out group-hover:scale-105">
+                                </div>
+                                <div class="mt-4 flex grow flex-col gap-1">
+                                    <span class="inline-block w-fit bg-red-600 px-3 py-1 text-xs font-bold text-white"
+                                        x-text="post.category.name.toUpperCase()">
+                                    </span>
+                                    <h2 class="group-hover:text-warna-03 line-clamp-2 text-lg font-bold leading-snug transition"
+                                        x-text="post.title">
+                                    </h2>
+                                    <div class="text-xs text-gray-500" x-text="post.publish_time">
+                                    </div>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
                 </div>
             </div>
 
@@ -187,50 +201,59 @@
                     <h2 class="mb-2 text-2xl font-bold">Berita Video</h2>
                 </div>
 
-                <div class="grid grid-cols-2 gap-6">
-                    @foreach ($videos as $video)
-                        <a href="{{ $video->category->slug . '/' . $video->slug }}"
-                            class="group relative flex flex-col items-start gap-4 rounded-xl">
-
-                            {{-- Image --}}
-                            <div class="w-full">
-                                <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
-                                    <img src="{{ $video->video_url
-                                        ? 'https://img.youtube.com/vi/' . $video->video_url . '/hqdefault.jpg'
-                                        : asset('img/no_image.webp') }}"
-                                        alt="{{ $video->title }}"
-                                        class="h-full w-full object-cover transition duration-300">
+                <div x-data="beritaVideo()" x-init="init()">
+                    <div class="grid grid-cols-2 gap-6" x-ref="skeleton">
+                        @for ($n = 0; $n < 6; $n++)
+                            <div class="animate-pulse">
+                                <div class="aspect-video w-full rounded-md bg-gray-200"></div>
+                                <div class="mt-4 space-y-2">
+                                    <div class="h-4 w-1/3 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-1/2 rounded bg-gray-200"></div>
+                                    <div class="h-4 w-3/4 rounded bg-gray-200"></div>
                                 </div>
                             </div>
+                        @endfor
+                    </div>
+                    <div class="grid grid-cols-2 gap-6">
+                        <template x-for="post in apiPosts" :key="post.id">
+                            <a :href="post.category.slug + '/' + post.slug"
+                                class="group relative flex flex-col items-start gap-4 rounded-xl">
 
-                            {{-- Content --}}
-                            <div class="flex flex-col justify-center gap-2">
-
-                                {{-- Category --}}
-                                <span class="inline-block w-fit bg-red-600 px-3 py-1 text-xs font-bold text-white">
-                                    {{ strtoupper($video->category->name ?? 'No Category') }}
-                                </span>
-
-                                {{-- Title --}}
-                                <h2
-                                    class="group-hover:text-warna-03 line-clamp-2 text-lg font-bold leading-snug transition">
-                                    {{ $video->title }}
-                                </h2>
-
-                                {{-- Author & Date --}}
-                                <div class="text-xs text-gray-500">
-                                    {{ $video->publish_time->translatedFormat('d F Y') }}
+                                {{-- Image --}}
+                                <div class="w-full">
+                                    <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
+                                        <img :src="post.thumbnail" :alt="post.title"
+                                            class="h-full w-full object-cover transition duration-300">
+                                    </div>
                                 </div>
 
-                            </div>
+                                {{-- Content --}}
+                                <div class="flex flex-col justify-center gap-2">
 
-                            {{-- Hover Effect --}}
-                            <div
-                                class="pointer-events-none absolute inset-0 scale-90 rounded-xl bg-gray-400 opacity-0 transition duration-300 ease-out group-hover:scale-105 group-hover:opacity-10">
-                            </div>
+                                    {{-- Category --}}
+                                    <span class="inline-block w-fit bg-red-600 px-3 py-1 text-xs font-bold text-white"
+                                        x-text="post.category.name.toUpperCase()">
+                                    </span>
 
-                        </a>
-                    @endforeach
+                                    {{-- Title --}}
+                                    <h2 class="group-hover:text-warna-03 line-clamp-2 text-lg font-bold leading-snug transition"
+                                        x-text="post.title">
+                                    </h2>
+
+                                    {{-- Author & Date --}}
+                                    <div class="text-xs text-gray-500" x-text="post.publish_time">
+                                    </div>
+
+                                </div>
+
+                                {{-- Hover Effect --}}
+                                <div
+                                    class="pointer-events-none absolute inset-0 scale-90 rounded-xl bg-gray-400 opacity-0 transition duration-300 ease-out group-hover:scale-105 group-hover:opacity-10">
+                                </div>
+
+                            </a>
+                        </template>
+                    </div>
                 </div>
             </div>
 
@@ -240,47 +263,66 @@
                     class="before:bg-warna-01 relative mb-6 border-b border-gray-200 before:absolute before:top-full before:h-1 before:w-16">
                     <h2 class="mb-2 text-2xl font-bold">Opini</h2>
                 </div>
+                <div x-data="beritaOpini()" x-init="init()">
+                    <div class="flex flex-col gap-6" x-ref="skeleton">
+                        @for ($n = 0; $n < 6; $n++)
+                            <div class="animate-pulse">
+                                <div class="group grid grid-cols-1 items-start gap-6 md:grid-cols-3">
 
-                <div class="flex flex-col gap-6">
-                    @foreach ($opinions as $opini)
-                        <a href="{{ ($opini->category?->slug ?: 'opini') . '/' . $opini->slug }}"
-                            class="group grid grid-cols-1 items-start gap-6 md:grid-cols-3">
+                                    {{-- image --}}
+                                    <div class="md:col-span-1">
+                                        <div class="aspect-2/1 w-full rounded-md bg-gray-200"></div>
+                                    </div>
 
-                            {{-- Image --}}
-                            <div class="md:col-span-1">
-                                <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
-                                    <img src="{{ $opini->gallery?->spatie_thumbnail ?: asset('img/no_image.webp') }}"
-                                        alt="{{ $opini->title }}"
-                                        class="h-full w-full rounded-md object-cover transition duration-300 group-hover:scale-105">
+                                    {{-- content --}}
+                                    <div class="flex flex-col justify-center md:col-span-2">
+                                        <div class="space-y-2">
+                                            <div class="h-4 w-1/3 rounded bg-gray-200"></div>
+                                            <div class="h-4 w-1/2 rounded bg-gray-200"></div>
+                                            <div class="h-4 w-3/4 rounded bg-gray-200"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                        @endfor
+                    </div>
+                    <div class="flex flex-col gap-6">
+                        <template x-for="post in apiPosts" :key="post.id">
+                            <a :href="post.category?.slug ? : 'opini' + '/' + post.slug"
+                                class="group grid grid-cols-1 items-start gap-6 md:grid-cols-3">
 
-                            {{-- Content --}}
-                            <div class="flex flex-col justify-center md:col-span-2">
-
-                                {{-- Author & Date --}}
-                                <div class="mb-2 text-xs text-gray-500">
-                                    {{ $opini->publish_time->translatedFormat('d F Y') }}
+                                {{-- Image --}}
+                                <div class="md:col-span-1">
+                                    <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
+                                        <img :src="post.thumbnail" :alt="post.title"
+                                            class="h-full w-full rounded-md object-cover transition duration-300 group-hover:scale-105">
+                                    </div>
                                 </div>
 
-                                {{-- Title --}}
-                                <h2 class="group-hover:text-warna-03 mb-3 text-xl font-bold leading-snug transition">
-                                    {{ $opini->title }}
-                                </h2>
+                                {{-- Content --}}
+                                <div class="flex flex-col justify-center md:col-span-2">
 
-                            </div>
+                                    {{-- Author & Date --}}
+                                    <div class="mb-2 text-xs text-gray-500" x-text="post.publish_time">
+                                    </div>
 
-                        </a>
-                    @endforeach
+                                    {{-- Title --}}
+                                    <h2 class="group-hover:text-warna-03 mb-3 text-xl font-bold leading-snug transition"
+                                        x-text="post.title">
+                                    </h2>
+
+                                </div>
+
+                            </a>
+                        </template>
+                    </div>
                 </div>
             </div>
         </div>
 
         {{-- side div --}}
         <aside class="w-full md:w-1/4">
-            {{-- <div class="md:sticky md:top-18 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto no-scrollbar"> --}}
             @include('layout.sidebar')
-            {{-- </div> --}}
         </aside>
     </div>
 @endsection

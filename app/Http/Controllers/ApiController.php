@@ -5,10 +5,36 @@ namespace App\Http\Controllers;
 use App\Models\Gallery;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
-    function index(Request $request)
+    public function test()
+    {
+        $start = microtime(true);
+        register_shutdown_function(function () use ($start) {
+            $total = (microtime(true) - $start) * 1000;
+            // Log waktu eksekusi ke file sementara
+            file_put_contents('timer.txt', "Total Boot Time: " . round($total, 2) . " ms\n", FILE_APPEND);
+        });
+        return [
+            'memory_usage' => round(memory_get_usage() / 1024 / 1024, 2) . ' MB',
+            'laravel_start' => round((microtime(true) - LARAVEL_START) * 1000, 2) . ' ms'
+        ];
+        // dd(
+        // DB::select("
+        // EXPLAIN (
+        // SELECT id, title, slug, category_id, gallery_id, publish_time, 1 AS priority
+        // FROM posts
+        // WHERE publish_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+        // LIMIT 10
+        // )
+        // ")
+        // );
+    }
+
+    public function index(Request $request)
     {
         $search = $request->get('search');
 
@@ -63,7 +89,7 @@ class ApiController extends Controller
         ]);
     }
 
-    function upload(Request $request)
+    public function upload(Request $request)
     {
         $request->validate([
             'file' => 'required|image|max:2480'
@@ -85,27 +111,25 @@ class ApiController extends Controller
             ]
         ]);
     }
-
+    /*
+    |--------------------------------------------------------------------------
+    | API untuk Berita Utama
+    |--------------------------------------------------------------------------
+    |
+    | Berita utama diambil berdasarkan publish_time dalam 7 hari terakhir, dengan limit 10.
+    | Jika dalam 7 hari terakhir kurang dari 10 berita, maka akan diambil berita
+    | tambahan berdasarkan publish_time terdepan (tanpa batasan waktu)
+    | untuk melengkapi total 10 berita.
+    |
+    */
     public function berita_utama()
     {
-        $posts = Post::post()
-            ->where('publish_time', '>=', now()->subDays(7))
-            ->select([
-                'id',
-                'title',
-                'slug',
-                'category_id',
-                'gallery_id',
-                'publish_time'
-            ])
-            ->limit(10)
-            ->get();
-
-        if ($posts->count() < 10) {
-            $excludeIds = $posts->pluck('id');
-
-            $morePosts = Post::post()
-                ->whereNotIn('id', $excludeIds)
+        // clear cache
+        // Cache::forget('berita_utama_cache');
+        $data = Cache::remember('berita_utama_cache', 60, function () {
+            $posts = Post::post()
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->where('category_id', '18') // Hanya kategori "Berita Utama" (nanti mesti di ganti kalo udah ada kolom headline)
                 ->select([
                     'id',
                     'title',
@@ -114,72 +138,266 @@ class ApiController extends Controller
                     'gallery_id',
                     'publish_time'
                 ])
-                ->limit(10 - $posts->count())
+                ->limit(10)
                 ->get();
 
-            $posts = $posts->merge($morePosts);
-        }
+            if ($posts->count() < 10) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = Post::post()
+                    ->whereNotIn('id', $excludeIds)
+                    ->where('category_id', '18') // Hanya kategori "Berita Utama" (nanti mesti di ganti kalo udah ada kolom headline)
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time'
+                    ])
+                    ->limit(10 - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            return $posts->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'slug' => $post->slug,
+                    'publish_time' => $post->publish_time->diffForHumans(),
+                    'category' => [
+                        'slug' => $post->category?->slug
+                    ],
+                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                ];
+            });
+        });
 
         return response()->json([
             'status' => 'success',
-            'data' => $posts
+            'data' => $data
         ], 200);
     }
-
-    // API untuk Artikel Terbaru (pagination)
-    public function artikel_terbaru(Request $request)
+    /*
+    |--------------------------------------------------------------------------
+    | API untuk Berita Terbaru
+    |--------------------------------------------------------------------------
+    |
+    | Berita utama diambil berdasarkan publish_time dalam 7 hari terakhir, dengan limit 10.
+    | Jika dalam 7 hari terakhir kurang dari 10 berita, maka akan diambil berita
+    | tambahan berdasarkan publish_time terdepan (tanpa batasan waktu)
+    | untuk melengkapi total 10 berita.
+    |
+    */
+    public function berita_terbaru($limit = 9)
     {
-        $perPage = 9;
-        $artikelTerbaru = Post::post()
-            ->orderByDesc('publish_time')
-            ->paginate($perPage);
+        // Cache::forget('berita_terbaru_cache');
+        $limit = (int) $limit;
+        $result = Cache::remember('berita_terbaru_cache_' . $limit, 60, function () use ($limit) {
+            $posts = Post::post()
+                ->select([
+                    'id',
+                    'title',
+                    'slug',
+                    'category_id',
+                    'gallery_id',
+                    'publish_time'
+                ])
+                ->paginate($limit);
+
+            return $posts;
+        });
 
         return response()->json([
-            'data' => $artikelTerbaru->items(),
-            'meta' => [
-                'current_page' => $artikelTerbaru->currentPage(),
-                'last_page' => $artikelTerbaru->lastPage(),
+            'status' => 'success',
+            'data' => collect($result->items())->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'slug' => $post->slug,
+                    'publish_time' => $post->publish_time->diffForHumans(),
+                    'category' => [
+                        'name' => $post->category?->name,
+                        'slug' => $post->category?->slug
+                    ],
+                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                ];
+            }),
+            'pagination' => [
+                'current_page' => $result->currentPage(),
+                'per_page' => $result->perPage(),
+                'total' => $result->total(),
+                'last_page' => $result->lastPage(),
+                'next_page_url' => $result->nextPageUrl(),
+                'prev_page_url' => $result->previousPageUrl(),
             ]
-        ]);
+        ], 200);
     }
-
-    public function berita_populer()
+    /*
+    |--------------------------------------------------------------------------
+    | API untuk Berita Populer
+    |--------------------------------------------------------------------------
+    |
+    | Berita populer diambil berdasarkan jumlah views terbanyak dalam 7 hari terakhir.
+    | Jika dalam 7 hari terakhir kurang dari 10 berita, maka akan diambil berita
+    | tambahan berdasarkan jumlah views terbanyak dalam waktu 30 hari terakhir.
+    | jika masih kurang dari 10 berita, maka akan diambil berita tambahan
+    | berdasarkan jumlah views terbanyak tanpa batasan waktu
+    */
+    public function berita_populer($limit = 9)
     {
-        $berita_populer = Post::post()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
+        $limit = (int) $limit;
+        $data = Cache::remember('berita_populer_cache_' . $limit, 60, function () use ($limit) {
+
+            $baseQuery = Post::post()
+                ->select([
+                    'id',
+                    'title',
+                    'slug',
+                    'category_id',
+                    'gallery_id',
+                    'publish_time',
+                    'views'
+                ])
+                ->with([
+                    'category:id,name,slug',
+                    'gallery:id'
+                ]);
+
+            // STEP 1: 7 hari terakhir
+            $posts = (clone $baseQuery)
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->orderByDesc('views')
+                ->limit($limit)
+                ->get();
+
+            // STEP 2: fallback 30 hari
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(30))
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            // STEP 3: fallback all time
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            return $posts->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'slug' => $post->slug,
+                    'publish_time' => $post->publish_time->diffForHumans(),
+                    'views' => $post->views,
+                    'category' => [
+                        'name' => $post->category?->name,
+                        'slug' => $post->category?->slug
+                    ],
+                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                ];
+            });
+        });
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Berhasil mengambil berita populer',
-            'data' => $berita_populer
+            'data' => $data
         ], 200);
     }
 
-    public function berita_video($limit)
+    public function berita_video($limit = 9)
     {
-        $berita_video = Post::video()
-            ->limit($limit)
-            ->get();
+        $limit = (int) $limit;
+
+        $data = Cache::remember('berita_video_cache_' . $limit, 60, function () use ($limit) {
+            $posts = Post::video()
+                ->select([
+                    'id',
+                    'title',
+                    'slug',
+                    'category_id',
+                    'gallery_id',
+                    'publish_time',
+                    'video_url'
+                ])
+                ->limit($limit)
+                ->get();
+
+            return $posts->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'slug' => $post->slug,
+                    'publish_time' => $post->publish_time->diffForHumans(),
+                    'category' => [
+                        'name' => $post->category?->name,
+                        'slug' => $post->category?->slug
+                    ],
+                    'video_url' => 'https://www.youtube.com/embed/' . $post->video_url,
+                    'thumbnail' => 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg' ?? asset('img/no_image.webp')
+                    // 'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                ];
+            });
+        });
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Berhasil mengambil berita video',
-            'data' => $berita_video
+            'data' => $data
         ], 200);
     }
 
-    public function berita_opini($limit)
+    public function berita_opini($limit = 9)
     {
-        $berita_opini = Post::opini()
-            ->limit($limit)
-            ->get();
+        $limit = (int) $limit;
+
+        $data = Cache::remember('berita_opini_cache_' . $limit, 60, function () use ($limit) {
+            $posts = Post::opini()
+                ->select([
+                    'id',
+                    'title',
+                    'slug',
+                    'category_id',
+                    'gallery_id',
+                    'publish_time',
+                ])
+                ->limit($limit)
+                ->get();
+
+            return $posts->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'slug' => $post->slug,
+                    'publish_time' => $post->publish_time->diffForHumans(),
+                    'category' => [
+                        'name' => $post->category?->name,
+                        'slug' => $post->category?->slug
+                    ],
+                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                ];
+            });
+        });
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Berhasil mengambil berita opini',
-            'data' => $berita_opini
+            'data' => $data
         ], 200);
     }
 }

@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->index(['type', 'status', 'publish_time'], 'posts_type_status_publish_time_index');
+            $table->index(
+                ['type', 'status', 'publish_time'],
+                'posts_type_status_publish_time_index'
+            );
         });
     }
 

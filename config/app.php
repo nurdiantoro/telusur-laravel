@@ -131,6 +131,6 @@ return [
     |
     */
 
-    'cache_clear_on_request' => env('CACHE_CLEAR_ON_REQUEST', false),
+    // 'cache_clear_on_request' => env('CACHE_CLEAR_ON_REQUEST', false),
 
 ];
