@@ -60,6 +60,22 @@ class ApiController extends Controller
         ]);
     }
 
+    public function test()
+    {
+        // dd(
+        //     DB::select("
+        //             EXPLAIN SELECT
+        //     id, title, slug, category_id, gallery_id, publish_time
+        // FROM posts
+        // WHERE type = 'post'
+        // AND status = 'published'
+        // ORDER BY publish_time DESC
+        // LIMIT 8
+
+        //         ")
+        // );
+    }
+
     public function show($id)
     {
         $gallery = Gallery::findOrFail($id);
