@@ -11,11 +11,13 @@ use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class PostForm
 {
@@ -51,6 +53,11 @@ class PostForm
                                 ->unique(ignoreRecord: true)
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published'),
 
+                            Toggle::make('headline')
+                                ->onColor('success')
+                                ->inline(false)
+                                ->default(false),
+
                             Select::make('type')
                                 ->options([
                                     'post' => 'Post',
@@ -84,6 +91,7 @@ class PostForm
                                 ->preload()
                                 ->searchable()
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published'),
+
                             Select::make('tags')
                                 ->relationship('tags', 'name')
                                 ->multiple()

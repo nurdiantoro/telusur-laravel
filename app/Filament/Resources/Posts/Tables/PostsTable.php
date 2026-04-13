@@ -8,9 +8,16 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Checkbox;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Enums\FiltersResetActionPosition;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class PostsTable
 {
@@ -42,22 +49,34 @@ class PostsTable
                     })
                     ->formatStateUsing(fn(string $state) => ucfirst($state))
                     ->searchable(),
+                ToggleColumn::make('headline')
+                    ->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('status')
+                    ->native(false)
                     ->options([
                         'draft'       => 'Draft',
                         'published'   => 'Published',
                         'unpublished' => 'Unpublished',
                     ]),
                 SelectFilter::make('type')
+                    ->native(false)
                     ->options([
                         'post' => 'Post',
                         'opini' => 'Opini',
                         'video' => 'Video',
-                    ])
-            ])
+                    ]),
+                SelectFilter::make('category_id')
+                    ->label('Category')
+                    ->relationship('category', 'name')
+                    ->native(false),
+                Filter::make('headline')
+                    ->modifyFormFieldUsing(fn(Checkbox $field) => $field->inline(false))
+                    ->query(fn(Builder $query): Builder => $query->where('headline', true))
+            ], layout: FiltersLayout::AboveContent)
+            ->filtersResetActionPosition(FiltersResetActionPosition::Footer)
             ->recordActions([
                 EditAction::make(),
                 Action::make('activities')
@@ -69,5 +88,16 @@ class PostsTable
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public function getTabs(): array
+    {
+        return [
+            'all' => Tab::make(),
+            'active' => Tab::make()
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('active', true)),
+            'inactive' => Tab::make()
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('active', false)),
+        ];
     }
 }

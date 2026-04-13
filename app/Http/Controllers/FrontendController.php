@@ -17,6 +17,12 @@ class FrontendController extends Controller
 {
     public function index()
     {
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
+
         $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
@@ -29,64 +35,73 @@ class FrontendController extends Controller
             return SidebarAds::orderBy('sort_order')->get();
         });
 
-        // $post = Post::post()
-        //     ->first();
+        Cache::forget('berita_utama_carousel_cache');
+        $beritaUtama = Cache::remember('berita_utama_carousel_cache', 60, function () {
+            $posts = Post::post()
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->where('headline', true)
+                ->select([
+                    'id',
+                    'title',
+                    'slug',
+                    'category_id',
+                    'gallery_id',
+                    'publish_time'
+                ])
+                ->limit(10)
+                ->get();
 
-        $beritaTerbaru = Post::post()
-            ->limit(12)
-            ->get();
+            if ($posts->count() < 10) {
+                $excludeIds = $posts->pluck('id');
 
-        // Views Terbanyak dalam 1 bulan terakhir
-        $beritaUtama = Post::post()
-            ->orderByDesc('views')
-            ->limit(10)
-            ->get()
-            ->values();
+                $morePosts = Post::post()
+                    ->whereNotIn('id', $excludeIds)
+                    ->where('headline', true)
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time'
+                    ])
+                    ->limit(10 - $posts->count())
+                    ->get();
 
-        $beritaPopulers = Post::post()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
+                $posts = $posts->merge($morePosts);
+            }
 
-        $opinions = Post::opini()
-            ->limit(9)
-            ->get();
-
-        $videos = Post::video()
-            ->limit(8)
-            ->get();
+            return $posts;
+        });
 
         $suggestTags = Tag::inRandomOrder()
             ->limit(5)
             ->get();
 
         return view('index', compact(
+            'categories',
             'navbarCategories',
             'sidebarAds',
-            'beritaTerbaru',
             'beritaUtama',
-            'beritaPopulers',
-            'opinions',
-            'videos',
             'suggestTags'
         ));
     }
 
-    public function index_post() {}
-
     public function postDetail($categorySlug, $postSlug)
     {
-        $categories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
 
-        $navbarCategories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
@@ -99,12 +114,16 @@ class FrontendController extends Controller
             ->where('slug', $postSlug)
             ->firstOrFail();
 
-        $title = $post->title . ' - Telusur';
+        $title = $post->title;
 
         $description = Str::limit(
-            trim(preg_replace('/\s+/', ' ', strip_tags($post->content))),
+            html_entity_decode(
+                trim(preg_replace('/\s+/', ' ', strip_tags($post->content)))
+            ),
             155
         );
+
+        $thumbnail = $post->gallery?->spatie_preview ?: asset('img/no_image.webp');
 
         $otherArticles = Post::post()
             ->where('id', '!=', $post->id)
@@ -122,6 +141,7 @@ class FrontendController extends Controller
             'post',
             'title',
             'description',
+            'thumbnail',
             'categories',
             'otherArticles',
             'sidebarAds',
@@ -134,17 +154,19 @@ class FrontendController extends Controller
 
     public function postByCategory($slug)
     {
-        $categories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
 
-        $navbarCategories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
@@ -172,17 +194,19 @@ class FrontendController extends Controller
 
     public function postByTag($slug)
     {
-        $categories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
 
-        $navbarCategories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
@@ -207,146 +231,55 @@ class FrontendController extends Controller
         ));
     }
 
-    public function kebijakan()
+    public function postSearch(Request $request)
     {
-        $categories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
 
-        $navbarCategories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
+        $beritaPopulers = Post::post()
             ->orderByDesc('views')
             ->limit(6)
             ->get();
 
-        return view('kebijakan', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+        $posts = Post::search($request->search_input)
+            ->where('type', 'post')
+            ->where('status', 'published')
+            ->where('publish_time', '<=', now())
+            ->orderBy('publish_time', 'desc')
+            ->paginate(10)
+            ->appends([
+                'search_input' => $request->search_input
+            ]);
+
+        if (!$request->search_input) {
+            return redirect()->back()->with('error', 'Masukkan kata kunci pencarian.');
+        }
+
+        return view('post_search', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories', 'posts'));
     }
-
-    public function pedoman()
-    {
-        $categories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $navbarCategories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
-
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        return view('pedoman', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
-    }
-
-    public function disclaimer()
-    {
-        $categories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $navbarCategories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
-
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        return view('disclaimer', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
-    }
-
-    public function about()
-    {
-        $categories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $navbarCategories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
-
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        return view('about', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
-    }
-
-    public function terms()
-    {
-        $categories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $navbarCategories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
-
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        return view('terms', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
-    }
-
+    /*
+    |
+    |
+    |
+    |
+    |
+    |--------------------------------------------------------------------------
+    | Method POST
+    |--------------------------------------------------------------------------
+    */
     public function postComment(Request $request, $post_id)
     {
         // Honeypot: jika field ini diisi, berarti bot
@@ -376,44 +309,6 @@ class FrontendController extends Controller
         return redirect()->back()->with('success', 'Komentar berhasil dikirim.');
     }
 
-    public function postSearch(Request $request)
-    {
-        $categories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $navbarCategories = PostCategory::with(['children'])
-            ->whereNull('parent_id')
-            ->where('is_navbar', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
-
-        $beritaPopulers = Post::post()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        $posts = Post::search($request->search_input)
-            ->where('type', 'post')
-            ->where('status', 'published')
-            ->where('publish_time', '<=', now())
-            ->orderBy('publish_time', 'desc')
-            ->paginate(10)
-            ->appends([
-                'search_input' => $request->search_input
-            ]);
-
-        if (!$request->search_input) {
-            return redirect()->back()->with('error', 'Masukkan kata kunci pencarian.');
-        }
-
-        return view('post_search', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories', 'posts'));
-    }
-
     public function postSubscriber(Request $request)
     {
         $validated = $request->validate([
@@ -433,5 +328,164 @@ class FrontendController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Berhasil berlangganan.');
+    }
+    /*
+    |
+    |
+    |
+    |
+    |
+    |--------------------------------------------------------------------------
+    | Static page
+    |--------------------------------------------------------------------------
+    */
+    public function kebijakan()
+    {
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
+
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+        ])
+            ->published()
+            ->orderByDesc('views')
+            ->limit(6)
+            ->get();
+
+        return view('kebijakan', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+    }
+
+    public function pedoman()
+    {
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
+
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+        ])
+            ->published()
+            ->orderByDesc('views')
+            ->limit(6)
+            ->get();
+
+        return view('pedoman', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+    }
+
+    public function disclaimer()
+    {
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
+
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+        ])
+            ->published()
+            ->orderByDesc('views')
+            ->limit(6)
+            ->get();
+
+        return view('disclaimer', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+    }
+
+    public function about()
+    {
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
+
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+        ])
+            ->published()
+            ->orderByDesc('views')
+            ->limit(6)
+            ->get();
+
+        return view('about', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+    }
+
+    public function terms()
+    {
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
+
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
+
+        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        $beritaPopulers = Post::with([
+            'media',
+            'category',
+        ])
+            ->published()
+            ->orderByDesc('views')
+            ->limit(6)
+            ->get();
+
+        return view('terms', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
     }
 }

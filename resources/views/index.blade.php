@@ -67,22 +67,23 @@
 
                                 <div class="bg-linear-to-t absolute inset-0 from-black/60 via-black/20 to-transparent">
                                 </div>
-                                <div class="absolute bottom-4 left-4 right-4 text-white">
-                                    <div class="text" data-swiper-parallax="-90%">
-                                        {{ $post->category?->name ?? 'No Category' }}</div>
-                                    <div class="text" data-swiper-parallax-x="100">{{ $post->title }}</div>
-                                    <div class="text" data-swiper-parallax-x="-300" data-swiper-parallax-duration="600">
-                                        {{ $post->publish_time->translatedFormat('j F Y') }}</div>
+                                <div class="absolute bottom-8 left-8 right-8 flex flex-col gap-2 text-white">
+                                    <span class="inline-block w-fit bg-red-600 px-3 py-1 text-sm font-bold"
+                                        data-swiper-parallax="-90%">
+                                        {{ $post->category?->name ?? 'No Category' }}
+                                    </span>
+                                    <div class="text-lg" data-swiper-parallax-x="100">
+                                        {{ $post->title }}
+                                    </div>
+                                    <div class="text-sm opacity-50" data-swiper-parallax-x="-300"
+                                        data-swiper-parallax-duration="600">
+                                        {{ $post->publish_time->diffForHumans() }}
+                                    </div>
                                 </div>
 
                             </a>
                         @endforeach
                     </div>
-
-                    {{-- Masih Ada Bug, gak mau muncul --}}
-                    {{-- <div class="absolute bottom-4 right-4 z-10">
-                        <div class="highlightNews-pagination"></div>
-                    </div> --}}
 
                     <div
                         class="absolute -left-2 bottom-0 top-0 z-10 flex items-center justify-center text-white opacity-0 transition-all duration-300 group-hover:left-4 group-hover:opacity-100">

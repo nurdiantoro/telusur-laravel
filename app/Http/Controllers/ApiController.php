@@ -60,22 +60,6 @@ class ApiController extends Controller
         ]);
     }
 
-    public function test()
-    {
-        // dd(
-        //     DB::select("
-        //             EXPLAIN SELECT
-        //     id, title, slug, category_id, gallery_id, publish_time
-        // FROM posts
-        // WHERE type = 'post'
-        // AND status = 'published'
-        // ORDER BY publish_time DESC
-        // LIMIT 8
-
-        //         ")
-        // );
-    }
-
     public function show($id)
     {
         $gallery = Gallery::findOrFail($id);
@@ -129,7 +113,7 @@ class ApiController extends Controller
         $data = Cache::remember('berita_utama_cache', 60, function () {
             $posts = Post::post()
                 ->where('publish_time', '>=', now()->subDays(7))
-                ->where('category_id', '18') // Hanya kategori "Berita Utama" (nanti mesti di ganti kalo udah ada kolom headline)
+                ->where('headline', true)
                 ->select([
                     'id',
                     'title',
@@ -146,7 +130,7 @@ class ApiController extends Controller
 
                 $morePosts = Post::post()
                     ->whereNotIn('id', $excludeIds)
-                    ->where('category_id', '18') // Hanya kategori "Berita Utama" (nanti mesti di ganti kalo udah ada kolom headline)
+                    ->where('headline', true)
                     ->select([
                         'id',
                         'title',

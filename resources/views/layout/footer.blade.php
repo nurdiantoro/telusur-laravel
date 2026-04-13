@@ -22,7 +22,7 @@
         <div class="flex flex-col md:w-2/5">
             <div class="mb-4 w-full border-b border-neutral-600 pb-2 text-xl font-bold text-white">Kategori</div>
             <div class="flex flex-wrap">
-                @foreach ($navbarCategories as $category)
+                @foreach ($categories as $category)
                     <a href="{{ route('post.category', $category->slug) }}"
                         class="hover:text-warna-02 w-1/3 py-2 text-sm text-neutral-400 transition-colors">{{ $category->name }}</a>
                 @endforeach
