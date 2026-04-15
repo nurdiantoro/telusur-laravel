@@ -16,6 +16,7 @@
         "laravel/scout": "^11.0",
         "laravel/tinker": "^2.10.1",
         "meilisearch/meilisearch-php": "^1.16",
+        "mews/captcha": "^3.4",
         "orangehill/iseed": "^3.8",
         "owenvoke/blade-fontawesome": "^3.2",
         "pxlrbt/filament-activity-log": "^2.1",
