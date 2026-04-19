@@ -43,21 +43,19 @@
         <div class="flex flex-col gap-4">
             <!-- Content -->
             <template x-for="post in apiPosts" :key="post.id">
-                <article class="group flex gap-3">
+                <a :href="`${post.category.slug}/${post.slug}`" class="group flex gap-3">
                     <!-- Thumbnail -->
-                    <a :href="`${post.category.slug}/${post.slug}`" class="shrink-0">
+                    <div class="shrink-0 overflow-hidden rounded-md bg-gray-200">
                         <img :src="post.thumbnail" :alt="post.title"
-                            class="h-20 w-24 rounded-md object-cover transition duration-300 group-hover:scale-105">
-                    </a>
+                            class="h-20 w-24 object-cover transition duration-300 ease-out group-hover:scale-110">
+                    </div>
                     <!-- Content -->
                     <div class="flex flex-col">
-                        <a :href="`${post.category.slug}/${post.slug}`">
-                            <h3 class="group-hover:text-merah-01 line-clamp-2 text-sm font-semibold leading-snug transition"
-                                x-text="post.title"></h3>
-                            <span x-text="post.publish_time" class="text-xs text-gray-500"></span>
-                        </a>
+                        <h3 class="group-hover:text-merah-01 group-hover:text-warna-03 line-clamp-2 text-sm font-semibold leading-snug transition"
+                            x-text="post.title"></h3>
+                        <span x-text="post.publish_time" class="text-xs text-gray-500"></span>
                     </div>
-                </article>
+                </a>
             </template>
 
         </div>

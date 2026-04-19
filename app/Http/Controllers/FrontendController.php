@@ -267,6 +267,7 @@ class FrontendController extends Controller
                 'title',
                 'type',
                 'slug',
+                'video_url',
                 'category_id',
                 'gallery_id',
                 'publish_time'
@@ -377,13 +378,7 @@ class FrontendController extends Controller
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
-        $beritaPopulers = Post::post()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
         $posts = Post::search($request->search_input)
-            ->where('type', 'post')
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
             ->orderBy('publish_time', 'desc')
@@ -396,7 +391,12 @@ class FrontendController extends Controller
             return redirect()->back()->with('error', 'Masukkan kata kunci pencarian.');
         }
 
-        return view('post_search', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories', 'posts'));
+        return view('post_index', compact(
+            'categories',
+            'navbarCategories',
+            'sidebarAds',
+            'posts'
+        ));
     }
     /*
     |

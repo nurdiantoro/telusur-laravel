@@ -13,7 +13,7 @@
                 class="mr-3 w-full appearance-none border-none bg-transparent px-2 py-1 leading-tight focus:outline-none" />
 
             <button type="submit" class="hover:text-warna-03 cursor-pointer p-2 text-gray-500">
-                {{-- <x-fas-search class="h-[1em]" /> --}}
+                <x-fas-search class="h-[1em]" />
             </button>
         </form>
 
@@ -41,10 +41,10 @@
         </div>
 
         <div class="hidden md:flex">
-            <button type="button" class="hotNews-prev cursor-pointer text-gray-500 hover:text-gray-700">
+            <button type="button" class="hotNews-prev hover:text-warna-03 cursor-pointer text-gray-500">
                 <x-heroicon-o-arrow-left-circle class="h-8" />
             </button>
-            <button type="button" class="hotNews-next cursor-pointer text-gray-500 hover:text-gray-700">
+            <button type="button" class="hotNews-next hover:text-warna-03 cursor-pointer text-gray-500">
                 <x-heroicon-o-arrow-right-circle class="h-8" />
             </button>
         </div>
@@ -226,7 +226,7 @@
                     </div>
                     <div class="grid grid-cols-2 gap-6">
                         <template x-for="post in apiPosts" :key="post.id">
-                            <a :href="post.category.slug + '/' + post.slug"
+                            <a :href="(post.category?.slug ?? 'video') + '/' + post.slug"
                                 class="group relative flex flex-col items-start gap-2 rounded-xl">
 
                                 {{-- Image --}}
@@ -306,7 +306,7 @@
                     </div>
                     <div class="flex flex-col gap-6">
                         <template x-for="post in apiPosts" :key="post.id">
-                            <a :href="post.category?.slug ? : 'opini' + '/' + post.slug"
+                            <a :href="(post.category?.slug ?? 'opini') + '/' + post.slug"
                                 class="group grid grid-cols-1 items-start gap-2 md:grid-cols-3">
 
                                 {{-- Image --}}

@@ -21,12 +21,14 @@
 
                         <div class="md:col-span-1">
                             <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
-                                <img src="{{ $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp') }}"
+                                <img src="{{ $post->gallery?->spatie_thumbnail ??
+                                    ($post->type === 'video' && $post->video_url
+                                        ? 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg'
+                                        : asset('img/no_image.webp')) }}"
                                     alt="{{ $post->title }}"
                                     class="h-full w-full rounded-md object-cover transition duration-300 group-hover:scale-105">
                             </div>
                         </div>
-
                         <div class="flex flex-col justify-center md:col-span-2">
                             <div class="space-y-2">
                                 <span class="inline-block w-fit bg-red-600 px-3 py-1 text-xs font-bold text-white">

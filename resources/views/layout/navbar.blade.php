@@ -1,5 +1,6 @@
 <div class="z-100 fixed top-0 flex w-full flex-col items-center md:static">
-    {{-- Navbar Mobile --}}
+
+    {{-- Navbar Atas --}}
     <div class="flex w-full items-center justify-center border-gray-200 bg-white md:border-b" x-data="{ showSearch: false }"
         x-init="$watch('showSearch', val => {
             if (window.innerWidth < 768) {
@@ -91,17 +92,17 @@
     </div>
 
     {{-- Navbar Category --}}
-    <div class="hidden w-full border-b border-gray-200 bg-neutral-100 md:block">
+    <div class="hidden w-full border-b border-gray-200 bg-gray-100 md:block">
         <ul class="md:w-300 mx-auto flex flex-wrap justify-between md:flex-row">
             <li
-                class="{{ Route::is('home') ? 'text-warna-01 border-b-2 border-warna-01' : 'text-neutral-500 hover:text-warna-01' }} px-2 py-4 font-bold uppercase">
+                class="{{ Route::is('home') ? 'text-warna-01 border-b-2 border-warna-01' : 'text-gray-500 hover:text-warna-01' }} px-2 py-4 font-bold uppercase">
                 <a href="{{ route('home') }}">
                     Home
                 </a>
             </li>
             @foreach ($navbarCategories as $navbar)
                 <li
-                    class="{{ request()->route('category') == $navbar->slug ? 'text-warna-01 border-b-2 border-warna-01' : 'text-neutral-500 hover:text-warna-01' }} px-2 py-4 font-bold uppercase">
+                    class="{{ request()->route('category') == $navbar->slug ? 'text-warna-01 border-b-2 border-warna-01' : 'text-gray-500 hover:text-warna-01' }} px-2 py-4 font-bold uppercase">
 
                     <a href="{{ route('post.category', $navbar->slug) }}">
                         {{ $navbar->name }}

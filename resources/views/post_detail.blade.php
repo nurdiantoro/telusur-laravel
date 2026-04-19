@@ -173,8 +173,10 @@
 
                             {{-- Thumbnail --}}
                             <div class="shrink-0">
-                                <img src="{{ $post->gallery?->spatie_thumbnail ?: asset('img/no_image.webp') }}"
-                                    alt="{{ $post->title }}"
+                                <img src="{{ $post->gallery?->spatie_thumbnail ??
+                                    ($post->type === 'video' && $post->video_url
+                                        ? 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg'
+                                        : asset('img/no_image.webp')) }}"
                                     class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
                             </div>
 
