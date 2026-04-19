@@ -90,7 +90,7 @@ class PostForm
                                 ->selectablePlaceholder(false)
                                 ->preload()
                                 ->searchable()
-                                ->required(fn($livewire) => $livewire->submitStatus === 'published'),
+                                ->required(fn($livewire, $get) => $livewire->submitStatus === 'published' && $get('type') === 'post'),
 
                             Select::make('tags')
                                 ->relationship('tags', 'name')

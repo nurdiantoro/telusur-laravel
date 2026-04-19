@@ -19,9 +19,12 @@
             <div class="relative mt-2 flex w-full flex-row items-center justify-between gap-4 md:flex-1 md:justify-end">
                 <div class="flex gap-4 transition-all duration-500 ease-in-out"
                     :class="showSearch ? 'opacity-0' : 'opacity-100'">
-                    <a href="#" class="md:hover:text-warna-01 font-semibold text-black md:text-gray-500">Index</a>
-                    <a href="#" class="md:hover:text-warna-01 font-semibold text-black md:text-gray-500">Opini</a>
-                    <a href="#" class="md:hover:text-warna-01 font-semibold text-black md:text-gray-500">Berita
+                    <a href="{{ route('index_post') }}"
+                        class="md:hover:text-warna-01 font-semibold text-black md:text-gray-500">Index</a>
+                    <a href="{{ route('opini') }}"
+                        class="md:hover:text-warna-01 font-semibold text-black md:text-gray-500">Opini</a>
+                    <a href="{{ route('video') }}"
+                        class="md:hover:text-warna-01 font-semibold text-black md:text-gray-500">Berita
                         Video</a>
                 </div>
 
@@ -68,7 +71,8 @@
                 </button>
             </form>
 
-            <div x-cloak :class="showSearch ? 'max-h-40 mt-2 opacity-100 my-2' : 'max-h-0 opacity-0 my-0'"
+            {{-- Sementara Dimatiin dulu --}}
+            {{-- <div x-cloak :class="showSearch ? 'max-h-40 mt-2 opacity-100 my-2' : 'max-h-0 opacity-0 my-0'"
                 class="flex w-full flex-col gap-1 overflow-hidden opacity-0 transition-all duration-500 ease-in-out md:hidden">
                 <span class="text-sm text-gray-500">Sering dicari</span>
                 @for ($i = 0; $i < 3; $i++)
@@ -79,14 +83,14 @@
                         </span>
                     </a>
                 @endfor
-            </div>
+            </div> --}}
         </div>
 
         <div x-show="showSearch" x-transition.opacity @click="showSearch = false" class="-z-1 fixed inset-0 bg-black/50"
             x-cloak></div>
     </div>
 
-    {{-- Navbar Desktop --}}
+    {{-- Navbar Category --}}
     <div class="hidden w-full border-b border-gray-200 bg-neutral-100 md:block">
         <ul class="md:w-300 mx-auto flex flex-wrap justify-between md:flex-row">
             <li

@@ -17,6 +17,7 @@ Route::get('/search', [FrontendController::class, 'postSearch'])->name('search')
 
 Route::get('/index', [FrontendController::class, 'index_post'])->name('index_post');
 Route::get('/opini', [FrontendController::class, 'opini'])->name('opini');
+Route::get('/video', [FrontendController::class, 'video'])->name('video');
 
 // Prioritas untuk kategori, jika tidak ada maka akan mencari berdasarkan slug
 Route::get('/tag/{slug}', [FrontendController::class, 'postByTag'])->name('post.tag');

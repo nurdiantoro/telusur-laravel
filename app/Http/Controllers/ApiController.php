@@ -22,16 +22,6 @@ class ApiController extends Controller
             'memory_usage' => round(memory_get_usage() / 1024 / 1024, 2) . ' MB',
             'laravel_start' => round((microtime(true) - LARAVEL_START) * 1000, 2) . ' ms'
         ];
-        // dd(
-        // DB::select("
-        // EXPLAIN (
-        // SELECT id, title, slug, category_id, gallery_id, publish_time, 1 AS priority
-        // FROM posts
-        // WHERE publish_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-        // LIMIT 10
-        // )
-        // ")
-        // );
     }
 
     public function index(Request $request)
@@ -175,9 +165,50 @@ class ApiController extends Controller
     | untuk melengkapi total 10 berita.
     |
     */
-    public function berita_terbaru($limit = 9)
+    public function berita_terbaru()
     {
-        // Cache::forget('berita_terbaru_cache');
+        $limit = 20;
+
+        $result = Post::post()
+            ->select([
+                'id',
+                'title',
+                'slug',
+                'category_id',
+                'gallery_id',
+                'publish_time'
+            ])
+            ->paginate($limit);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => collect($result->items())->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'slug' => $post->slug,
+                    'publish_time' => $post->publish_time->diffForHumans(),
+                    'category' => [
+                        'name' => $post->category?->name,
+                        'slug' => $post->category?->slug
+                    ],
+                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                ];
+            }),
+            'pagination' => [
+                'current_page' => $result->currentPage(),
+                'per_page' => $result->perPage(),
+                'total' => $result->total(),
+                'last_page' => $result->lastPage(),
+                'next_page_url' => $result->nextPageUrl(),
+                'prev_page_url' => $result->previousPageUrl(),
+            ]
+        ], 200);
+    }
+
+    public function berita_terbaru_tanpa_pagination($limit = 9)
+    {
+        Cache::forget('berita_terbaru_cache');
         $limit = (int) $limit;
         $result = Cache::remember('berita_terbaru_cache_' . $limit, 60, function () use ($limit) {
             $posts = Post::post()
@@ -208,15 +239,7 @@ class ApiController extends Controller
                     ],
                     'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
                 ];
-            }),
-            'pagination' => [
-                'current_page' => $result->currentPage(),
-                'per_page' => $result->perPage(),
-                'total' => $result->total(),
-                'last_page' => $result->lastPage(),
-                'next_page_url' => $result->nextPageUrl(),
-                'prev_page_url' => $result->previousPageUrl(),
-            ]
+            })
         ], 200);
     }
     /*
@@ -306,7 +329,7 @@ class ApiController extends Controller
         ], 200);
     }
 
-    public function berita_video($limit = 9)
+    public function berita_video($limit = 8)
     {
         $limit = (int) $limit;
 

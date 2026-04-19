@@ -5,24 +5,15 @@
         {{-- Main Content --}}
         <div class="flex flex-col md:w-3/4">
 
-            @php
-                $category = $post->category;
-                if (!$category) {
-                    $category = (object) [
-                        'name' => 'Opini',
-                        'slug' => 'opini',
-                    ];
-                }
-            @endphp
-
             {{-- Breadcrumb --}}
             <div class="mb-4 flex flex-row items-center gap-2">
                 <a href="{{ route('home') }}" class="text-warna-01 text-sm font-bold hover:underline">Home</a>
                 <span>
                     <x-fas-angle-right class="h-4 w-4" />
                 </span>
-                <a href="{{ route('post.category', $category->slug) }}" class="text-sm text-gray-600 hover:underline">
-                    {{ $category->name }}
+                <a href="{{ route('post.category', $post->category->slug ?? $post->type) }}"
+                    class="text-sm text-gray-600 hover:underline">
+                    {{ $post->category->name ?? $post->type }}
                 </a>
             </div>
 
@@ -167,7 +158,7 @@
                     <input type="hidden" name="jangan_diisi">
                 </div>
                 <button type="submit"
-                    class="bg-warna-02 hover:bg-warna-01 block w-full self-end rounded-md px-4 py-2 text-white md:w-auto">
+                    class="bg-warna-02 hover:bg-warna-01 block w-full cursor-pointer self-end rounded-md px-4 py-2 text-white md:w-auto">
                     Kirim
                 </button>
             </form>
@@ -176,14 +167,14 @@
             <div>
                 <h2 class="mb-6 font-bold">Artikel Terkait</h2>
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    @foreach ($otherArticles as $article)
-                        <a href="{{ route('post.detail', [$article->category->slug ?: 'no_category', $article->slug]) }}"
+                    @foreach ($otherArticles as $post)
+                        <a href="{{ route('post.detail', [$post->category->slug ?? $post->type, $post->slug]) }}"
                             class="group flex items-start gap-4">
 
                             {{-- Thumbnail --}}
                             <div class="shrink-0">
-                                <img src="{{ $article->spatie_thumbnail ?: asset('img/no_image.webp') }}"
-                                    alt="{{ $article->title }}"
+                                <img src="{{ $post->gallery?->spatie_thumbnail ?: asset('img/no_image.webp') }}"
+                                    alt="{{ $post->title }}"
                                     class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
                             </div>
 
@@ -192,13 +183,13 @@
 
                                 {{-- Author & Date --}}
                                 <div class="mb-1 text-xs text-gray-500">
-                                    {{ $article->publish_time->diffForHumans() }}
+                                    {{ $post->publish_time->diffForHumans() }}
                                 </div>
 
                                 {{-- Title --}}
                                 <h3
                                     class="group-hover:text-warna-03 line-clamp-3 text-sm font-semibold leading-snug transition">
-                                    {{ $article->title }}
+                                    {{ $post->title }}
                                 </h3>
                             </div>
                         </a>

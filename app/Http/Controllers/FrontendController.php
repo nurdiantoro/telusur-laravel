@@ -35,7 +35,7 @@ class FrontendController extends Controller
             return SidebarAds::orderBy('sort_order')->get();
         });
 
-        Cache::forget('berita_utama_carousel_cache');
+        // Cache::forget('berita_utama_carousel_cache');
         $beritaUtama = Cache::remember('berita_utama_carousel_cache', 60, function () {
             $posts = Post::post()
                 ->where('publish_time', '>=', now()->subDays(7))
@@ -105,35 +105,34 @@ class FrontendController extends Controller
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
-        $beritaPopulers = Post::post()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        $post = Post::post()
-            ->where('slug', $postSlug)
-            ->firstOrFail();
-
-        $title = $post->title;
-
-        $description = Str::limit(
-            html_entity_decode(
-                trim(preg_replace('/\s+/', ' ', strip_tags($post->content)))
-            ),
-            155
-        );
-
-        $thumbnail = $post->gallery?->spatie_preview ?: asset('img/no_image.webp');
-
-        $otherArticles = Post::post()
-            ->where('id', '!=', $post->id)
-            ->where('category_id', $post->category_id)
-            ->limit(10)
-            ->get();
+        // Detail Post
+        $post           = Post::where('slug', $postSlug)->firstOrFail();
+        $title          = $post->title;
+        $thumbnail      = $post->gallery?->spatie_preview ?: asset('img/no_image.webp');
+        $description    = Str::limit(html_entity_decode(trim(preg_replace('/\s+/', ' ', strip_tags($post->content)))), 155);
 
         $comments = Comment::where('post_id', $post->id)
             ->where('status', 'approved')
             ->get();
+
+        // Other Article
+        if ($post->type == 'post') {
+            $otherArticles = Post::post()
+                ->where('id', '!=', $post->id)
+                ->where('category_id', $post->category_id)
+                ->limit(10)
+                ->get();
+        } elseif ($post->type == 'opini') {
+            $otherArticles = Post::opini()
+                ->where('id', '!=', $post->id)
+                ->limit(10)
+                ->get();
+        } elseif ($post->type == 'video') {
+            $otherArticles = Post::video()
+                ->where('id', '!=', $post->id)
+                ->limit(10)
+                ->get();
+        }
 
         $adsense = Adsense::where('slug', 'inarticle2')->first();
 
@@ -145,13 +144,142 @@ class FrontendController extends Controller
             'categories',
             'otherArticles',
             'sidebarAds',
-            'beritaPopulers',
             'navbarCategories',
             'comments',
             'adsense'
         ));
     }
 
+    /*
+    |
+    |
+    |
+    |
+    |
+    |--------------------------------------------------------------------------
+    | Semua Controller yang pake View List Search
+    |--------------------------------------------------------------------------
+    */
+    public function index_post()
+    {
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
+
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
+
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+
+        $limit = 10;
+        $posts = Post::post()
+            ->select([
+                'id',
+                'title',
+                'slug',
+                'category_id',
+                'gallery_id',
+                'publish_time'
+            ])
+            ->paginate($limit);
+        // dd($posts);
+
+        return view('post_index', compact(
+            'categories',
+            'navbarCategories',
+            'sidebarAds',
+            'posts'
+        ));
+    }
+    public function opini()
+    {
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
+
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
+
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+
+        $limit = 10;
+        $posts = Post::opini()
+            ->select([
+                'id',
+                'title',
+                'type',
+                'slug',
+                'category_id',
+                'gallery_id',
+                'publish_time'
+            ])
+            ->paginate($limit);
+
+        return view('post_index', compact(
+            'categories',
+            'navbarCategories',
+            'sidebarAds',
+            'posts'
+        ));
+    }
+    public function video()
+    {
+        $categories = Cache::remember('categories_cache', 60, function () {
+            return PostCategory::orderBy('name')
+                ->select('name', 'slug')
+                ->get();
+        });
+
+        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+            return PostCategory::with(['children'])
+                ->whereNull('parent_id')
+                ->where('is_navbar', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
+
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+
+        $limit = 10;
+        $posts = Post::video()
+            ->select([
+                'id',
+                'title',
+                'type',
+                'slug',
+                'category_id',
+                'gallery_id',
+                'publish_time'
+            ])
+            ->paginate($limit);
+
+        return view('post_index', compact(
+            'categories',
+            'navbarCategories',
+            'sidebarAds',
+            'posts'
+        ));
+    }
     public function postByCategory($slug)
     {
         $categories = Cache::remember('categories_cache', 60, function () {

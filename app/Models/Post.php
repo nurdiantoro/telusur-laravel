@@ -193,6 +193,14 @@ class Post extends Model
             ])
             ->orderByDesc('publish_time');
     }
+    // public function scopePost_new(Builder $query): Builder
+    // {
+    //     return $query
+    //         ->where('type', 'post')
+    //         ->where('status', 'published')
+    //         ->where('publish_time', '<=', now())
+    //         ->orderByDesc('publish_time');
+    // }
     public function scopeOpini(Builder $query): Builder
     {
         return $query

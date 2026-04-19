@@ -33,14 +33,14 @@
         <div class="flex flex-col md:w-1/5">
             <div class="mb-4 w-full border-b border-neutral-600 pb-2 text-xl font-bold text-white">Notifikasi</div>
             <div class="text-sm text-neutral-400">
-                <p>Daftarkan email kamu untuk mendapatkan informasi terbaru</p>
+                <p class="mb-2">Daftarkan email kamu untuk mendapatkan informasi terbaru</p>
                 <form action="{{ route('post.subscriber') }}" method="post">
                     @csrf
                     <input type="hidden" name="jangan_diisi" value="">
                     <input type="email" name="email" placeholder="Masukkan email Anda"
                         class="focus:ring-warna-02 mb-2 w-full rounded bg-neutral-800 p-2 text-white focus:outline-none focus:ring-2">
                     <button type="submit"
-                        class="bg-warna-02 hover:bg-warna-03 w-full rounded p-2 text-white transition-colors">Berlangganan</button>
+                        class="bg-warna-02 hover:bg-warna-03 w-full cursor-pointer rounded p-2 text-white transition-colors">Berlangganan</button>
                 </form>
             </div>
         </div>

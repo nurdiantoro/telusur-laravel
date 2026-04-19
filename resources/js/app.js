@@ -13,30 +13,52 @@ function createFetcher(urlApi) {
         isLoading: true,
         isLoaded: false,
         apiPosts: [],
+        pagination: null,
         error: null,
+        currentUrl: urlApi,
 
-        async fetchData() {
-            if (this.isLoaded) return;
+        async fetchData(url = null) {
+            this.isLoading = true;
+
+            if (url) {
+                this.currentUrl = url;
+            }
 
             try {
+                const response = await fetch(this.currentUrl);
+                const json = await response.json();
 
-                const response = await fetch(urlApi);
-                const {
-                    data
-                } = await response.json();
+                this.apiPosts = json.data ?? [];
+                this.pagination = json.pagination ?? null;
 
-                // console.log('Data dari API:', data);
-                this.$refs.skeleton.style.display = 'none';
-                this.apiPosts = data;
+                // hide skeleton hanya saat pertama kali load
+                if (!this.isLoaded && this.$refs.skeleton) {
+                    this.$refs.skeleton.style.display = 'none';
+                }
+
                 this.isLoaded = true;
+
             } catch (error) {
                 this.error = error;
-
-                // console.error(error);
-
             } finally {
                 this.isLoading = false;
             }
+        },
+
+        next() {
+            if (this.pagination?.next_page_url) {
+                this.fetchData(this.pagination.next_page_url);
+            }
+        },
+
+        prev() {
+            if (this.pagination?.prev_page_url) {
+                this.fetchData(this.pagination.prev_page_url);
+            }
+        },
+
+        hasPagination() {
+            return this.pagination && this.pagination.last_page > 1;
         },
 
         init() {
@@ -61,6 +83,7 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('beritaUtama', createFetcher('/api/berita-utama'));
     Alpine.data('beritaPopuler', createFetcher('/api/berita-populer'));
     Alpine.data('beritaTerbaru', createFetcher('/api/berita-terbaru'));
+    Alpine.data('beritaTerbaruTanpaPagination', createFetcher('/api/berita-terbaru/tanpa-pagination'));
     Alpine.data('beritaVideo', createFetcher('/api/berita-video'));
     Alpine.data('beritaOpini', createFetcher('/api/berita-opini'));
 });

@@ -20,7 +20,7 @@
     {{-- ===================== --}}
     <section class="flex flex-col" x-data="beritaPopuler()" x-init="init()">
 
-        <h2 class="text-merah-01 mb-4 border-b pb-2 text-sm font-bold uppercase tracking-wide">
+        <h2 class="text-merah-01 mb-4 border-b border-gray-300 text-sm font-bold uppercase tracking-wide text-gray-800">
             Berita Populer
         </h2>
 
@@ -45,15 +45,16 @@
             <template x-for="post in apiPosts" :key="post.id">
                 <article class="group flex gap-3">
                     <!-- Thumbnail -->
-                    <a :href="`/post/${post.category.slug}/${post.slug}`" class="shrink-0">
+                    <a :href="`${post.category.slug}/${post.slug}`" class="shrink-0">
                         <img :src="post.thumbnail" :alt="post.title"
                             class="h-20 w-24 rounded-md object-cover transition duration-300 group-hover:scale-105">
                     </a>
                     <!-- Content -->
                     <div class="flex flex-col">
-                        <a :href="`/post/${post.category.slug}/${post.slug}`">
-                            <h3 class="group-hover:text-merah-01 line-clamp-3 text-sm font-semibold leading-snug transition"
+                        <a :href="`${post.category.slug}/${post.slug}`">
+                            <h3 class="group-hover:text-merah-01 line-clamp-2 text-sm font-semibold leading-snug transition"
                                 x-text="post.title"></h3>
+                            <span x-text="post.publish_time" class="text-xs text-gray-500"></span>
                         </a>
                     </div>
                 </article>

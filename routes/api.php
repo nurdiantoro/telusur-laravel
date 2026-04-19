@@ -16,7 +16,8 @@ Route::get('/galleries/id/{id}', [ApiController::class, 'show']);
 
 // API untuk Berita
 Route::get('/berita-utama', [ApiController::class, 'berita_utama']);
-Route::get('/berita-terbaru/{limit?}', [ApiController::class, 'berita_terbaru']);
+Route::get('/berita-terbaru/tanpa-pagination/{limit?}', [ApiController::class, 'berita_terbaru_tanpa_pagination']);
+Route::get('/berita-terbaru/{page?}', [ApiController::class, 'berita_terbaru']);
 Route::get('/berita-populer/{limit?}', [ApiController::class, 'berita_populer']);
 Route::get('/berita-video/{limit?}', [ApiController::class, 'berita_video']);
 Route::get('/berita-opini/{limit?}', [ApiController::class, 'berita_opini']);
