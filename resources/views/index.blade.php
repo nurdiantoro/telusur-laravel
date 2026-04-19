@@ -102,7 +102,7 @@
             {{-- Berita Utama --}}
             <div>
                 <div
-                    class="before:bg-warna-01 relative mb-6 border-b border-gray-200 before:absolute before:top-full before:h-1 before:w-16">
+                    class="before:bg-warna-01 top-26 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
                     <h2 class="mb-2 text-2xl font-bold">Berita Utama</h2>
                 </div>
 
@@ -152,7 +152,7 @@
             {{-- Artikel Terbaru --}}
             <div>
                 <div
-                    class="before:bg-warna-01 relative mb-6 border-b border-gray-200 before:absolute before:top-full before:h-1 before:w-16">
+                    class="before:bg-warna-01 top-26 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
                     <h2 class="mb-2 text-2xl font-bold">Artikel Terbaru</h2>
                 </div>
 
@@ -207,7 +207,7 @@
             {{-- Berita Video --}}
             <div>
                 <div
-                    class="before:bg-warna-01 relative mb-6 border-b border-gray-200 before:absolute before:top-full before:h-1 before:w-16">
+                    class="before:bg-warna-01 top-26 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
                     <h2 class="mb-2 text-2xl font-bold">Berita Video</h2>
                 </div>
 
@@ -278,7 +278,7 @@
             {{-- Opini --}}
             <div>
                 <div
-                    class="before:bg-warna-01 relative mb-6 border-b border-gray-200 before:absolute before:top-full before:h-1 before:w-16">
+                    class="before:bg-warna-01 top-26 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
                     <h2 class="mb-2 text-2xl font-bold">Opini</h2>
                 </div>
                 <div x-data="beritaOpini()" x-init="init()">
@@ -289,7 +289,7 @@
 
                                     {{-- image --}}
                                     <div class="md:col-span-1">
-                                        <div class="aspect-2/1 w-full rounded-md bg-gray-200"></div>
+                                        <div class="aspect-video w-full rounded-md bg-gray-200"></div>
                                     </div>
 
                                     {{-- content --}}
@@ -311,7 +311,7 @@
 
                                 {{-- Image --}}
                                 <div class="md:col-span-1">
-                                    <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
+                                    <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
                                         <img :src="post.thumbnail" :alt="post.title"
                                             class="h-full w-full rounded-md object-cover transition duration-300 group-hover:scale-105">
                                     </div>
