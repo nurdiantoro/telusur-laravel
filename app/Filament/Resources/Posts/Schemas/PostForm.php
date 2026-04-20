@@ -124,11 +124,13 @@ class PostForm
                                     }
                                     // Note: Saat create, default tetap diatur oleh ->default('scheduled')
                                 })
+                                ->selectablePlaceholder(false)
                                 ->native(false)
                                 ->dehydrated(false)
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published'),
                             DateTimePicker::make('publish_time')
                                 ->label('Publish Time')
+                                ->minDate(now())
                                 ->disabled(fn($get) => $get('publish_at') === 'immediately')
                                 ->dehydrated(fn($get) => $get('publish_at') === 'scheduled')
                                 ->required(fn($get, $livewire) => $livewire->submitStatus === 'published' && $get('publish_at') === 'scheduled'),

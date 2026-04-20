@@ -100,7 +100,7 @@ class ApiController extends Controller
     {
         // clear cache
         // Cache::forget('berita_utama_cache');
-        $data = Cache::remember('berita_utama_cache', 60, function () {
+        $data = Cache::tags(['posts'])->remember('berita_utama_cache', 60, function () {
             $posts = Post::post()
                 ->where('publish_time', '>=', now()->subDays(7))
                 ->where('headline', true)
@@ -210,7 +210,7 @@ class ApiController extends Controller
     {
         Cache::forget('berita_terbaru_cache');
         $limit = (int) $limit;
-        $result = Cache::remember('berita_terbaru_cache_' . $limit, 60, function () use ($limit) {
+        $result = Cache::tags(['posts'])->remember('berita_terbaru_cache_' . $limit, 60, function () use ($limit) {
             $posts = Post::post()
                 ->select([
                     'id',
@@ -256,7 +256,7 @@ class ApiController extends Controller
     public function berita_populer($limit = 9)
     {
         $limit = (int) $limit;
-        $data = Cache::remember('berita_populer_cache_' . $limit, 60, function () use ($limit) {
+        $data = Cache::tags(['posts'])->remember('berita_populer_cache_' . $limit, 60, function () use ($limit) {
 
             $baseQuery = Post::post()
                 ->select([
@@ -333,7 +333,7 @@ class ApiController extends Controller
     {
         $limit = (int) $limit;
 
-        $data = Cache::remember('berita_video_cache_' . $limit, 60, function () use ($limit) {
+        $data = Cache::tags(['posts'])->remember('berita_video_cache_' . $limit, 60, function () use ($limit) {
             $posts = Post::video()
                 ->select([
                     'id',
@@ -374,7 +374,7 @@ class ApiController extends Controller
     {
         $limit = (int) $limit;
 
-        $data = Cache::remember('berita_opini_cache_' . $limit, 60, function () use ($limit) {
+        $data = Cache::tags(['posts'])->remember('berita_opini_cache_' . $limit, 60, function () use ($limit) {
             $posts = Post::opini()
                 ->select([
                     'id',
