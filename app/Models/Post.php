@@ -140,9 +140,8 @@ class Post extends Model
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'status' => $this->status,
             'type' => $this->type,
-            'publish_time' => optional($this->publish_time)->timestamp,
+            'publish_time' => $this->publish_time?->timestamp,
         ];
     }
 
@@ -185,7 +184,6 @@ class Post extends Model
         return $query
             ->where('type', 'post')
             ->where('status', 'published')
-            ->where('publish_time', '<=', now())
             ->with([
                 'category:id,name,slug',
                 'gallery:id',
@@ -198,7 +196,6 @@ class Post extends Model
     //     return $query
     //         ->where('type', 'post')
     //         ->where('status', 'published')
-    //         ->where('publish_time', '<=', now())
     //         ->orderByDesc('publish_time');
     // }
     public function scopeOpini(Builder $query): Builder
@@ -206,7 +203,6 @@ class Post extends Model
         return $query
             ->where('type', 'opini')
             ->where('status', 'published')
-            ->where('publish_time', '<=', now())
             ->with(['category', 'gallery'])
             ->orderByDesc('publish_time');
     }
@@ -215,7 +211,6 @@ class Post extends Model
         return $query
             ->where('type', 'video')
             ->where('status', 'published')
-            ->where('publish_time', '<=', now())
             ->with([
                 'category:id,name,slug',
                 'gallery:id',
@@ -223,24 +218,4 @@ class Post extends Model
             ])
             ->orderByDesc('publish_time');
     }
-    // public function scopePublished(Builder $query): Builder
-    // {
-    //     return $query->where('status', 'published')->where('publish_time', '<=', now());
-    // }
-    // public function scopeType(Builder $query, string $type): Builder
-    // {
-    //     return $query->where('type', $type);
-    // }
-    // public function scopeLatestPublished(Builder $query): Builder
-    // {
-    //     return $query->orderByDesc('publish_time');
-    // }
-    // public function scopePopular(Builder $query): Builder
-    // {
-    //     return $query->orderByDesc('views');
-    // }
-    // public function scopeWithRelations(Builder $query): Builder
-    // {
-    //     return $query->with(['media', 'category', 'author']);
-    // }
 }

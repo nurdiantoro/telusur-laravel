@@ -67,14 +67,34 @@ class EditPost extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        // Perubahan status, saat tombol publish/draft/unpublish diklik
-        if ($this->submitStatus) {
+        /*
+        |
+        |
+        | Kalau pilih published
+        */
+        if ($this->submitStatus === 'published') {
+            /*
+            |
+            |
+            | Jika publish_at = immediately
+            | langsung set publish_time ke sekarang
+            */
+            if ($this->data['publish_at'] === 'immediately') {
+                $data['publish_time'] = now();
+            }
+            /*
+            |
+            |
+            | Jika publish_at = scheduled
+            | cek apakah waktunya sudah lewat atau belum
+            */
+            if ($this->data['publish_at'] === 'scheduled' && !empty($data['publish_time'])) {
+                if (Carbon::parse($data['publish_time'])->isFuture()) {
+                    $data['status'] = 'pending';
+                }
+            }
+        } else {
             $data['status'] = $this->submitStatus;
-        }
-
-        // kalau user pilih publish_at = immediately → publish_time = sekarang
-        if ($this->data['publish_at'] === 'immediately') {
-            $data['publish_time'] = now();
         }
 
         return $data;
