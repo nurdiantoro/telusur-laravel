@@ -83,8 +83,31 @@
                     </div>
                 </figure>
 
-                {{-- Content --}}
-                <div class="article-content">{!! $post->content !!}</div>
+                {{--
+                |
+                |
+                |
+                |
+                |
+                |
+                |
+                |
+                |
+                --}}
+                <div
+                    class="article-content prose prose-p:text-neutral-800 prose-h2:text-neutral-800 prose-h3:text-neutral-800 prose-a:text-warna-01">
+                    {!! $post->content !!}</div>
+                {{--
+                |
+                |
+                |
+                |
+                |
+                |
+                |
+                |
+                |
+                --}}
 
                 {{-- Tags --}}
                 @if ($post->tags->count() > 0)
