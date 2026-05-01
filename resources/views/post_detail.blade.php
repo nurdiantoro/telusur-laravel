@@ -96,7 +96,7 @@
                 |
                 --}}
                 <div
-                    class="article-content prose prose-p:text-neutral-800 prose-h2:text-neutral-800 prose-h3:text-neutral-800 prose-a:text-blue-900 max-w-none">
+                    class="article-content prose prose-p:text-neutral-800 prose-h2:text-neutral-800 prose-h3:text-neutral-800 prose-a:text-warna-01 prose-strong:text-neutral-800 prose-italic:text-neutral-800 max-w-none">
                     {!! $post->content !!}</div>
                 {{--
                 |
