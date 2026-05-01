@@ -23,7 +23,7 @@
 
                 {{-- Meta --}}
                 <div class="text-gray-500">
-                    {{-- <span>by {{ $post->author?->name ?: 'Admin' }}</span> - --}}
+                    <span>by {{ $post->author?->name ?: 'Admin' }}</span> |
                     <time>{{ $post->publish_time->translatedFormat('j F Y') }}</time>
                 </div>
 
@@ -40,18 +40,19 @@
                             alt="{{ $post->title }}" class="h-auto w-full">
                     @endif
                     <figcaption class="text-sm">{{ $post->caption }}</figcaption>
-                    @php
-                        $url = urlencode(url()->current());
-                        // $title = urlencode($post->title);
-                    @endphp
-                    <div class="mt-2 flex items-center justify-end gap-1">
+
+                    <div class="mt-2 flex items-center justify-end">
+                        @php
+                            $url = urlencode(url()->current());
+                            // $title = urlencode($post->title);
+                        @endphp
                         <!-- Facebook -->
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ $url }}" target="_blank"
                             rel="noopener"
                             class="flex flex-row items-center gap-1 bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700">
                             <div class="h-4 w-4">
                                 <x-fab-facebook />
-                            </div> Facebook
+                            </div>
                         </a>
 
                         <!-- Twitter / X -->
@@ -60,7 +61,7 @@
                             class="flex flex-row items-center gap-1 bg-black px-3 py-2 text-sm text-white hover:bg-gray-800">
                             <div class="h-4 w-4">
                                 <x-fab-x-twitter />
-                            </div> X
+                            </div>
                         </a>
 
                         <!-- WhatsApp -->
@@ -69,7 +70,7 @@
                             class="flex flex-row items-center gap-1 bg-green-600 px-3 py-2 text-sm text-white hover:bg-green-700">
                             <div class="h-4 w-4">
                                 <x-fab-whatsapp />
-                            </div> WhatsApp
+                            </div>
                         </a>
 
                         <!-- Telegram -->
@@ -78,7 +79,7 @@
                             class="flex flex-row items-center gap-1 bg-sky-500 px-3 py-2 text-sm text-white hover:bg-sky-600">
                             <div class="h-4 w-4">
                                 <x-fab-telegram />
-                            </div> Telegram
+                            </div>
                         </a>
                     </div>
                 </figure>
@@ -95,7 +96,7 @@
                 |
                 --}}
                 <div
-                    class="article-content prose prose-p:text-neutral-800 prose-h2:text-neutral-800 prose-h3:text-neutral-800 prose-a:text-warna-01">
+                    class="article-content prose prose-p:text-neutral-800 prose-h2:text-neutral-800 prose-h3:text-neutral-800 prose-a:text-warna-01 max-w-none">
                     {!! $post->content !!}</div>
                 {{--
                 |
