@@ -1,18 +1,18 @@
 @extends('layout.app')
 @section('content')
+    <div class="mt-3 flex flex-col gap-8 md:mt-0 md:flex-row">
 
-    <div class="flex flex-col gap-8 md:flex-row">
         {{-- Main Content --}}
-        <div class="flex flex-col md:w-3/4">
+        <div class="flex flex-col px-4 md:w-3/4 md:px-0">
 
             {{-- Breadcrumb --}}
             <div class="mb-4 flex flex-row items-center gap-2">
-                <a href="{{ route('home') }}" class="text-warna-01 text-sm font-bold hover:underline">Home</a>
+                <a href="{{ route('home') }}" class="text-warna-01 font-bold hover:underline">Home</a>
                 <span>
                     <x-fas-angle-right class="h-4 w-4" />
                 </span>
                 <a href="{{ route('post.category', $post->category->slug ?? $post->type) }}"
-                    class="text-sm text-gray-600 hover:underline">
+                    class="text-gray-600 hover:underline">
                     {{ $post->category->name ?? $post->type }}
                 </a>
             </div>

@@ -1,4 +1,4 @@
-<aside class="flex flex-col gap-10">
+<aside class="flex flex-col gap-10 px-4 md:px-0">
 
     {{-- ===================== --}}
     {{-- Sidebar Ads --}}

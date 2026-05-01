@@ -1,13 +1,12 @@
 <?php
 
 use App\Http\Controllers\FrontendController;
-use App\Http\Controllers\MigrationController;
-use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/test', [TestController::class, 'index'])->name('test');
-
+// Homepage
 Route::get('/', [FrontendController::class, 'index'])->name('home');
+
+// Static Pages
 Route::get('/kebijakan', [FrontendController::class, 'kebijakan'])->name('kebijakan');
 Route::get('/pedoman', [FrontendController::class, 'pedoman'])->name('pedoman');
 Route::get('/disclaimer', [FrontendController::class, 'disclaimer'])->name('disclaimer');
@@ -15,6 +14,7 @@ Route::get('/about', [FrontendController::class, 'about'])->name('about');
 Route::get('/terms', [FrontendController::class, 'terms'])->name('terms');
 Route::get('/search', [FrontendController::class, 'postSearch'])->name('search');
 
+// Type Post
 Route::get('/index', [FrontendController::class, 'index_post'])->name('index_post');
 Route::get('/opini', [FrontendController::class, 'opini'])->name('opini');
 Route::get('/video', [FrontendController::class, 'video'])->name('video');

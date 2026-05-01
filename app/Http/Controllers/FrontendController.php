@@ -483,18 +483,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
-
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        return view('kebijakan', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+        return view('kebijakan', compact('categories', 'navbarCategories'));
     }
 
     public function pedoman()
@@ -513,18 +502,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
-
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        return view('pedoman', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+        return view('pedoman', compact('categories', 'navbarCategories'));
     }
 
     public function disclaimer()
@@ -543,18 +521,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
-
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        return view('disclaimer', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+        return view('disclaimer', compact('categories', 'navbarCategories'));
     }
 
     public function about()
@@ -573,18 +540,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
-
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        return view('about', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+        return view('about', compact('categories', 'navbarCategories'));
     }
 
     public function terms()
@@ -603,17 +559,6 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
-
-        $beritaPopulers = Post::with([
-            'media',
-            'category',
-        ])
-            ->published()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
-
-        return view('terms', compact('categories', 'sidebarAds', 'beritaPopulers', 'navbarCategories'));
+        return view('terms', compact('categories', 'navbarCategories'));
     }
 }

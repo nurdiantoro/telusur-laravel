@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('content')
     {{-- Search Khusus di home --}}
-    <div class="mb-8 w-full rounded-2xl bg-gray-200 bg-cover bg-center px-2 pb-4 pt-10 text-center md:py-24"
+    <div class="mb-8 w-full bg-gray-200 bg-cover bg-center px-2 pb-4 pt-10 text-center md:rounded-2xl md:py-24"
         style="background-image: url('{{ asset('img/city.webp') }}');">
 
         <h2 class="mb-4 text-xl font-bold text-white md:text-3xl">Temukan Berita Menarik</h2>
@@ -26,27 +26,29 @@
     </div>
 
     {{-- Hot news --}}
-    <div class="mb-6 hidden flex-row items-center justify-between gap-2 border-b border-gray-300 pb-3 md:flex">
-        <div
-            class="bg-linear-to-r from-warna-03 to-warna-04 text-nowrap px-2 py-1 text-sm font-bold text-white md:text-base">
-            Hot news</div>
+    <div class="w-screen md:w-full">
+        <div class="mb-6 flex-row items-center justify-between gap-2 border-b border-gray-300 pb-3 md:flex">
+            <div
+                class="bg-linear-to-r from-warna-03 to-warna-04 mb-3 w-fit text-nowrap px-2 py-1 text-sm font-bold text-white md:mb-0 md:text-base">
+                Hot news</div>
 
-        <div class="swiper hotNews hidden min-w-0 flex-1 overflow-hidden">
-            <div class="swiper-wrapper">
-                @foreach ($beritaUtama as $post)
-                    <a href="{{ $post->category->slug . '/' . $post->slug }}"
-                        class="swiper-slide hover:text-warna-03 min-w-0 truncate md:text-lg">{{ $post->title }}</a>
-                @endforeach
+            <div class="swiper hotNews min-w-0 flex-1 overflow-hidden">
+                <div class="swiper-wrapper">
+                    @foreach ($beritaUtama as $post)
+                        <a href="{{ $post->category->slug . '/' . $post->slug }}"
+                            class="swiper-slide hover:text-warna-03 min-w-0 truncate px-2 md:p-0 md:text-lg">{{ $post->title }}</a>
+                    @endforeach
+                </div>
             </div>
-        </div>
 
-        <div class="hidden md:flex">
-            <button type="button" class="hotNews-prev hover:text-warna-03 cursor-pointer text-gray-500">
-                <x-heroicon-o-arrow-left-circle class="h-8" />
-            </button>
-            <button type="button" class="hotNews-next hover:text-warna-03 cursor-pointer text-gray-500">
-                <x-heroicon-o-arrow-right-circle class="h-8" />
-            </button>
+            <div class="hidden md:flex">
+                <button type="button" class="hotNews-prev hover:text-warna-03 cursor-pointer text-gray-500">
+                    <x-heroicon-o-arrow-left-circle class="h-8" />
+                </button>
+                <button type="button" class="hotNews-next hover:text-warna-03 cursor-pointer text-gray-500">
+                    <x-heroicon-o-arrow-right-circle class="h-8" />
+                </button>
+            </div>
         </div>
     </div>
 
@@ -57,8 +59,8 @@
         <div class="flex flex-col gap-12 md:w-3/4">
 
             {{-- Berita Utama Carousel --}}
-            <div class="hidden md:block">
-                <div class="swiper highlightNews group relative hidden aspect-video w-full overflow-hidden rounded-xl">
+            <div class="w-screen md:w-full" id="carousel">
+                <div class="swiper highlightNews group relative hidden aspect-video w-full overflow-hidden md:rounded-xl">
                     <div class="swiper-wrapper">
                         @foreach ($beritaUtama as $post)
                             <a href="{{ $post->category->slug . '/' . $post->slug }}" class="swiper-slide">
@@ -100,9 +102,9 @@
             </div>
 
             {{-- Berita Utama --}}
-            <div>
+            <div class="px-4 md:px-0">
                 <div
-                    class="before:bg-warna-01 top-26 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
+                    class="before:bg-warna-01 top-26 md:px0 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
                     <h2 class="mb-2 text-2xl font-bold">Berita Utama</h2>
                 </div>
 
@@ -150,7 +152,7 @@
             </div>
 
             {{-- Artikel Terbaru --}}
-            <div>
+            <div class="px-4 md:px-0">
                 <div
                     class="before:bg-warna-01 top-26 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
                     <h2 class="mb-2 text-2xl font-bold">Artikel Terbaru</h2>
@@ -205,7 +207,7 @@
             </div>
 
             {{-- Berita Video --}}
-            <div>
+            <div class="px-4 md:px-0">
                 <div
                     class="before:bg-warna-01 top-26 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
                     <h2 class="mb-2 text-2xl font-bold">Berita Video</h2>
@@ -276,7 +278,7 @@
             </div>
 
             {{-- Opini --}}
-            <div>
+            <div class="px-4 md:px-0">
                 <div
                     class="before:bg-warna-01 top-26 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
                     <h2 class="mb-2 text-2xl font-bold">Opini</h2>

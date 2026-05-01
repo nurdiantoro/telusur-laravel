@@ -1521,7 +1521,7 @@
 <body class="flex min-h-screen flex-col items-center bg-white text-[#1b1b18] lg:justify-center">
 
     @include('layout.navbar')
-    <main class="md:max-w-300 mt-22 mx-auto min-h-screen bg-white px-4 py-8 md:mt-0">
+    <main class="md:max-w-300 mt-19 mx-auto min-h-screen bg-white py-8 md:mt-0">
         @yield('content')
     </main>
     @include('layout.footer')
