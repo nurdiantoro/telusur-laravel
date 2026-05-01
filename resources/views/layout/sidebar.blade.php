@@ -43,7 +43,7 @@
         <div class="flex flex-col gap-4">
             <!-- Content -->
             <template x-for="post in apiPosts" :key="post.id">
-                <a :href="`${post.category.slug}/${post.slug}`" class="group flex gap-3">
+                <a :href="post.url" class="group flex gap-3">
                     <!-- Thumbnail -->
                     <div class="shrink-0 overflow-hidden rounded-md bg-gray-200">
                         <img :src="post.thumbnail" :alt="post.title"

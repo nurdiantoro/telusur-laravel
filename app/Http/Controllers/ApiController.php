@@ -144,7 +144,11 @@ class ApiController extends Controller
                     'category' => [
                         'slug' => $post->category?->slug
                     ],
-                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp'),
+                    'url' => route('post.detail', [
+                        'category' => $post->category?->slug ?? 'post',
+                        'slug' => $post->slug
+                    ]),
                 ];
             });
         });
@@ -192,7 +196,11 @@ class ApiController extends Controller
                         'name' => $post->category?->name,
                         'slug' => $post->category?->slug
                     ],
-                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp'),
+                    'url' => route('post.detail', [
+                        'category' => $post->category?->slug ?? 'post',
+                        'slug' => $post->slug
+                    ]),
                 ];
             }),
             'pagination' => [
@@ -237,7 +245,11 @@ class ApiController extends Controller
                         'name' => $post->category?->name,
                         'slug' => $post->category?->slug
                     ],
-                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp'),
+                    'url' => route('post.detail', [
+                        'category' => $post->category?->slug ?? 'post',
+                        'slug' => $post->slug
+                    ]),
                 ];
             })
         ], 200);
@@ -318,7 +330,11 @@ class ApiController extends Controller
                         'name' => $post->category?->name,
                         'slug' => $post->category?->slug
                     ],
-                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp'),
+                    'url' => route('post.detail', [
+                        'category' => $post->category?->slug ?? 'post',
+                        'slug' => $post->slug
+                    ]),
                 ];
             });
         });
@@ -358,7 +374,11 @@ class ApiController extends Controller
                         'slug' => $post->category?->slug
                     ],
                     'video_url' => 'https://www.youtube.com/embed/' . $post->video_url,
-                    'thumbnail' => 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg' ?? asset('img/no_image.webp')
+                    'thumbnail' => 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg' ?? asset('img/no_image.webp'),
+                    'url' => route('post.detail', [
+                        'category' => $post->category?->slug ?? 'video',
+                        'slug' => $post->slug
+                    ]),
                     // 'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
                 ];
             });
@@ -397,7 +417,11 @@ class ApiController extends Controller
                         'name' => $post->category?->name,
                         'slug' => $post->category?->slug
                     ],
-                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp')
+                    'thumbnail' => $post->gallery?->spatie_thumbnail ?? asset('img/no_image.webp'),
+                    'url' => route('post.detail', [
+                        'category' => $post->category?->slug ?? 'opini',
+                        'slug' => $post->slug
+                    ]),
                 ];
             });
         });
