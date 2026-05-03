@@ -17,6 +17,13 @@ class FrontendController extends Controller
 {
     public function index()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -35,27 +42,29 @@ class FrontendController extends Controller
             return SidebarAds::orderBy('sort_order')->get();
         });
 
+        $suggestTags = Tag::inRandomOrder()
+            ->limit(5)
+            ->get();
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Semua Berita
+        |--------------------------------------------------------------------------
+        */
+        $limitBeritaTerbaru = 9;
+        $limitBeritaPopuler = 9;
+        $limitBeritaVideo = 8;
+        $limitBeritaOpini = 9;
         // Cache::forget('berita_utama_carousel_cache');
-        $beritaUtama = Cache::remember('berita_utama_carousel_cache', 60, function () {
-            $posts = Post::post()
-                ->where('publish_time', '>=', now()->subDays(7))
-                ->where('headline', true)
-                ->select([
-                    'id',
-                    'title',
-                    'slug',
-                    'category_id',
-                    'gallery_id',
-                    'publish_time'
-                ])
-                ->limit(10)
-                ->get();
 
-            if ($posts->count() < 10) {
-                $excludeIds = $posts->pluck('id');
-
-                $morePosts = Post::post()
-                    ->whereNotIn('id', $excludeIds)
+        $beritaUtama = Cache::remember(
+            'berita_utama_carousel_cache',
+            60,
+            function () {
+                $posts = Post::post()
+                    ->where('publish_time', '>=', now()->subDays(7))
                     ->where('headline', true)
                     ->select([
                         'id',
@@ -65,25 +74,187 @@ class FrontendController extends Controller
                         'gallery_id',
                         'publish_time'
                     ])
-                    ->limit(10 - $posts->count())
+                    ->limit(10)
                     ->get();
 
-                $posts = $posts->merge($morePosts);
+                if ($posts->count() < 10) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = Post::post()
+                        ->whereNotIn('id', $excludeIds)
+                        ->where('headline', true)
+                        ->select([
+                            'id',
+                            'title',
+                            'slug',
+                            'category_id',
+                            'gallery_id',
+                            'publish_time'
+                        ])
+                        ->limit(10 - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                return $posts;
             }
+        );
 
-            return $posts;
-        });
+        $beritaTerbaru = Cache::remember(
+            'berita_terbaru_cache_' . $limitBeritaTerbaru,
+            60,
+            function () use ($limitBeritaTerbaru) {
+                $posts = Post::post()
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time'
+                    ])
+                    ->limit($limitBeritaTerbaru)
+                    ->get();
 
-        $suggestTags = Tag::inRandomOrder()
-            ->limit(5)
-            ->get();
+                return $posts;
+            }
+        );
+
+        $beritaPopuler = Cache::remember(
+            'berita_populer_cache_' . $limitBeritaPopuler,
+            60,
+            function () use ($limitBeritaPopuler) {
+                /*
+                |--------------------------------------------------------------------------
+                | Base query untuk berita populer
+                |--------------------------------------------------------------------------
+                */
+                $baseQuery = Post::post()
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time',
+                        'views'
+                    ])
+                    ->with([
+                        'category:id,name,slug',
+                        'gallery:id'
+                    ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | Ambil berita populer 7 hari terakhir
+                |--------------------------------------------------------------------------
+                */
+                $posts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(7))
+                    ->orderByDesc('views')
+                    ->limit($limitBeritaPopuler)
+                    ->get();
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer 30 hari terakhir jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->where('publish_time', '>=', now()->subDays(30))
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer semua waktu jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                return $posts;
+            }
+        );
+
+        $beritaVideo = Cache::remember(
+            'berita_video_cache_' . $limitBeritaVideo,
+            60,
+            function () use ($limitBeritaVideo) {
+                $posts = Post::video()
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time',
+                        'video_url'
+                    ])
+                    ->limit($limitBeritaVideo)
+                    ->get();
+
+                return $posts;
+            }
+        );
+
+        $beritaOpini = Cache::remember(
+            'berita_opini_cache_' . $limitBeritaOpini,
+            60,
+            function () use ($limitBeritaOpini) {
+                $posts = Post::opini()
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'type',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time',
+                    ])
+                    ->limit($limitBeritaOpini)
+                    ->get();
+
+                return $posts;
+            }
+        );
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
 
         return view('index', compact(
             'categories',
             'navbarCategories',
             'sidebarAds',
+            'suggestTags',
             'beritaUtama',
-            'suggestTags'
+            'beritaTerbaru',
+            'beritaPopuler',
+            'beritaVideo',
+            'beritaOpini'
         ));
     }
 

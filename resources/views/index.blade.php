@@ -35,7 +35,7 @@
             <div class="swiper hotNews min-w-0 flex-1 overflow-hidden">
                 <div class="swiper-wrapper">
                     @foreach ($beritaUtama as $post)
-                        <a href="{{ $post->category->slug . '/' . $post->slug }}"
+                        <a href="{{ route('post.detail', [$post->category->slug, $post->slug]) }}"
                             class="swiper-slide hover:text-warna-03 min-w-0 truncate px-2 md:p-0 md:text-lg">{{ $post->title }}</a>
                     @endforeach
                 </div>
@@ -63,7 +63,7 @@
                 <div class="swiper highlightNews group relative hidden aspect-video w-full overflow-hidden md:rounded-xl">
                     <div class="swiper-wrapper">
                         @foreach ($beritaUtama as $post)
-                            <a href="{{ $post->category->slug . '/' . $post->slug }}" class="swiper-slide">
+                            <a href="{{ route('post.detail', [$post->category->slug, $post->slug]) }}" class="swiper-slide">
                                 <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
                                     alt="{{ $post->title }}" class="h-full w-full object-cover" loading="lazy">
 
@@ -107,47 +107,32 @@
                     class="before:bg-warna-01 top-26 md:px0 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
                     <h2 class="mb-2 text-2xl font-bold">Berita Utama</h2>
                 </div>
+                <!-- Content -->
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    @foreach ($beritaUtama as $post)
+                        <a href="{{ route('post.detail', [$post->category->slug, $post->slug]) }}"
+                            class="group flex items-start gap-4">
 
-                <div x-data="beritaUtama()" x-init="init()">
-
-                    <!-- Skeleton -->
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2" x-ref="skeleton">
-                        @for ($n = 0; $n < 10; $n++)
-                            <div class="flex animate-pulse gap-4">
-                                <div class="h-20 w-28 rounded-md bg-gray-200"></div>
-                                <div class="flex-1 space-y-2">
-                                    <div class="h-4 w-1/3 rounded bg-gray-200"></div>
-                                    <div class="h-4 w-1/2 rounded bg-gray-200"></div>
-                                    <div class="h-4 w-3/4 rounded bg-gray-200"></div>
-                                </div>
+                            <!-- Thumbnail -->
+                            <div class="shrink-0">
+                                <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
+                                    alt="{{ $post->title }}"
+                                    class="h-20 w-28 rounded-md bg-gray-200 object-cover transition duration-300 group-hover:scale-105"
+                                    loading="lazy">
                             </div>
-                        @endfor
-                    </div>
 
-                    <!-- Content -->
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <template x-for="post in apiPosts" :key="post.id">
-                            <a :href="(post.category?.slug) + '/' + post.slug" class="group flex items-start gap-4">
+                            <!-- Content -->
+                            <div class="flex flex-col">
 
-                                <!-- Thumbnail -->
-                                <div class="shrink-0">
-                                    <img :src="post.thumbnail" :alt="post.title"
-                                        class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
-                                </div>
+                                <!-- ✅ langsung pakai -->
+                                <div class="mb-1 text-xs text-gray-500">{{ $post->publish_time->diffForHumans() }}</div>
 
-                                <!-- Content -->
-                                <div class="flex flex-col">
-
-                                    <!-- ✅ langsung pakai -->
-                                    <div class="mb-1 text-xs text-gray-500" x-text="post.publish_time"></div>
-
-                                    <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition"
-                                        x-text="post.title">
-                                    </h3>
-                                </div>
-                            </a>
-                        </template>
-                    </div>
+                                <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition">
+                                    {{ $post->title }}
+                                </h3>
+                            </div>
+                        </a>
+                    @endforeach
                 </div>
             </div>
 
@@ -158,52 +143,42 @@
                     <h2 class="mb-2 text-2xl font-bold">Artikel Terbaru</h2>
                 </div>
 
-                <div x-data="beritaTerbaruTanpaPagination()" x-init="init()">
-                    {{-- Skeleton --}}
-                    <div class="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3" x-ref="skeleton">
-                        @for ($n = 0; $n < 9; $n++)
-                            <div class="animate-pulse">
-                                <div class="aspect-video w-full rounded-md bg-gray-200"></div>
-                                <div class="mt-4 space-y-2">
-                                    <div class="h-4 w-1/3 rounded bg-gray-200"></div>
-                                    <div class="h-4 w-1/2 rounded bg-gray-200"></div>
-                                    <div class="h-4 w-3/4 rounded bg-gray-200"></div>
+                <!-- Content -->
+                <div class="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($beritaTerbaru as $post)
+                        <a href="{{ route('post.detail', [$post->category->slug, $post->slug]) }}"
+                            class="group mb-2 flex h-full flex-col">
+                            <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
+                                <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
+                                    alt="{{ $post->title }}"
+                                    class="h-full w-full bg-gray-200 object-cover transition duration-300 ease-out group-hover:scale-105"
+                                    loading="lazy">
+                            </div>
+                            <div class="mt-2 flex grow flex-col gap-1">
+                                <span
+                                    class="inline-block w-fit bg-red-600 px-3 py-1 text-xs font-bold uppercase text-white">
+                                    {{ $post->category?->name ?? 'No Category' }}
+                                </span>
+                                <h2
+                                    class="group-hover:text-warna-03 line-clamp-2 text-lg font-bold leading-snug transition">
+                                    {{ $post->title }}
+                                </h2>
+                                <div class="text-xs text-gray-500">
+                                    {{ $post->publish_time->diffForHumans() }}
                                 </div>
                             </div>
-                        @endfor
-                    </div>
-
-                    <!-- Content -->
-                    <div class="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        <template x-for="post in apiPosts" :key="post.id">
-                            <a :href="post.category.slug + '/' + post.slug" class="group mb-2 flex h-full flex-col">
-                                <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
-                                    <img :src="post.thumbnail" :alt="post.title"
-                                        class="h-full w-full object-cover transition duration-300 ease-out group-hover:scale-105">
-                                </div>
-                                <div class="mt-2 flex grow flex-col gap-1">
-                                    <span class="inline-block w-fit bg-red-600 px-3 py-1 text-xs font-bold text-white"
-                                        x-text="post.category.name.toUpperCase()">
-                                    </span>
-                                    <h2 class="group-hover:text-warna-03 line-clamp-2 text-lg font-bold leading-snug transition"
-                                        x-text="post.title">
-                                    </h2>
-                                    <div class="text-xs text-gray-500" x-text="post.publish_time">
-                                    </div>
-                                </div>
-                            </a>
-                        </template>
-                    </div>
-
-                    {{-- Lihat berita terbaru lainnya --}}
-                    <a href="{{ route('index_post') }}"
-                        class="hover:text-warna-03 group mt-10 flex flex-row items-center justify-center gap-2 text-sm text-gray-500">
-                        <span>Lihat berita terbaru lainnya</span>
-                        <span class="duration-300 ease-out group-hover:translate-x-2">
-                            <x-heroicon-o-arrow-right class="h-4" />
-                        </span>
-                    </a>
+                        </a>
+                    @endforeach
                 </div>
+
+                {{-- Lihat berita terbaru lainnya --}}
+                <a href="{{ route('index_post') }}"
+                    class="hover:text-warna-03 group mt-10 flex flex-row items-center justify-center gap-2 text-sm text-gray-500">
+                    <span>Lihat berita terbaru lainnya</span>
+                    <span class="duration-300 ease-out group-hover:translate-x-2">
+                        <x-heroicon-o-arrow-right class="h-4" />
+                    </span>
+                </a>
             </div>
 
             {{-- Berita Video --}}
@@ -213,68 +188,59 @@
                     <h2 class="mb-2 text-2xl font-bold">Berita Video</h2>
                 </div>
 
-                <div x-data="beritaVideo()" x-init="init()">
-                    <div class="grid grid-cols-2 gap-6" x-ref="skeleton">
-                        @for ($n = 0; $n < 6; $n++)
-                            <div class="animate-pulse">
-                                <div class="aspect-video w-full rounded-md bg-gray-200"></div>
-                                <div class="mt-4 space-y-2">
-                                    <div class="h-4 w-1/3 rounded bg-gray-200"></div>
-                                    <div class="h-4 w-1/2 rounded bg-gray-200"></div>
-                                    <div class="h-4 w-3/4 rounded bg-gray-200"></div>
+                <div class="grid grid-cols-2 gap-6">
+                    @foreach ($beritaVideo as $post)
+                        <a href="{{ route('post.detail', [$post->category->slug, $post->slug]) }}"
+                            class="group relative flex flex-col items-start gap-2 rounded-xl">
+
+                            {{-- Image --}}
+                            <div class="w-full">
+                                <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
+                                    <img src="{{ $post->gallery?->spatie_preview ?: 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg' }}"
+                                        alt="{{ $post->title }}"
+                                        class="h-full w-full bg-gray-200 object-cover transition duration-300 group-hover:scale-105"
+                                        loading="lazy">
                                 </div>
                             </div>
-                        @endfor
-                    </div>
-                    <div class="grid grid-cols-2 gap-6">
-                        <template x-for="post in apiPosts" :key="post.id">
-                            <a :href="(post.category?.slug ?? 'video') + '/' + post.slug"
-                                class="group relative flex flex-col items-start gap-2 rounded-xl">
 
-                                {{-- Image --}}
-                                <div class="w-full">
-                                    <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
-                                        <img :src="post.thumbnail" :alt="post.title"
-                                            class="h-full w-full object-cover transition duration-300">
-                                    </div>
+                            {{-- Content --}}
+                            <div class="flex flex-col justify-center gap-2">
+
+                                {{-- Category --}}
+                                <span
+                                    class="inline-block w-fit bg-red-600 px-3 py-1 text-xs font-bold uppercase text-white">
+                                    {{ $post->category->name }}
+                                </span>
+
+                                {{-- Title --}}
+                                <h2
+                                    class="group-hover:text-warna-03 line-clamp-2 text-lg font-bold leading-snug transition">
+                                    {{ $post->title }}
+                                </h2>
+
+                                {{-- Author & Date --}}
+                                <div class="text-xs text-gray-500">
+                                    {{ $post->publish_time->diffForHumans() }}
                                 </div>
 
-                                {{-- Content --}}
-                                <div class="flex flex-col justify-center gap-2">
+                            </div>
 
-                                    {{-- Category --}}
-                                    <span class="inline-block w-fit bg-red-600 px-3 py-1 text-xs font-bold text-white"
-                                        x-text="post.category.name.toUpperCase()">
-                                    </span>
+                            {{-- Hover Effect --}}
+                            <div
+                                class="pointer-events-none absolute inset-0 scale-90 rounded-xl bg-gray-400 opacity-0 transition duration-300 ease-out group-hover:scale-105 group-hover:opacity-10">
+                            </div>
 
-                                    {{-- Title --}}
-                                    <h2 class="group-hover:text-warna-03 line-clamp-2 text-lg font-bold leading-snug transition"
-                                        x-text="post.title">
-                                    </h2>
-
-                                    {{-- Author & Date --}}
-                                    <div class="text-xs text-gray-500" x-text="post.publish_time">
-                                    </div>
-
-                                </div>
-
-                                {{-- Hover Effect --}}
-                                <div
-                                    class="pointer-events-none absolute inset-0 scale-90 rounded-xl bg-gray-400 opacity-0 transition duration-300 ease-out group-hover:scale-105 group-hover:opacity-10">
-                                </div>
-
-                            </a>
-                        </template>
-                    </div>
-
-                    <a href="{{ route('video') }}"
-                        class="hover:text-warna-03 group mt-10 flex flex-row items-center justify-center gap-2 text-sm text-gray-500">
-                        <span>Lihat berita video lainnya</span>
-                        <span class="duration-300 ease-out group-hover:translate-x-2">
-                            <x-heroicon-o-arrow-right class="h-4" />
-                        </span>
-                    </a>
+                        </a>
+                    @endforeach
                 </div>
+
+                <a href="{{ route('video') }}"
+                    class="hover:text-warna-03 group mt-10 flex flex-row items-center justify-center gap-2 text-sm text-gray-500">
+                    <span>Lihat berita video lainnya</span>
+                    <span class="duration-300 ease-out group-hover:translate-x-2">
+                        <x-heroicon-o-arrow-right class="h-4" />
+                    </span>
+                </a>
             </div>
 
             {{-- Opini --}}
@@ -283,65 +249,41 @@
                     class="before:bg-warna-01 top-26 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
                     <h2 class="mb-2 text-2xl font-bold">Opini</h2>
                 </div>
-                <div x-data="beritaOpini()" x-init="init()">
-                    <div class="flex flex-col gap-6" x-ref="skeleton">
-                        @for ($n = 0; $n < 6; $n++)
-                            <div class="animate-pulse">
-                                <div class="group grid grid-cols-1 items-start gap-6 md:grid-cols-3">
+                <div class="flex flex-col gap-6">
+                    @foreach ($beritaOpini as $post)
+                        <a href="{{ route('post.detail', [$post->category?->slug ?: $post->type, $post->slug]) }}"
+                            class="group grid grid-cols-1 items-start gap-2 md:grid-cols-3">
 
-                                    {{-- image --}}
-                                    <div class="md:col-span-1">
-                                        <div class="aspect-video w-full rounded-md bg-gray-200"></div>
-                                    </div>
-
-                                    {{-- content --}}
-                                    <div class="flex flex-col justify-center md:col-span-2">
-                                        <div class="space-y-2">
-                                            <div class="h-4 w-1/3 rounded bg-gray-200"></div>
-                                            <div class="h-4 w-1/2 rounded bg-gray-200"></div>
-                                            <div class="h-4 w-3/4 rounded bg-gray-200"></div>
-                                        </div>
-                                    </div>
+                            {{-- Image --}}
+                            <div class="md:col-span-1">
+                                <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
+                                    <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
+                                        alt="{{ $post->title }}"
+                                        class="h-full w-full rounded-md bg-gray-200 object-cover transition duration-300 group-hover:scale-105"
+                                        loading="lazy">
                                 </div>
                             </div>
-                        @endfor
-                    </div>
-                    <div class="flex flex-col gap-6">
-                        <template x-for="post in apiPosts" :key="post.id">
-                            <a :href="(post.category?.slug ?? 'opini') + '/' + post.slug"
-                                class="group grid grid-cols-1 items-start gap-2 md:grid-cols-3">
 
-                                {{-- Image --}}
-                                <div class="md:col-span-1">
-                                    <div class="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
-                                        <img :src="post.thumbnail" :alt="post.title"
-                                            class="h-full w-full rounded-md object-cover transition duration-300 group-hover:scale-105">
-                                    </div>
+                            {{-- Content --}}
+                            <div class="flex flex-col justify-center md:col-span-2">
+                                <div class="mb-1 text-xs text-gray-500">
+                                    {{ $post->publish_time->diffForHumans() }}
                                 </div>
-
-                                {{-- Content --}}
-                                <div class="flex flex-col justify-center md:col-span-2">
-
-                                    <div class="mb-1 text-xs text-gray-500" x-text="post.publish_time">
-                                    </div>
-
-                                    <h2 class="group-hover:text-warna-03 mb-3 line-clamp-3 text-xl font-bold leading-snug transition"
-                                        x-text="post.title">
-                                    </h2>
-
-                                </div>
-
-                            </a>
-                        </template>
-                    </div>
-                    <a href="{{ route('opini') }}"
-                        class="hover:text-warna-03 group mt-10 flex flex-row items-center justify-center gap-2 text-sm text-gray-500">
-                        <span>Lihat berita opini lainnya</span>
-                        <span class="duration-300 ease-out group-hover:translate-x-2">
-                            <x-heroicon-o-arrow-right class="h-4" />
-                        </span>
-                    </a>
+                                <h2
+                                    class="group-hover:text-warna-03 mb-3 line-clamp-3 text-xl font-bold leading-snug transition">
+                                    {{ $post->title }}
+                                </h2>
+                            </div>
+                        </a>
+                    @endforeach
                 </div>
+                <a href="{{ route('opini') }}"
+                    class="hover:text-warna-03 group mt-10 flex flex-row items-center justify-center gap-2 text-sm text-gray-500">
+                    <span>Lihat berita opini lainnya</span>
+                    <span class="duration-300 ease-out group-hover:translate-x-2">
+                        <x-heroicon-o-arrow-right class="h-4" />
+                    </span>
+                </a>
             </div>
         </div>
 
