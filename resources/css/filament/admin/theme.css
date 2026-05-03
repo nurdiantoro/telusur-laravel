@@ -28,3 +28,7 @@
 .fi-sidebar-group-label {
     @apply font-bold text-gray-600;
 }
+
+.fi-fo-rich-editor-main .tiptap {
+    @apply min-h-120;
+}

@@ -9,7 +9,6 @@ use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\View;
@@ -17,7 +16,6 @@ use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class PostForm
 {
@@ -28,9 +26,21 @@ class PostForm
                 ->columnSpanFull()
                 ->schema([
 
-                    /* =========================
-                     |  KOLOM KIRI – META POST
-                     ========================= */
+                    /*
+                    |  ----------------------------------------
+                    |  Kolom Kiri
+                    |  1. Author (disabled)
+                    |  2. Slug (disabled)
+                    |  3. Headline
+                    |  4. Type (post, video, opini)
+                    |  5. Gallery (jika type video, maka pilih gallery yang sudah diupload sebelumnya)
+                    |  6. Video URL (jika type video, maka isi dengan link video)
+                    |  7. Caption (jika type video, maka isi dengan caption video)
+                    |  8. Category (jika type post, maka pilih kategori)
+                    |  9. Tags (bisa multiple, relasi many to many dengan tags)
+                    |  10. Publish At (immediately atau scheduled)
+                    |  ----------------------------------------
+                     */
                     Section::make('Post Detail')
                         ->columnSpan(1)
                         ->schema([
@@ -38,10 +48,13 @@ class PostForm
                                 ->label('Author')
                                 ->disabled()
                                 ->dehydrated(false)
-                                ->formatStateUsing(
-                                    fn($state, $record) =>
-                                    $record?->author?->name
-                                ),
+                                ->afterStateHydrated(function ($state, $set, $record) {
+                                    if ($record) {
+                                        $set('author_name', $record->author?->name);
+                                    } else {
+                                        $set('author_name', Auth::user()?->name);
+                                    }
+                                }),
 
                             Hidden::make('author_id')
                                 ->default(fn() => Auth::id())
@@ -90,7 +103,10 @@ class PostForm
                                 ->selectablePlaceholder(false)
                                 ->preload()
                                 ->searchable()
-                                ->required(fn($livewire, $get) => $livewire->submitStatus === 'published' && $get('type') === 'post'),
+                                ->required(fn($livewire, $get) => $livewire->submitStatus === 'published' && $get('type') === 'post')
+                                ->validationMessages([
+                                    'required' => 'Category is required',
+                                ]),
 
                             Select::make('tags')
                                 ->relationship('tags', 'name')
@@ -103,6 +119,15 @@ class PostForm
                                     TextInput::make('name')
                                         ->required(),
                                 ]),
+
+                            /*
+                            |
+                            |
+                            |
+                            |  ----------------------------------------
+                            |  Publish At
+                            |  ----------------------------------------
+                             */
                             Select::make('publish_at')
                                 ->reactive()
                                 ->options([
@@ -112,7 +137,7 @@ class PostForm
                                 ->default('scheduled') // untuk create
                                 ->afterStateHydrated(function ($state, callable $set, $record) {
 
-                                    // Cek apakah ini edit (ada record)
+                                    // Cek apakah ini edit, bukan create (ada record)
                                     if ($record) {
                                         // Jika publish_time sudah ada → post sebelumnya dijadwalkan, default pilih 'scheduled'
                                         // Jika publish_time null → post belum pernah publish, default pilih 'immediately'
@@ -127,31 +152,69 @@ class PostForm
                                 ->selectablePlaceholder(false)
                                 ->native(false)
                                 ->dehydrated(false)
-                                ->required(fn($livewire) => $livewire->submitStatus === 'published'),
+                                ->required(fn($livewire) => $livewire->submitStatus === 'published')
+                                ->hidden(function ($get) {
+                                    $isPosted = $get('status') === 'published';
+                                    return $isPosted;
+                                }),
                             DateTimePicker::make('publish_time')
                                 ->label('Publish Time')
                                 ->minDate(now())
                                 ->disabled(fn($get) => $get('publish_at') === 'immediately')
                                 ->dehydrated(fn($get) => $get('publish_at') === 'scheduled')
-                                ->required(fn($get, $livewire) => $livewire->submitStatus === 'published' && $get('publish_at') === 'scheduled'),
+                                ->required(function ($get, $livewire) {
+                                    $isPublished = $livewire->submitStatus === 'published';
+                                    $isScheduled = $get('publish_at') === 'scheduled';
+                                    return $isPublished && $isScheduled;
+                                })
+                                ->validationMessages([
+                                    'after_or_equal' => 'Waktu publish tidak boleh melewati waktu saat ini',
+                                ])
+                                /*
+                                |  ----------------------------------------
+                                |  Data tidak akan disimpan jika :
+                                |  publish_at = immediately
+                                |  atau
+                                |  status nya sudah published (untuk edit post yang sudah published)
+                                |  ----------------------------------------
+                                */
+                                ->dehydrated(function ($get) {
+                                    $isPublished = $get('status') === 'published';
+                                    $isScheduled = $get('publish_at') === 'scheduled';
+                                    return $isPublished || $isScheduled;
+                                })
+                                ->hidden(function ($get) {
+                                    $isPosted = $get('status') === 'published';
+                                    return $isPosted;
+                                }),
                         ]),
 
-                    /* =========================
-                     |  KOLOM KANAN – CONTENT
-                     ========================= */
+                    /*
+                     |  ----------------------------------------
+                     |  Kolok Kanan
+                     |  1. Judul
+                     |  2. Content
+                     |  ----------------------------------------
+                     */
                     Section::make('Content')
                         ->columnSpan(2)
                         ->schema([
                             TextInput::make('title')
-                                ->required(fn($livewire) => $livewire->submitStatus === 'published')
+                                ->required()
                                 ->live(onBlur: true)
                                 ->afterStateUpdated(function ($state, callable $set, $record) {
                                     if (! $record) {
                                         $set('slug', Str::slug($state));
                                     }
-                                }),
+                                })
+                                ->validationMessages([
+                                    'required' => 'Title is required',
+                                ]),
                             RichEditor::make('content')
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published')
+                                ->validationMessages([
+                                    'required' => 'Content is required',
+                                ])
                                 ->toolbarButtons([
                                     ['h2', 'h3', 'bold', 'italic', 'underline', 'strike', 'link'],
                                     ['alignStart', 'alignCenter', 'alignEnd'],
@@ -161,9 +224,6 @@ class PostForm
                                 ->fileAttachmentsDisk('public')
                                 ->fileAttachmentsDirectory('posts')
                                 ->fileAttachmentsVisibility('public')
-                                ->extraAttributes([
-                                    'style' => 'min-height: 700px;',
-                                ])
                                 ->columnSpanFull(),
                         ]),
                 ]),
