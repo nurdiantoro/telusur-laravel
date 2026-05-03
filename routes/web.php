@@ -19,11 +19,10 @@ Route::get('/index', [FrontendController::class, 'index_post'])->name('index_pos
 Route::get('/opini', [FrontendController::class, 'opini'])->name('opini');
 Route::get('/video', [FrontendController::class, 'video'])->name('video');
 
-// Prioritas untuk kategori, jika tidak ada maka akan mencari berdasarkan slug
+// Tag, Category dan Detail Post
 Route::get('/tag/{slug}', [FrontendController::class, 'postByTag'])->name('post.tag');
 Route::get('/{category}', [FrontendController::class, 'postByCategory'])->name('post.category');
 Route::get('/{category}/{slug}', [FrontendController::class, 'postDetail'])->name('post.detail');
-
 
 // Method POST
 Route::post('/comment/{post_id}', [FrontendController::class, 'postComment'])->name('post.comment');

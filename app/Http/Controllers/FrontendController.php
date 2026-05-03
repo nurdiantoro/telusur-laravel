@@ -258,8 +258,15 @@ class FrontendController extends Controller
         ));
     }
 
-    public function postDetail($categorySlug, $postSlug)
+    public function postDetail($categorySlug, $postSlug = null)
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -274,19 +281,124 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
 
-        // Detail Post
-        $post           = Post::where('slug', $postSlug)->firstOrFail();
-        $title          = $post->title;
-        $thumbnail      = $post->gallery?->spatie_preview ?: asset('img/no_image.webp');
-        $description    = Str::limit(html_entity_decode(trim(preg_replace('/\s+/', ' ', strip_tags($post->content)))), 155);
+        $adsense = Adsense::where('slug', 'inarticle2')->first();
 
+        /*
+        |--------------------------------------------------------------------------
+        | Berita Populer Sidebar
+        |--------------------------------------------------------------------------
+        */
+        $limitBeritaPopuler = 9;
+        $beritaPopuler = Cache::remember(
+            'berita_populer_cache_' . $limitBeritaPopuler,
+            60,
+            function () use ($limitBeritaPopuler) {
+                /*
+                |--------------------------------------------------------------------------
+                | Base query untuk berita populer
+                |--------------------------------------------------------------------------
+                */
+                $baseQuery = Post::post()
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time',
+                        'views'
+                    ])
+                    ->with([
+                        'category:id,name,slug',
+                        'gallery:id'
+                    ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | Ambil berita populer 7 hari terakhir
+                |--------------------------------------------------------------------------
+                */
+                $posts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(7))
+                    ->orderByDesc('views')
+                    ->limit($limitBeritaPopuler)
+                    ->get();
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer 30 hari terakhir jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->where('publish_time', '>=', now()->subDays(30))
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer semua waktu jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                return $posts;
+            }
+        );
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Data Detail Post
+        |--------------------------------------------------------------------------
+        */
+        $post = Post::where('slug', $postSlug)->firstOrFail();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Variable untuk meta data dan share media
+        |--------------------------------------------------------------------------
+        */
+        $title = $post->title;
+        $thumbnail = $post->gallery?->spatie_preview ?: asset('img/no_image.webp');
+        $description = Str::limit(html_entity_decode(trim(preg_replace('/\s+/', ' ', strip_tags($post->content)))), 155);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Comments
+        |--------------------------------------------------------------------------
+        */
         $comments = Comment::where('post_id', $post->id)
             ->where('status', 'approved')
             ->get();
 
-        // Other Article
+        /*
+        |--------------------------------------------------------------------------
+        | Other Articles
+        |--------------------------------------------------------------------------
+        */
         if ($post->type == 'post') {
             $otherArticles = Post::post()
                 ->where('id', '!=', $post->id)
@@ -305,7 +417,13 @@ class FrontendController extends Controller
                 ->get();
         }
 
-        $adsense = Adsense::where('slug', 'inarticle2')->first();
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
 
         return view('post_detail', compact(
             'post',
@@ -317,7 +435,8 @@ class FrontendController extends Controller
             'sidebarAds',
             'navbarCategories',
             'comments',
-            'adsense'
+            'adsense',
+            'beritaPopuler'
         ));
     }
 
@@ -328,11 +447,18 @@ class FrontendController extends Controller
     |
     |
     |--------------------------------------------------------------------------
-    | Semua Controller yang pake View List Search
+    | Semua Controller yang pake View post_index
     |--------------------------------------------------------------------------
     */
     public function index_post()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -351,8 +477,99 @@ class FrontendController extends Controller
             return SidebarAds::orderBy('sort_order')->get();
         });
 
+        $adsense = Adsense::where('slug', 'inarticle2')->first();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Berita Populer Sidebar
+        |--------------------------------------------------------------------------
+        */
+        $limitBeritaPopuler = 9;
+        $beritaPopuler = Cache::remember(
+            'berita_populer_cache_' . $limitBeritaPopuler,
+            60,
+            function () use ($limitBeritaPopuler) {
+                /*
+                |--------------------------------------------------------------------------
+                | Base query untuk berita populer
+                |--------------------------------------------------------------------------
+                */
+                $baseQuery = Post::post()
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time',
+                        'views'
+                    ])
+                    ->with([
+                        'category:id,name,slug',
+                        'gallery:id'
+                    ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | Ambil berita populer 7 hari terakhir
+                |--------------------------------------------------------------------------
+                */
+                $posts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(7))
+                    ->orderByDesc('views')
+                    ->limit($limitBeritaPopuler)
+                    ->get();
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer 30 hari terakhir jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->where('publish_time', '>=', now()->subDays(30))
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer semua waktu jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                return $posts;
+            }
+        );
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Query Berita
+        |--------------------------------------------------------------------------
+        */
         $limit = 10;
-        $posts = Post::post()
+        $page = request()->get('page', 1);
+
+        $query = Post::post()
             ->select([
                 'id',
                 'title',
@@ -360,19 +577,37 @@ class FrontendController extends Controller
                 'category_id',
                 'gallery_id',
                 'publish_time'
-            ])
-            ->paginate($limit);
-        // dd($posts);
+            ]);
 
+        $posts = $page == 1
+            ? Cache::remember('index_page_1_' . $limit, 60, fn() => $query->paginate($limit))
+            : $query->paginate($limit);
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
         return view('post_index', compact(
             'categories',
             'navbarCategories',
             'sidebarAds',
-            'posts'
+            'posts',
+            'adsense',
+            'beritaPopuler'
         ));
     }
+
     public function opini()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -391,8 +626,97 @@ class FrontendController extends Controller
             return SidebarAds::orderBy('sort_order')->get();
         });
 
+        /*
+        |--------------------------------------------------------------------------
+        | Berita Populer Sidebar
+        |--------------------------------------------------------------------------
+        */
+        $limitBeritaPopuler = 9;
+        $beritaPopuler = Cache::remember(
+            'berita_populer_cache_' . $limitBeritaPopuler,
+            60,
+            function () use ($limitBeritaPopuler) {
+                /*
+                |--------------------------------------------------------------------------
+                | Base query untuk berita populer
+                |--------------------------------------------------------------------------
+                */
+                $baseQuery = Post::post()
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time',
+                        'views'
+                    ])
+                    ->with([
+                        'category:id,name,slug',
+                        'gallery:id'
+                    ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | Ambil berita populer 7 hari terakhir
+                |--------------------------------------------------------------------------
+                */
+                $posts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(7))
+                    ->orderByDesc('views')
+                    ->limit($limitBeritaPopuler)
+                    ->get();
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer 30 hari terakhir jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->where('publish_time', '>=', now()->subDays(30))
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer semua waktu jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                return $posts;
+            }
+        );
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Query Berita
+        |--------------------------------------------------------------------------
+        */
         $limit = 10;
-        $posts = Post::opini()
+        $page = request()->get('page', 1);
+
+        $query = Post::opini()
             ->select([
                 'id',
                 'title',
@@ -401,18 +725,36 @@ class FrontendController extends Controller
                 'category_id',
                 'gallery_id',
                 'publish_time'
-            ])
-            ->paginate($limit);
+            ]);
 
+        $posts = $page == 1
+            ? Cache::remember('opini_page_1_' . $limit, 60, fn() => $query->paginate($limit))
+            : $query->paginate($limit);
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
         return view('post_index', compact(
             'categories',
             'navbarCategories',
             'sidebarAds',
-            'posts'
+            'posts',
+            'beritaPopuler'
         ));
     }
+
     public function video()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -431,8 +773,96 @@ class FrontendController extends Controller
             return SidebarAds::orderBy('sort_order')->get();
         });
 
+        /*
+        |--------------------------------------------------------------------------
+        | Berita Populer Sidebar
+        |--------------------------------------------------------------------------
+        */
+        $limitBeritaPopuler = 9;
+        $beritaPopuler = Cache::remember(
+            'berita_populer_cache_' . $limitBeritaPopuler,
+            60,
+            function () use ($limitBeritaPopuler) {
+                /*
+                |--------------------------------------------------------------------------
+                | Base query untuk berita populer
+                |--------------------------------------------------------------------------
+                */
+                $baseQuery = Post::post()
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time',
+                        'views'
+                    ])
+                    ->with([
+                        'category:id,name,slug',
+                        'gallery:id'
+                    ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | Ambil berita populer 7 hari terakhir
+                |--------------------------------------------------------------------------
+                */
+                $posts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(7))
+                    ->orderByDesc('views')
+                    ->limit($limitBeritaPopuler)
+                    ->get();
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer 30 hari terakhir jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->where('publish_time', '>=', now()->subDays(30))
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer semua waktu jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                return $posts;
+            }
+        );
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Query Berita
+        |--------------------------------------------------------------------------
+        */
         $limit = 10;
-        $posts = Post::video()
+        $page = request()->get('page', 1);
+
+        $query = Post::video()
             ->select([
                 'id',
                 'title',
@@ -442,18 +872,36 @@ class FrontendController extends Controller
                 'category_id',
                 'gallery_id',
                 'publish_time'
-            ])
-            ->paginate($limit);
+            ]);
 
+        $posts = $page == 1
+            ? Cache::remember('video_page_1_' . $limit, 60, fn() => $query->paginate($limit))
+            : $query->paginate($limit);
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
         return view('post_index', compact(
             'categories',
             'navbarCategories',
             'sidebarAds',
-            'posts'
+            'posts',
+            'beritaPopuler'
         ));
     }
-    public function postByCategory($slug)
+
+    public function postByCategory($slug = null)
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -468,32 +916,142 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
 
-        $beritaPopulers = Post::post()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
+        $adsense = Adsense::where('slug', 'inarticle2')->first();
 
-        $category = PostCategory::where('slug', $slug)
-            ->firstOrFail();
+        /*
+        |--------------------------------------------------------------------------
+        | Berita Populer Sidebar
+        |--------------------------------------------------------------------------
+        */
+        $limitBeritaPopuler = 9;
+        $beritaPopuler = Cache::remember(
+            'berita_populer_cache_' . $limitBeritaPopuler,
+            60,
+            function () use ($limitBeritaPopuler) {
+                /*
+                |--------------------------------------------------------------------------
+                | Base query untuk berita populer
+                |--------------------------------------------------------------------------
+                */
+                $baseQuery = Post::post()
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time',
+                        'views'
+                    ])
+                    ->with([
+                        'category:id,name,slug',
+                        'gallery:id'
+                    ]);
 
-        $posts = Post::post()
+                /*
+                |--------------------------------------------------------------------------
+                | Ambil berita populer 7 hari terakhir
+                |--------------------------------------------------------------------------
+                */
+                $posts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(7))
+                    ->orderByDesc('views')
+                    ->limit($limitBeritaPopuler)
+                    ->get();
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer 30 hari terakhir jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->where('publish_time', '>=', now()->subDays(30))
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer semua waktu jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                return $posts;
+            }
+        );
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Query Berita
+        |--------------------------------------------------------------------------
+        */
+        $category = PostCategory::where('slug', $slug)->firstOrFail();
+        $limit = 10;
+        $page = request()->get('page', 1);
+
+        $query = Post::post()
             ->where('category_id', $category->id)
-            ->paginate(10);
+            ->select([
+                'id',
+                'title',
+                'slug',
+                'category_id',
+                'gallery_id',
+                'publish_time'
+            ]);
 
+        $posts = $page == 1
+            ? Cache::remember('postByCategory_page_1_' . $limit, 60, fn() => $query->paginate($limit))
+            : $query->paginate($limit);
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
         return view('post_index', compact(
             'category',
             'posts',
             'categories',
             'sidebarAds',
-            'beritaPopulers',
+            'beritaPopuler',
             'navbarCategories'
         ));
     }
 
-    public function postByTag($slug)
+    public function postByTag($slug = null)
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -508,20 +1066,125 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
 
-        $beritaPopulers = Post::post()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
+        $adsense = Adsense::where('slug', 'inarticle2')->first();
 
+        /*
+        |--------------------------------------------------------------------------
+        | Berita Populer Sidebar
+        |--------------------------------------------------------------------------
+        */
+        $limitBeritaPopuler = 9;
+        $beritaPopuler = Cache::remember(
+            'berita_populer_cache_' . $limitBeritaPopuler,
+            60,
+            function () use ($limitBeritaPopuler) {
+                /*
+                |--------------------------------------------------------------------------
+                | Base query untuk berita populer
+                |--------------------------------------------------------------------------
+                */
+                $baseQuery = Post::post()
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time',
+                        'views'
+                    ])
+                    ->with([
+                        'category:id,name,slug',
+                        'gallery:id'
+                    ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | Ambil berita populer 7 hari terakhir
+                |--------------------------------------------------------------------------
+                */
+                $posts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(7))
+                    ->orderByDesc('views')
+                    ->limit($limitBeritaPopuler)
+                    ->get();
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer 30 hari terakhir jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->where('publish_time', '>=', now()->subDays(30))
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer semua waktu jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                return $posts;
+            }
+        );
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Query Berita
+        |--------------------------------------------------------------------------
+        */
         $tag = Tag::where('slug', $slug)->firstOrFail();
+        $limit = 10;
+        $page = request()->get('page', 1);
 
-        $posts = Post::post()
+        $query = Post::post()
             ->where('tag')
-            ->paginate(10);
+            ->select([
+                'id',
+                'title',
+                'slug',
+                'category_id',
+                'gallery_id',
+                'publish_time'
+            ]);
 
-        return view('post_category', compact(
+        $posts = $page == 1
+            ? Cache::remember('postByTag_page_1_' . $limit, 60, fn() => $query->paginate($limit))
+            : $query->paginate($limit);
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
+        return view('post_index', compact(
             'tag',
             'posts',
             'categories',
@@ -533,6 +1196,13 @@ class FrontendController extends Controller
 
     public function postSearch(Request $request)
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -547,8 +1217,99 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
 
+        $adsense = Adsense::where('slug', 'inarticle2')->first();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Berita Populer Sidebar
+        |--------------------------------------------------------------------------
+        */
+        $limitBeritaPopuler = 9;
+        $beritaPopuler = Cache::remember(
+            'berita_populer_cache_' . $limitBeritaPopuler,
+            60,
+            function () use ($limitBeritaPopuler) {
+                /*
+                |--------------------------------------------------------------------------
+                | Base query untuk berita populer
+                |--------------------------------------------------------------------------
+                */
+                $baseQuery = Post::post()
+                    ->select([
+                        'id',
+                        'title',
+                        'slug',
+                        'category_id',
+                        'gallery_id',
+                        'publish_time',
+                        'views'
+                    ])
+                    ->with([
+                        'category:id,name,slug',
+                        'gallery:id'
+                    ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | Ambil berita populer 7 hari terakhir
+                |--------------------------------------------------------------------------
+                */
+                $posts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(7))
+                    ->orderByDesc('views')
+                    ->limit($limitBeritaPopuler)
+                    ->get();
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer 30 hari terakhir jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->where('publish_time', '>=', now()->subDays(30))
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Tambah berita populer semua waktu jika kurang dari limit
+                |--------------------------------------------------------------------------
+                */
+                if ($posts->count() < $limitBeritaPopuler) {
+                    $excludeIds = $posts->pluck('id');
+
+                    $morePosts = (clone $baseQuery)
+                        ->whereNotIn('id', $excludeIds)
+                        ->orderByDesc('views')
+                        ->limit($limitBeritaPopuler - $posts->count())
+                        ->get();
+
+                    $posts = $posts->merge($morePosts);
+                }
+
+                return $posts;
+            }
+        );
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Query Berita
+        |--------------------------------------------------------------------------
+        */
         $posts = Post::search($request->search_input)
             ->where('status', 'published')
             ->where('publish_time', '<=', now())
@@ -561,12 +1322,20 @@ class FrontendController extends Controller
         if (!$request->search_input) {
             return redirect()->back()->with('error', 'Masukkan kata kunci pencarian.');
         }
-
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
         return view('post_index', compact(
             'categories',
             'navbarCategories',
             'sidebarAds',
-            'posts'
+            'posts',
+            'beritaPopuler',
+            'adsense'
         ));
     }
     /*
@@ -579,7 +1348,7 @@ class FrontendController extends Controller
     | Method POST
     |--------------------------------------------------------------------------
     */
-    public function postComment(Request $request, $post_id)
+    public function postComment(Request $request, $post_id = null)
     {
         // Honeypot: jika field ini diisi, berarti bot
         if ($request->filled('jangan_diisi')) {
@@ -640,6 +1409,13 @@ class FrontendController extends Controller
     */
     public function kebijakan()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -654,11 +1430,28 @@ class FrontendController extends Controller
                 ->get();
         });
 
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
         return view('kebijakan', compact('categories', 'navbarCategories'));
     }
 
     public function pedoman()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -673,11 +1466,28 @@ class FrontendController extends Controller
                 ->get();
         });
 
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
         return view('pedoman', compact('categories', 'navbarCategories'));
     }
 
     public function disclaimer()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -692,11 +1502,28 @@ class FrontendController extends Controller
                 ->get();
         });
 
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
         return view('disclaimer', compact('categories', 'navbarCategories'));
     }
 
     public function about()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -711,11 +1538,28 @@ class FrontendController extends Controller
                 ->get();
         });
 
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
         return view('about', compact('categories', 'navbarCategories'));
     }
 
     public function terms()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -730,6 +1574,16 @@ class FrontendController extends Controller
                 ->get();
         });
 
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | View
+        |--------------------------------------------------------------------------
+        */
         return view('terms', compact('categories', 'navbarCategories'));
     }
 }
