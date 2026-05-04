@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class PostCategory extends Model
 {
@@ -13,6 +14,21 @@ class PostCategory extends Model
     protected $casts = [
         'sort_order' => 'integer',
     ];
+
+    protected static function booted()
+    {
+        static::created(function () {
+            Cache::forget('navbar_categories_cache');
+        });
+
+        static::updated(function () {
+            Cache::forget('navbar_categories_cache');
+        });
+
+        static::deleted(function () {
+            Cache::forget('navbar_categories_cache');
+        });
+    }
 
     public function parent()
     {
