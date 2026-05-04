@@ -7,6 +7,9 @@ import {
 import 'swiper/css';
 import 'swiper/css/navigation';
 import Alpine from 'alpinejs';
+import collapse from '@alpinejs/collapse';
+
+
 
 function createFetcher(urlApi) {
     return () => ({
@@ -76,7 +79,7 @@ function createFetcher(urlApi) {
     });
 }
 
-
+Alpine.plugin(collapse);
 window.Alpine = Alpine;
 
 document.addEventListener('alpine:init', () => {

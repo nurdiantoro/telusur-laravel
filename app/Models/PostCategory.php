@@ -21,6 +21,6 @@ class PostCategory extends Model
 
     public function children()
     {
-        return $this->hasMany(PostCategory::class, 'parent_id');
+        return $this->hasMany(PostCategory::class, 'parent_id')->where('is_navbar', true)->orderBy('sort_order', 'asc');
     }
 }

@@ -92,24 +92,58 @@
     </div>
 
     {{-- Navbar Category --}}
-    <div class="hidden w-full border-b border-gray-200 bg-gray-100 md:block">
-        <ul class="md:w-300 mx-auto flex flex-wrap justify-between md:flex-row">
-            <li
-                class="{{ Route::is('home') ? 'text-warna-01 border-b-2 border-warna-01' : 'text-gray-500 hover:text-warna-01' }} px-2 py-4 font-bold uppercase">
-                <a href="{{ route('home') }}">
-                    Home
-                </a>
-            </li>
-            @foreach ($navbarCategories as $navbar)
+    <div class="w-full border-b border-gray-200 bg-gray-100">
+        <nav x-data="{ openMenu: null }" class="md:w-300 mx-auto">
+
+            {{-- Wrapper scroll (mobile) --}}
+            <ul
+                class="flex max-h-[70vh] flex-col overflow-y-auto md:max-h-none md:flex-row md:flex-wrap md:justify-between md:overflow-visible">
+
+                {{-- Home --}}
                 <li
-                    class="{{ request()->route('category') == $navbar->slug ? 'text-warna-01 border-b-2 border-warna-01' : 'text-gray-500 hover:text-warna-01' }} px-2 py-4 font-bold uppercase">
-
-                    <a href="{{ route('post.category', $navbar->slug) }}">
-                        {{ $navbar->name }}
-                    </a>
-
+                    class="{{ Route::is('home') ? 'text-warna-01 border-b-2 border-warna-01' : 'text-gray-500 hover:text-warna-01' }} px-3 py-4 font-bold uppercase">
+                    <a href="{{ route('home') }}">Home</a>
                 </li>
-            @endforeach
-        </ul>
+
+                @foreach ($navbarCategories as $category)
+                    @php $isActive = request()->route('category') == $category->slug; @endphp
+
+                    <li class="">
+
+                        {{-- Parent (klik untuk toggle di mobile) --}}
+                        <div class="{{ $isActive ? 'text-warna-01' : 'text-gray-500 hover:text-warna-01' }} flex items-center justify-between px-3 py-4 font-bold uppercase"
+                            @click="openMenu = openMenu === '{{ $category->slug }}' ? null : '{{ $category->slug }}'">
+
+                            <a href="{{ route('post.category', $category->slug) }}" class="flex-1">
+                                {{ $category->name }}
+                            </a>
+
+                            @if ($category->children->isNotEmpty())
+                                {{-- Icon (Heroicon) --}}
+                                <x-heroicon-m-chevron-down class="ml-2 h-5 w-5 transition-transform duration-300"
+                                    x-bind:class="{ 'rotate-180': openMenu === '{{ $category->slug }}' }" />
+                            @endif
+                        </div>
+
+                        {{-- Subcategory --}}
+                        @if ($category->children->isNotEmpty())
+                            <div x-show="openMenu === '{{ $category->slug }}'" x-collapse
+                                class="md:min-w-50 overflow-hidden border-gray-200 bg-gray-100 md:absolute md:mt-2 md:rounded md:border md:shadow">
+
+                                @foreach ($category->children as $sub)
+                                    <a href="{{ route('post.category', $sub->slug) }}"
+                                        class="{{ $isActive ? 'text-warna-01' : 'text-gray-500 hover:text-warna-01' }} block px-5 py-2 font-bold uppercase">
+                                        {{ $sub->name }}
+                                    </a>
+                                @endforeach
+
+                            </div>
+                        @endif
+
+                    </li>
+                @endforeach
+
+            </ul>
+        </nav>
     </div>
 </div>

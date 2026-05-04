@@ -23,7 +23,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -95,7 +95,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -168,7 +168,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -208,7 +208,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -248,7 +248,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -289,7 +289,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -329,7 +329,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -368,7 +368,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -475,7 +475,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -494,7 +494,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -513,7 +513,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -532,7 +532,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
@@ -551,7 +551,7 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $navbarCategories = Cache::remember('navbar_categories_cache', 60, function () {
+        $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
                 ->where('is_navbar', true)
