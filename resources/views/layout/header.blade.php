@@ -38,3 +38,7 @@
 {{-- prioritas image --}}
 <link rel="preload" as="image" href="{{ asset('img/logo-telusur.webp') }}">
 <link rel="preload" as="image" href="{{ asset('img/city.webp') }}">
+
+{{-- Notifikasi --}}
+<meta name="vapid-public-key" content="{{ env('VAPID_PUBLIC_KEY') }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">

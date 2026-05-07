@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Adsense;
+use App\Models\AnonymousPushSubscriber;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostCategory;
@@ -12,6 +13,7 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
+use NotificationChannels\WebPush\PushSubscription;
 
 class FrontendController extends Controller
 {
@@ -560,5 +562,29 @@ class FrontendController extends Controller
         });
 
         return view('terms', compact('categories', 'navbarCategories'));
+    }
+    /*
+    |
+    |
+    |
+    |
+    |
+    |--------------------------------------------------------------------------
+    | Notifikasi
+    |--------------------------------------------------------------------------
+    */
+    public function pushSubscribe(Request $request)
+    {
+        $subscriber = AnonymousPushSubscriber::firstOrCreate([]);
+
+        $subscriber->updatePushSubscription(
+            $request->endpoint,
+            $request->keys['p256dh'],
+            $request->keys['auth']
+        );
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

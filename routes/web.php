@@ -19,6 +19,8 @@ Route::get('/index', [FrontendController::class, 'index_post'])->name('index_pos
 Route::get('/opini', [FrontendController::class, 'opini'])->name('opini');
 Route::get('/video', [FrontendController::class, 'video'])->name('video');
 
+Route::post('/push-subscribe', [FrontendController::class, 'pushSubscribe'])->name('push.subscribe');
+
 // Prioritas untuk kategori, jika tidak ada maka akan mencari berdasarkan slug
 Route::get('/tag/{slug}', [FrontendController::class, 'postByTag'])->name('post.tag');
 Route::get('/{category}', [FrontendController::class, 'postByCategory'])->name('post.category');

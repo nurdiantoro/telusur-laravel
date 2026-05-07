@@ -1524,6 +1524,9 @@
     <main class="md:max-w-300 mt-19 mx-auto min-h-screen bg-white py-8 md:mt-0">
         @yield('content')
     </main>
+    <button id="enable-notification">
+        Aktifkan Notifikasi
+    </button>
     @include('layout.footer')
 </body>
 
