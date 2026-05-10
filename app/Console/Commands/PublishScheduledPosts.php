@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SendPostNotificationJob;
 use App\Models\Post;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
@@ -40,20 +41,23 @@ class PublishScheduledPosts extends Command
             ->where('publish_time', '<=', now())
             ->get();
 
-        Log::info("Found {$posts->count()} posts to publish");
+        Log::channel('post_log')->info("Found {$posts->count()} posts to publish");
 
         $index = 1;
         foreach ($posts as $post) {
-            Log::info("#{$index} Title Post : {$post->title}");
-            Log::info("#{$index} publish_time : {$post->publish_time}");
+            Log::channel('post_log')->info("#{$index} published : {$post->title}");
 
             $post->update(['status' => 'published',]);
             $post->searchable();
-            Cache::tags(['posts'])->flush();
+
+            // Clear cache
+            // Cache::tags(['posts'])->flush();
+
+            SendPostNotificationJob::dispatch($post);
 
             $index++;
         }
 
-        Log::info("published done!");
+        Log::channel('post_log')->info("published done!");
     }
 }

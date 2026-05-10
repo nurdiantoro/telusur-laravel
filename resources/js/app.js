@@ -10,6 +10,80 @@ import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse';
 
 
+//
+//
+//
+//
+//
+//
+// Notifikasi Push dengan Service Worker
+//
+const vapidKey = document
+    .querySelector('meta[name="vapid-public-key"]')
+    .content;
+
+const csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .content;
+
+// Event listener untuk tombol "Aktifkan Notifikasi"
+document.getElementById('enable-notification')
+    .addEventListener('click', async () => {
+
+        console.log('Mencoba mengaktifkan notifikasi...');
+        console.log(vapidKey);
+
+        const registration = await navigator.serviceWorker.register('/js/sw.js');
+
+        const permission = await Notification.requestPermission();
+
+        if (permission !== 'granted') {
+            alert('Browser tidak mengizinkan notifikasi');
+            return;
+        }
+
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(vapidKey)
+        });
+
+        await fetch('/push-subscribe', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+            },
+            body: JSON.stringify(subscription),
+        });
+
+        alert('Notifikasi telusur sudah aktif!');
+        console.log('Notifikasi berhasil diaktifkan:', subscription);
+    });
+
+// fungsi untuk mengubah VAPID key dari base64 ke Uint8Array
+function urlBase64ToUint8Array(base64String) {
+
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+
+    const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+
+    return Uint8Array.from(
+        [...rawData].map(char => char.charCodeAt(0))
+    );
+}
+
+//
+//
+//
+//
+//
+//
+// Fetcher dengan Alpine.js
+//
 
 function createFetcher(urlApi) {
     return () => ({
@@ -143,65 +217,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-//
-//
-//
-//
-//
-//
-// Notifikasi Push dengan Service Worker
-//
-const vapidKey = document
-    .querySelector('meta[name="vapid-public-key"]')
-    .content;
-
-const csrfToken = document
-    .querySelector('meta[name="csrf-token"]')
-    .content;
-
-document.getElementById('enable-notification')
-.addEventListener('click', async () => {
-
-    const registration = await navigator.serviceWorker.register('/js/sw.js');
-
-    const permission = await Notification.requestPermission();
-
-    if (permission !== 'granted') {
-        alert('Notifikasi ditolak');
-        return;
-    }
-
-    const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidKey)
-    });
-
-    await fetch('/push-subscribe', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-        },
-        body: JSON.stringify(subscription),
-    });
-
-    alert('Notifikasi aktif');
-
-});
-
-function urlBase64ToUint8Array(base64String) {
-
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-
-    const base64 = (base64String + padding)
-        .replace(/-/g, '+')
-        .replace(/_/g, '/');
-
-    const rawData = window.atob(base64);
-
-    return Uint8Array.from(
-        [...rawData].map(char => char.charCodeAt(0))
-    );
-}
-

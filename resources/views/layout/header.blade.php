@@ -40,5 +40,8 @@
 <link rel="preload" as="image" href="{{ asset('img/city.webp') }}">
 
 {{-- Notifikasi --}}
-<meta name="vapid-public-key" content="{{ env('VAPID_PUBLIC_KEY') }}">
+<meta name="vapid-public-key"
+    content="{{ env('VAPID_PUBLIC_KEY') ?? 'BKKEhlnQdBd8Mb7VvFIuaCj86TgunHmIQp7q3Dohu7BTxZLY2-VOBDIY_MbWSAVbAaaesUN5T7aiQ_b04av3PB4' }}">
+
+{{-- CSRF Token --}}
 <meta name="csrf-token" content="{{ csrf_token() }}">

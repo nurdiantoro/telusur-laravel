@@ -113,7 +113,7 @@ $watch('showNav', val => {
                 class="flex max-h-[70vh] flex-col overflow-y-auto md:max-h-none md:flex-row md:flex-wrap md:justify-between">
 
                 <li
-                    class="{{ Route::is('home') ? 'text-warna-01 border-b-2 border-warna-01' : 'text-gray-500 hover:text-warna-01' }} px-3 py-4 font-bold uppercase">
+                    class="{{ Route::is('home') ? 'text-warna-01' : 'text-gray-500 hover:text-warna-01' }} px-3 py-4 font-bold uppercase">
                     <a href="{{ route('home') }}">Home</a>
                 </li>
 

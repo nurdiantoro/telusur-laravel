@@ -13,10 +13,10 @@ class PostsNotification extends Notification
 {
     use Queueable;
 
-    protected $title;
-    protected $url;
+    protected $title = '';
+    protected $url = '';
 
-    public function __construct($title, $url)
+    public function __construct($title = '', $url = '')
     {
         $this->title = $title;
         $this->url = $url;
@@ -40,11 +40,13 @@ class PostsNotification extends Notification
     {
         return (new WebPushMessage)
             ->title($this->title)
+            ->icon('/img/icon-telusur.webp')
             ->body($this->url)
             ->data([
                 'action' => $this->url,
-            ])
-            ->icon('/img/logo-telusur-new.png');
+                'notification_id' => $notification->id,
+                'url' => $this->url,
+            ]);
     }
 
     public function toArray(object $notifiable): array

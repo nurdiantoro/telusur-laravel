@@ -1521,12 +1521,17 @@
 <body class="flex min-h-screen flex-col items-center bg-white text-[#1b1b18] lg:justify-center">
 
     @include('layout.navbar')
+
     <main class="md:max-w-300 mt-19 mx-auto min-h-screen bg-white py-8 md:mt-0">
         @yield('content')
     </main>
-    <button id="enable-notification">
-        Aktifkan Notifikasi
-    </button>
+
+    <div class="fixed bottom-4 right-4">
+        <button id="enable-notification"
+            class="bg-warna-01 group flex cursor-pointer items-center justify-center rounded-full p-2 text-white duration-150 hover:bg-blue-700">
+            <x-fas-bell class="h-6 w-6 scale-90 duration-150 group-hover:rotate-12 group-hover:scale-105" />
+        </button>
+    </div>
     @include('layout.footer')
 </body>
 
