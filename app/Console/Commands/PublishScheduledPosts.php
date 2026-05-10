@@ -41,12 +41,12 @@ class PublishScheduledPosts extends Command
             ->where('publish_time', '<=', now())
             ->get();
 
-        Log::info("Found {$posts->count()} posts to publish");
+        Log::channel('post_log')->info("Found {$posts->count()} posts to publish");
 
         $index = 1;
         foreach ($posts as $post) {
-            Log::info("#{$index} Title Post : {$post->title}");
-            Log::info("#{$index} publish_time : {$post->publish_time}");
+            Log::channel('post_log')->info("#{$index} Title Post : {$post->title}");
+            Log::channel('post_log')->info("#{$index} publish_time : {$post->publish_time}");
 
             $post->update(['status' => 'published',]);
             $post->searchable();
@@ -56,12 +56,12 @@ class PublishScheduledPosts extends Command
                 $webPushService->sendNewPostNotification($post);
             } catch (\Exception $e) {
                 // Jangan sampai gagal push notification menghentikan proses publish
-                Log::error("Push notification error for post #{$post->id}: " . $e->getMessage());
+                Log::channel('post_log')->error("Push notification error for post #{$post->id}: " . $e->getMessage());
             }
 
             $index++;
         }
 
-        Log::info("published done!");
+        Log::channel('post_log')->info("published done!");
     }
 }
