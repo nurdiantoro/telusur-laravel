@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.10.1",
         "meilisearch/meilisearch-php": "^1.16",
         "mews/captcha": "^3.4",
+        "minishlink/web-push": "^10.0",
         "orangehill/iseed": "^3.8",
         "owenvoke/blade-fontawesome": "^3.2",
         "pxlrbt/filament-activity-log": "^2.1",

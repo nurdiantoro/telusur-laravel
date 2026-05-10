@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Post;
+use App\Services\WebPushService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -33,7 +34,7 @@ class PublishScheduledPosts extends Command
     | 4. index ke searchable()
     | 5. hapus cache
     */
-    public function handle()
+    public function handle(WebPushService $webPushService): void
     {
         $posts = Post::where('status', 'pending')
             ->whereNotNull('publish_time')
@@ -49,7 +50,14 @@ class PublishScheduledPosts extends Command
 
             $post->update(['status' => 'published',]);
             $post->searchable();
-            Cache::tags(['posts'])->flush();
+
+            // [BARU] Kirim push notification ke semua subscriber
+            try {
+                $webPushService->sendNewPostNotification($post);
+            } catch (\Exception $e) {
+                // Jangan sampai gagal push notification menghentikan proses publish
+                Log::error("Push notification error for post #{$post->id}: " . $e->getMessage());
+            }
 
             $index++;
         }
