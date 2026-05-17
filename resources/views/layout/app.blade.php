@@ -4,6 +4,12 @@
 <head>
     @include('layout.header')
 
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -1511,11 +1517,6 @@
         </style>
     @endif
 
-    <style>
-        [x-cloak] {
-            display: none !important;
-        }
-    </style>
 </head>
 
 <body class="flex min-h-screen flex-col items-center bg-white text-[#1b1b18] lg:justify-center">

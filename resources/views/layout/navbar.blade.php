@@ -105,7 +105,8 @@ $watch('showNav', val => {
     </div>
 
     {{-- Navbar Category --}}
-    <div class="w-full border-b border-gray-200 bg-gray-100" :class="showNav ? 'block' : 'hidden md:block'">
+    <div class="w-full border-b border-gray-200 bg-gray-100" x-cloak-mobile
+        :class="showNav ? 'block' : 'hidden md:block'">
 
         <nav x-data="{ openMenu: null }" class="md:w-300 mx-auto">
 
