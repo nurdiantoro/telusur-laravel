@@ -123,7 +123,7 @@ $watch('showNav', val => {
                     <li class="">
 
                         {{-- Parent (klik untuk toggle di mobile) --}}
-                        <div class="x-cloak flex items-center justify-between px-3 py-4 font-bold uppercase"
+                        <div x-cloak class="flex items-center justify-between px-3 py-4 font-bold uppercase"
                             @click="openMenu = openMenu === '{{ $category->slug }}' ? null : '{{ $category->slug }}'">
 
                             <a href="{{ route('post.category', $category->slug) }}"
@@ -140,8 +140,8 @@ $watch('showNav', val => {
 
                         {{-- Subcategory --}}
                         @if ($category->children->isNotEmpty())
-                            <div x-show="openMenu === '{{ $category->slug }}'" x-collapse
-                                class="md:min-w-50 x-cloak overflow-hidden border-gray-200 bg-gray-100 md:absolute md:mt-2 md:rounded md:border">
+                            <div x-show="openMenu === '{{ $category->slug }}'" x-collapse x-cloak
+                                class="md:min-w-50 overflow-hidden border-gray-200 bg-gray-100 md:absolute md:mt-2 md:rounded md:border">
 
                                 @foreach ($category->children as $sub)
                                     @php $isSubActive = request()->route('category') == $sub->slug; @endphp
