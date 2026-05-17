@@ -32,11 +32,11 @@
                 class="bg-linear-to-r from-warna-03 to-warna-04 mb-3 w-fit text-nowrap px-2 py-1 text-sm font-bold text-white md:mb-0 md:text-base">
                 Hot news</div>
 
-            <div class="swiper hotNews min-w-0 flex-1 overflow-hidden">
+            <div class="swiper hotNews hidden min-w-0 flex-1 overflow-hidden">
                 <div class="swiper-wrapper">
                     @foreach ($beritaUtama as $post)
                         <a href="{{ $post->category->slug . '/' . $post->slug }}"
-                            class="swiper-slide hover:text-warna-03 min-w-0 truncate px-2 md:p-0 md:text-lg">{{ $post->title }}</a>
+                            class="swiper-slide hover:text-warna-03 x-cloak min-w-0 truncate px-2 md:p-0 md:text-lg">{{ $post->title }}</a>
                     @endforeach
                 </div>
             </div>
@@ -110,43 +110,32 @@
 
                 <div x-data="beritaUtama()" x-init="init()">
 
-                    <!-- Skeleton -->
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2" x-ref="skeleton">
-                        @for ($n = 0; $n < 10; $n++)
-                            <div class="flex animate-pulse gap-4">
-                                <div class="h-20 w-28 rounded-md bg-gray-200"></div>
-                                <div class="flex-1 space-y-2">
-                                    <div class="h-4 w-1/3 rounded bg-gray-200"></div>
-                                    <div class="h-4 w-1/2 rounded bg-gray-200"></div>
-                                    <div class="h-4 w-3/4 rounded bg-gray-200"></div>
-                                </div>
-                            </div>
-                        @endfor
-                    </div>
-
                     <!-- Content -->
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <template x-for="post in apiPosts" :key="post.id">
-                            <a :href="(post.category?.slug) + '/' + post.slug" class="group flex items-start gap-4">
+                        @foreach ($beritaUtama as $post)
+                            <a href="{{ route('post.detail', ['slug' => $post->slug, 'category' => $post->category->slug]) }}"
+                                class="group flex items-start gap-4">
 
                                 <!-- Thumbnail -->
                                 <div class="shrink-0">
-                                    <img :src="post.thumbnail" :alt="post.title"
-                                        class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
+                                    <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
+                                        alt="{{ $post->title }}"
+                                        class="h-20 w-28 rounded-md bg-gray-200 object-cover transition duration-300 group-hover:scale-105">
                                 </div>
 
                                 <!-- Content -->
                                 <div class="flex flex-col">
 
                                     <!-- ✅ langsung pakai -->
-                                    <div class="mb-1 text-xs text-gray-500" x-text="post.publish_time"></div>
+                                    <div class="mb-1 text-xs text-gray-500">{{ $post->publish_time->diffForHumans() }}
+                                    </div>
 
-                                    <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition"
-                                        x-text="post.title">
+                                    <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition">
+                                        {{ $post->title }}
                                     </h3>
                                 </div>
                             </a>
-                        </template>
+                        @endforeach
                     </div>
                 </div>
             </div>
