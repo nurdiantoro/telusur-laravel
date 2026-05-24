@@ -30,7 +30,7 @@
             <div class="flex flex-col gap-4">
                 @for ($i = 0; $i < 6; $i++)
                     <div class="flex animate-pulse gap-3">
-                        <div class="h-20 w-24 rounded-md bg-gray-200"></div>
+                        <div class="h-20 w-24 rounded-2xl bg-gray-200"></div>
                         <div class="flex-1 space-y-2">
                             <div class="h-4 w-3/4 rounded bg-gray-200"></div>
                             <div class="h-4 w-1/2 rounded bg-gray-200"></div>
@@ -45,7 +45,7 @@
             <template x-for="post in apiPosts" :key="post.id">
                 <a :href="post.url" class="group flex gap-3">
                     <!-- Thumbnail -->
-                    <div class="shrink-0 overflow-hidden rounded-md bg-gray-200">
+                    <div class="shrink-0 overflow-hidden rounded-2xl bg-gray-200">
                         <img :src="post.thumbnail" :alt="post.title"
                             class="h-20 w-24 object-cover transition duration-300 ease-out group-hover:scale-110">
                     </div>

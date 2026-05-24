@@ -9,6 +9,7 @@ use App\Models\PostCategory;
 use App\Models\SidebarAds;
 use App\Models\Subscriber;
 use App\Models\Tag;
+use App\Services\PostContentParserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
@@ -87,14 +88,19 @@ class FrontendController extends Controller
         ));
     }
 
-    public function postDetail($categorySlug, $postSlug)
+    public function postDetail($categorySlug, $postSlug, PostContentParserService $parser)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | Variable Template Page
+        |--------------------------------------------------------------------------
+        |
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
                 ->get();
         });
-
         $navbarCategories = Cache::rememberForever('navbar_categories_cache', function () {
             return PostCategory::with(['children'])
                 ->whereNull('parent_id')
@@ -102,51 +108,70 @@ class FrontendController extends Controller
                 ->orderBy('sort_order')
                 ->get();
         });
-
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $adsense = Adsense::where('slug', 'inarticle2')->first();
 
-        // Detail Post
+        /*
+        |--------------------------------------------------------------------------
+        | Variable Detail Post
+        |--------------------------------------------------------------------------
+        |
+        */
         $post           = Post::where('slug', $postSlug)->firstOrFail();
         $title          = $post->title;
         $thumbnail      = $post->gallery?->spatie_preview ?: asset('img/no_image.webp');
         $description    = Str::limit(html_entity_decode(trim(preg_replace('/\s+/', ' ', strip_tags($post->content)))), 155);
-
+        $parsedContent  = $parser->parse($post);
         $comments = Comment::where('post_id', $post->id)
             ->where('status', 'approved')
             ->get();
 
-        // Other Article
-        if ($post->type == 'post') {
-            $otherArticles = Post::post()
-                ->where('id', '!=', $post->id)
-                ->where('category_id', $post->category_id)
-                ->limit(10)
-                ->get();
-        } elseif ($post->type == 'opini') {
-            $otherArticles = Post::opini()
-                ->where('id', '!=', $post->id)
-                ->limit(10)
-                ->get();
-        } elseif ($post->type == 'video') {
-            $otherArticles = Post::video()
-                ->where('id', '!=', $post->id)
-                ->limit(10)
-                ->get();
-        }
 
-        $adsense = Adsense::where('slug', 'inarticle2')->first();
+        /*
+        |--------------------------------------------------------------------------
+        | Variable Other Post
+        |--------------------------------------------------------------------------
+        |
+        | 1. cek dulu berdasarkan type post nya
+        | 2. baru cek berdasarkan kategori
+        | (NEXT nanti diubah diubah jadi scoring kalo udah ada meilisearch)
+        |
+        */
+        $otherPostsQuery = Post::where('id', '!=', $post->id);
+
+        if ($post->type == 'post') {
+            $otherPostsQuery->post()
+                ->where('category_id', $post->category_id);
+        } elseif ($post->type == 'opini') {
+            $otherPostsQuery->opini();
+        } elseif ($post->type == 'video') {
+            $otherPostsQuery->video();
+        }
+        $otherPosts = $otherPostsQuery
+            ->take(30)
+            ->get()
+            ->shuffle()
+            ->take(8);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Blade View
+        |--------------------------------------------------------------------------
+        |
+        */
 
         return view('post_detail', compact(
             'post',
             'title',
-            'description',
             'thumbnail',
+            'description',
+            'parsedContent',
+            'comments',
             'categories',
-            'otherArticles',
             'sidebarAds',
             'navbarCategories',
-            'comments',
-            'adsense'
+            'adsense',
+            'otherPosts',
         ));
     }
 
@@ -281,7 +306,7 @@ class FrontendController extends Controller
             'posts'
         ));
     }
-    public function postByCategory($slug)
+    public function postByCategory($slug = null)
     {
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
@@ -321,7 +346,7 @@ class FrontendController extends Controller
         ));
     }
 
-    public function postByTag($slug)
+    public function postByTag($slug = null)
     {
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
@@ -408,7 +433,7 @@ class FrontendController extends Controller
     | Method POST
     |--------------------------------------------------------------------------
     */
-    public function postComment(Request $request, $post_id)
+    public function postComment(Request $request, $post_id = null)
     {
         // Honeypot: jika field ini diisi, berarti bot
         if ($request->filled('jangan_diisi')) {

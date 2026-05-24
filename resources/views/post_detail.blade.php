@@ -37,7 +37,7 @@
                         </div>
                     @else
                         <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
-                            alt="{{ $post->title }}" class="h-auto w-full">
+                            alt="{{ $post->title }}" class="h-auto w-full rounded-3xl">
                     @endif
                     <figcaption class="text-sm">{{ $post->caption }}</figcaption>
 
@@ -97,7 +97,9 @@
                 --}}
                 <div
                     class="article-content prose prose-p:text-neutral-800 prose-h2:text-neutral-800 prose-h3:text-neutral-800 prose-a:text-warna-01 prose-strong:text-neutral-800 prose-italic:text-neutral-800 max-w-none">
-                    {!! $post->content !!}</div>
+                    {{-- {!! $post->content !!} --}}
+                    {!! $parsedContent !!}
+                </div>
                 {{--
                 |
                 |
@@ -189,30 +191,22 @@
 
             {{-- Artikel Terkait --}}
             <div>
-                <h2 class="mb-6 font-bold">Artikel Terkait</h2>
+                <h2 class="mb-6 font-bold">Berita Terkait</h2>
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    @foreach ($otherArticles as $post)
+                    @foreach ($otherPosts as $post)
                         <a href="{{ route('post.detail', [$post->category->slug ?? $post->type, $post->slug]) }}"
                             class="group flex items-start gap-4">
-
-                            {{-- Thumbnail --}}
-                            <div class="shrink-0">
+                            <div class="shrink-0 overflow-hidden rounded-2xl bg-gray-200">
                                 <img src="{{ $post->gallery?->spatie_thumbnail ??
                                     ($post->type === 'video' && $post->video_url
                                         ? 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg'
                                         : asset('img/no_image.webp')) }}"
-                                    class="h-20 w-28 rounded-md object-cover transition duration-300 group-hover:scale-105">
+                                    class="h-20 w-28 object-cover transition duration-300 group-hover:scale-105">
                             </div>
-
-                            {{-- Content --}}
                             <div class="flex flex-col">
-
-                                {{-- Author & Date --}}
                                 <div class="mb-1 text-xs text-gray-500">
                                     {{ $post->publish_time->diffForHumans() }}
                                 </div>
-
-                                {{-- Title --}}
                                 <h3
                                     class="group-hover:text-warna-03 line-clamp-3 text-sm font-semibold leading-snug transition">
                                     {{ $post->title }}

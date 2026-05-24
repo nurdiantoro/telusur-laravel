@@ -22,13 +22,13 @@
                         class="group mb-4 grid grid-cols-1 items-start gap-3 md:grid-cols-3 md:gap-6">
 
                         <div class="md:col-span-1">
-                            <div class="aspect-2/1 w-full overflow-hidden rounded-md bg-gray-100">
+                            <div class="aspect-2/1 w-full overflow-hidden rounded-3xl bg-gray-100">
                                 <img src="{{ $post->gallery?->spatie_thumbnail ??
                                     ($post->type === 'video' && $post->video_url
                                         ? 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg'
                                         : asset('img/no_image.webp')) }}"
                                     alt="{{ $post->title }}"
-                                    class="h-full w-full rounded-md object-cover transition duration-300 group-hover:scale-105">
+                                    class="h-full w-full object-cover transition duration-300 group-hover:scale-105">
                             </div>
                         </div>
                         <div class="flex flex-col justify-center md:col-span-2">
