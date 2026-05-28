@@ -28,6 +28,18 @@ $watch('showNav', val => {
                     <a href="{{ route('index_post') }}" class="font-semibold text-black md:text-gray-500">Index</a>
                     <a href="{{ route('opini') }}" class="font-semibold text-black md:text-gray-500">Opini</a>
                     <a href="{{ route('video') }}" class="font-semibold text-black md:text-gray-500">Berita Video</a>
+                    <a target="_blank" href="https://www.instagram.com/"
+                        class="hover:text-warna-03 font-semibold text-black md:text-gray-500">
+                        <x-fab-instagram class="h-6" />
+                    </a>
+                    <a target="_blank" href="https://www.linkedin.com/"
+                        class="hover:text-warna-03 font-semibold text-black md:text-gray-500">
+                        <x-fab-linkedin class="h-6" />
+                    </a>
+                    <a target="_blank" href="https://www.youtube.com/"
+                        class="hover:text-warna-03 font-semibold text-black md:text-gray-500">
+                        <x-fab-youtube class="h-6" />
+                    </a>
                 </div>
 
                 {{-- Search desktop --}}

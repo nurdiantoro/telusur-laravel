@@ -1,4 +1,4 @@
-<footer class="w-full bg-neutral-950 p-4 md:p-10">
+<footer class="bg-linear-180 w-full from-neutral-800 to-neutral-950 p-4 md:p-10">
     <div
         class="flex-justify-between md:max-w-300 mx-auto mb-4 flex flex-col gap-6 border-b border-neutral-600 pb-4 md:flex-row">
 
