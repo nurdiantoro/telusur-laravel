@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('content')
     {{-- Search Khusus di home --}}
-    <div class="mb-8 w-full bg-gray-200 bg-cover bg-center px-2 pb-4 pt-10 text-center md:rounded-2xl md:py-24"
+    <div class="mb-8 aspect-video w-full bg-gray-200 bg-cover bg-center px-2 pb-4 pt-10 text-center md:aspect-auto md:rounded-2xl md:py-24"
         style="background-image: url('{{ asset('img/city.webp') }}');">
 
         <h2 class="mb-4 text-xl font-bold text-white md:text-3xl">Temukan Berita Menarik</h2>
@@ -27,7 +27,7 @@
 
     {{-- Hot news --}}
     <div class="w-screen md:w-full">
-        <div class="mb-6 flex-row items-center justify-between gap-2 border-b border-gray-300 pb-3 md:flex">
+        <div class="mb-6 flex-row items-center justify-between gap-2 border-gray-300 pb-3 md:flex md:border-b">
             <div
                 class="bg-linear-to-r from-warna-03 to-warna-04 mb-3 w-fit text-nowrap px-2 py-1 text-sm font-bold text-white md:mb-0 md:text-base">
                 Hot news</div>
@@ -88,13 +88,13 @@
                     </div>
 
                     <div
-                        class="absolute -left-2 bottom-0 top-0 z-10 flex items-center justify-center text-white opacity-0 transition-all duration-300 group-hover:left-4 group-hover:opacity-100">
+                        class="absolute -left-2 bottom-0 top-0 z-10 hidden items-center justify-center text-white opacity-0 transition-all duration-300 group-hover:left-4 group-hover:opacity-100 md:flex">
                         <button class="highlightNews-prev cursor-pointer rounded-full bg-black/20 p-3 hover:bg-black/40">
                             <x-heroicon-c-chevron-left class="h-6 text-white" />
                         </button>
                     </div>
                     <div
-                        class="absolute -right-2 bottom-0 top-0 z-10 flex items-center justify-center text-white opacity-0 transition-all duration-300 group-hover:right-4 group-hover:opacity-100">
+                        class="absolute -right-2 bottom-0 top-0 z-10 hidden items-center justify-center text-white opacity-0 transition-all duration-300 group-hover:right-4 group-hover:opacity-100 md:flex">
                         <button class="highlightNews-next cursor-pointer rounded-full bg-black/20 p-3 hover:bg-black/40">
                             <x-heroicon-c-chevron-right class="h-6 text-white" /></button>
                     </div>
@@ -202,7 +202,7 @@
                     <h2 class="mb-2 text-2xl font-bold">Berita Video</h2>
                 </div>
 
-                <div class="swiper beritaVideo group relative w-full">
+                <div class="swiper beritaVideo group relative w-full overflow-hidden">
                     <div class="swiper-wrapper">
                         @foreach ($beritaVideo as $post)
                             <a href="{{ $post->category->slug . '/' . $post->slug }}" class="swiper-slide group/item">
@@ -265,7 +265,7 @@
                     <h2 class="mb-2 text-2xl font-bold">Berita Foto</h2>
                 </div>
 
-                <div class="swiper beritaFoto group relative w-full">
+                <div class="swiper beritaFoto group relative w-full overflow-hidden">
                     <div class="swiper-wrapper">
                         @foreach ($beritaFoto as $post)
                             <a href="{{ $post->category->slug . '/' . $post->slug }}" class="swiper-slide group/item">
