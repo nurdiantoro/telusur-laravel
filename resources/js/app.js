@@ -2,81 +2,15 @@ import './bootstrap';
 import Swiper from 'swiper';
 import {
     Navigation,
+    Pagination,
     Autoplay
 } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse';
 
-
-
-function createFetcher(urlApi) {
-    return () => ({
-        isLoading: true,
-        isLoaded: false,
-        apiPosts: [],
-        pagination: null,
-        error: null,
-        currentUrl: urlApi,
-
-        async fetchData(url = null) {
-            this.isLoading = true;
-
-            if (url) {
-                this.currentUrl = url;
-            }
-
-            try {
-                const response = await fetch(this.currentUrl);
-                const json = await response.json();
-
-                this.apiPosts = json.data ?? [];
-                this.pagination = json.pagination ?? null;
-
-                if (!this.isLoaded && this.$refs.skeleton) {
-                    this.$refs.skeleton.style.display = 'none';
-                }
-
-                this.isLoaded = true;
-
-            } catch (error) {
-                this.error = error;
-            } finally {
-                this.isLoading = false;
-            }
-        },
-
-        next() {
-            if (this.pagination?.next_page_url) {
-                this.fetchData(this.pagination.next_page_url);
-            }
-        },
-
-        prev() {
-            if (this.pagination?.prev_page_url) {
-                this.fetchData(this.pagination.prev_page_url);
-            }
-        },
-
-        hasPagination() {
-            return this.pagination && this.pagination.last_page > 1;
-        },
-
-        init() {
-            const observer = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting) {
-                    this.fetchData();
-                    observer.disconnect();
-                }
-            }, {
-                rootMargin: '200px'
-            });
-
-            observer.observe(this.$el);
-        }
-    });
-}
 
 // ─── Push Notification Component ─────────────────────────────────────────────
 function pushNotification() {
@@ -236,11 +170,80 @@ function pushNotification() {
     };
 }
 // ─────────────────────────────────────────────────────────────────────────────
+//
+//
+//
+// ─── API untuk Berita ─────────────────────────────────────────────────────
+function createFetcher(urlApi) {
+    return () => ({
+        isLoading: true,
+        isLoaded: false,
+        apiPosts: [],
+        pagination: null,
+        error: null,
+        currentUrl: urlApi,
 
+        async fetchData(url = null) {
+            this.isLoading = true;
 
+            if (url) {
+                this.currentUrl = url;
+            }
+
+            try {
+                const response = await fetch(this.currentUrl);
+                const json = await response.json();
+
+                this.apiPosts = json.data ?? [];
+                this.pagination = json.pagination ?? null;
+
+                if (!this.isLoaded && this.$refs.skeleton) {
+                    this.$refs.skeleton.style.display = 'none';
+                }
+
+                this.isLoaded = true;
+
+            } catch (error) {
+                this.error = error;
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        next() {
+            if (this.pagination?.next_page_url) {
+                this.fetchData(this.pagination.next_page_url);
+            }
+        },
+
+        prev() {
+            if (this.pagination?.prev_page_url) {
+                this.fetchData(this.pagination.prev_page_url);
+            }
+        },
+
+        hasPagination() {
+            return this.pagination && this.pagination.last_page > 1;
+        },
+
+        init() {
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    this.fetchData();
+                    observer.disconnect();
+                }
+            }, {
+                rootMargin: '200px'
+            });
+
+            observer.observe(this.$el);
+        }
+    });
+}
+// ─────────────────────────────────────────────────────────────────────────────
+// ─── Daftarkan Alpine.js ─────────────────────────────────────────────────────
 Alpine.plugin(collapse);
 window.Alpine = Alpine;
-
 document.addEventListener('alpine:init', () => {
     Alpine.data('beritaUtama', createFetcher('/api/berita-utama'));
     Alpine.data('beritaPopuler', createFetcher('/api/berita-populer'));
@@ -252,14 +255,12 @@ document.addEventListener('alpine:init', () => {
     // Daftarkan push notification component
     Alpine.data('pushNotification', pushNotification);
 });
-
 Alpine.start();
-
+// ─────────────────────────────────────────────────────────────────────────────
 //
 //
 //
-// Inisialisasi Swiper setelah DOM siap
-//
+// ─── Swiper.js ───────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('.hotNews')) {
         new Swiper('.hotNews', {
@@ -304,4 +305,82 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+
+    if (document.querySelector('.beritaVideo')) {
+        new Swiper('.beritaVideo', {
+            modules: [Navigation, Pagination, Autoplay],
+            loop: true,
+            navigation:true,
+            pagination: {
+                el: ".beritaVideo-pagination",
+                clickable: true,
+            },
+            speed: 2000,
+            slidesPerView: 3,
+            spaceBetween: 10,
+            breakpoints: {
+                320: {
+                    slidesPerView: 1,
+                    spaceBetween: 0,
+                },
+                640: {
+                    slidesPerView: 2,
+                    spaceBetween: 5,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 10,
+                },
+            },
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            on: {
+                init: function () {
+                    document.querySelector('.beritaVideo').classList.remove('hidden');
+                }
+            }
+        });
+    }
+
+    if (document.querySelector('.beritaFoto')) {
+        new Swiper('.beritaFoto', {
+            modules: [Navigation, Pagination, Autoplay],
+            loop: true,
+            navigation:true,
+            pagination: {
+                el: ".beritaFoto-pagination",
+                clickable: true,
+            },
+            speed: 2000,
+            slidesPerView: 3,
+            spaceBetween: 10,
+            breakpoints: {
+                320: {
+                    slidesPerView: 1,
+                    spaceBetween: 0,
+                },
+                640: {
+                    slidesPerView: 2,
+                    spaceBetween: 5,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 10,
+                },
+            },
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            on: {
+                init: function () {
+                    document.querySelector('.beritaFoto').classList.remove('hidden');
+                }
+            }
+        });
+    }
 });
+// ─────────────────────────────────────────────────────────────────────────────

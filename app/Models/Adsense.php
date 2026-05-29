@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class Adsense extends Model
 {
     protected $guarded = [];
-    protected $table = 'tbl_adsense';
+    protected $table = 'adsense';
 }

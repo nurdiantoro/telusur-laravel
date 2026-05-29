@@ -90,6 +90,41 @@ class FrontendController extends Controller
             return $posts;
         });
 
+        $beritaVideo = Cache::remember('berita_video_cache', 60, function () {
+            $posts = Post::video()
+                ->select([
+                    'id',
+                    'title',
+                    'slug',
+                    'category_id',
+                    'gallery_id',
+                    'publish_time',
+                    'video_url'
+                ])
+                ->limit(8)
+                ->get();
+
+            return $posts;
+        });
+
+        $beritaFoto = Cache::remember('berita_foto_cache', 60, function () {
+            $posts = Post::post()
+                ->select([
+                    'id',
+                    'title',
+                    'slug',
+                    'category_id',
+                    'gallery_id',
+                    'publish_time',
+                    'video_url'
+                ])
+                ->where('category_id', 19) // ID kategori Foto
+                ->limit(8)
+                ->get();
+
+            return $posts;
+        });
+
         $suggestTags = Tag::inRandomOrder()
             ->limit(5)
             ->get();
@@ -99,6 +134,8 @@ class FrontendController extends Controller
             'navbarCategories',
             'sidebarAds',
             'beritaUtama',
+            'beritaVideo',
+            'beritaFoto',
             'suggestTags',
             'adsense'
         ));
