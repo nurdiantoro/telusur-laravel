@@ -332,6 +332,11 @@
                     </a>
                 </div>
             </div>
+
+            {{-- Adsense --}}
+            <div class="px-4 md:px-0">
+                {!! $adsense->script !!}
+            </div>
         </div>
 
         {{-- side div --}}

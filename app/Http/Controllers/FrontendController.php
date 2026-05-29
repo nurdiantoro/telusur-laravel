@@ -18,6 +18,13 @@ class FrontendController extends Controller
 {
     public function index()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -36,7 +43,15 @@ class FrontendController extends Controller
             return SidebarAds::orderBy('sort_order')->get();
         });
 
-        // Cache::forget('berita_utama_carousel_cache');
+        $adsense = Adsense::where('slug', 'inlist')->first();
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Query
+        |--------------------------------------------------------------------------
+        */
         $beritaUtama = Cache::remember('berita_utama_carousel_cache', 60, function () {
             $posts = Post::post()
                 ->where('publish_time', '>=', now()->subDays(7))
@@ -84,12 +99,20 @@ class FrontendController extends Controller
             'navbarCategories',
             'sidebarAds',
             'beritaUtama',
-            'suggestTags'
+            'suggestTags',
+            'adsense'
         ));
     }
 
     public function postDetail($categorySlug, $postSlug, PostContentParserService $parser)
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         /*
         |--------------------------------------------------------------------------
         | Variable Template Page
@@ -109,6 +132,15 @@ class FrontendController extends Controller
                 ->get();
         });
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $adsense = Adsense::where('slug', 'inarticle2')->first();
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Query
+        |--------------------------------------------------------------------------
+        */
         $adsense = Adsense::where('slug', 'inarticle2')->first();
 
         /*
@@ -182,11 +214,18 @@ class FrontendController extends Controller
     |
     |
     |--------------------------------------------------------------------------
-    | Semua Controller yang pake View List Search
+    | Semua Controller yang pake View post_index.blade.php
     |--------------------------------------------------------------------------
     */
     public function index_post()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -204,6 +243,16 @@ class FrontendController extends Controller
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
         });
+
+        $adsense = Adsense::where('slug', 'inlist')->first();
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Query
+        |--------------------------------------------------------------------------
+        */
 
         $limit = 10;
         $posts = Post::post()
@@ -222,11 +271,19 @@ class FrontendController extends Controller
             'categories',
             'navbarCategories',
             'sidebarAds',
+            'adsense',
             'posts'
         ));
     }
     public function opini()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -244,6 +301,16 @@ class FrontendController extends Controller
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
         });
+
+        $adsense = Adsense::where('slug', 'inlist')->first();
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Query
+        |--------------------------------------------------------------------------
+        */
 
         $limit = 10;
         $posts = Post::opini()
@@ -262,11 +329,19 @@ class FrontendController extends Controller
             'categories',
             'navbarCategories',
             'sidebarAds',
+            'adsense',
             'posts'
         ));
     }
     public function video()
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -284,6 +359,16 @@ class FrontendController extends Controller
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
         });
+
+        $adsense = Adsense::where('slug', 'inlist')->first();
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Query
+        |--------------------------------------------------------------------------
+        */
 
         $limit = 10;
         $posts = Post::video()
@@ -303,11 +388,19 @@ class FrontendController extends Controller
             'categories',
             'navbarCategories',
             'sidebarAds',
+            'adsense',
             'posts'
         ));
     }
     public function postByCategory($slug = null)
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -324,10 +417,20 @@ class FrontendController extends Controller
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
 
+        $adsense = Adsense::where('slug', 'inlist')->first();
+
         $beritaPopulers = Post::post()
             ->orderByDesc('views')
             ->limit(6)
             ->get();
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Query
+        |--------------------------------------------------------------------------
+        */
 
         $category = PostCategory::where('slug', $slug)
             ->firstOrFail();
@@ -341,6 +444,7 @@ class FrontendController extends Controller
             'posts',
             'categories',
             'sidebarAds',
+            'adsense',
             'beritaPopulers',
             'navbarCategories'
         ));
@@ -348,6 +452,13 @@ class FrontendController extends Controller
 
     public function postByTag($slug = null)
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -369,6 +480,14 @@ class FrontendController extends Controller
             ->limit(6)
             ->get();
 
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Query
+        |--------------------------------------------------------------------------
+        */
+
         $tag = Tag::where('slug', $slug)->firstOrFail();
 
         $posts = Post::post()
@@ -380,6 +499,7 @@ class FrontendController extends Controller
             'posts',
             'categories',
             'sidebarAds',
+            'adsense',
             'beritaPopulers',
             'navbarCategories'
         ));
@@ -387,6 +507,13 @@ class FrontendController extends Controller
 
     public function postSearch(Request $request)
     {
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Template
+        |--------------------------------------------------------------------------
+        */
         $categories = Cache::remember('categories_cache', 60, function () {
             return PostCategory::orderBy('name')
                 ->select('name', 'slug')
@@ -402,6 +529,14 @@ class FrontendController extends Controller
         });
 
         $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+
+        /*
+        |
+        |
+        |--------------------------------------------------------------------------
+        | Variable Query
+        |--------------------------------------------------------------------------
+        */
 
         $posts = Post::search($request->search_input)
             ->where('status', 'published')
@@ -420,6 +555,7 @@ class FrontendController extends Controller
             'categories',
             'navbarCategories',
             'sidebarAds',
+            'adsense',
             'posts'
         ));
     }

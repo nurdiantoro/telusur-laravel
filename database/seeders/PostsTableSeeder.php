@@ -44,6 +44,13 @@ class PostsTableSeeder extends Seeder
                 WHEN t.status_id = 2004 THEN 'unpublished'
                 ELSE NULL
             END
-");
+        ");
+
+        // jika category_id = 18 (headline) maka isi kolom headline dengan true
+        DB::statement("
+            UPDATE posts
+            SET headline = TRUE
+            WHERE category_id = 18
+        ");
     }
 }
