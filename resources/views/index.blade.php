@@ -2,7 +2,7 @@
 @section('content')
     {{-- Search Khusus di home --}}
     <div class="mb-8 aspect-video w-full bg-gray-200 bg-cover bg-center px-2 pb-4 pt-10 text-center md:aspect-auto md:rounded-2xl md:py-24"
-        style="background-image: url('{{ asset('img/city.webp') }}');">
+        style="background-image: url('{{ $pageSetting->image_header ? asset('storage/' . $pageSetting->image_header) : asset('img/city.webp') }}');">
 
         <h2 class="mb-4 text-xl font-bold text-white md:text-3xl">Temukan Berita Menarik</h2>
 
