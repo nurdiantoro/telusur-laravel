@@ -26,9 +26,11 @@ $watch('showNav', val => {
                 <div class="flex items-center transition-all duration-500"
                     :class="showSearch ? 'opacity-0' : 'opacity-100'">
                     <div class="mr-4 hidden items-center gap-4 md:flex">
-                        <a href="{{ route('index_post') }}" class="font-semibold text-gray-500">Index</a>
-                        <a href="{{ route('opini') }}" class="font-semibold text-gray-500">Opini</a>
-                        <a href="{{ route('video') }}" class="font-semibold text-gray-500">Berita Video</a>
+                        <a href="{{ route('index_post') }}"
+                            class="hover:text-warna-03 font-semibold text-gray-900">Index</a>
+                        <a href="{{ route('opini') }}" class="hover:text-warna-03 font-semibold text-gray-900">Opini</a>
+                        <a href="{{ route('video') }}" class="hover:text-warna-03 font-semibold text-gray-900">Berita
+                            Video</a>
                     </div>
                     <a target="_blank" href="https://www.instagram.com/"
                         class="p-2 font-semibold text-[#E1306C] hover:bg-gray-100">
@@ -114,32 +116,33 @@ $watch('showNav', val => {
             <nav x-data="{ openMenu: null }" class="md:w-300 mx-auto">
                 <ul class="flex flex-wrap justify-between">
                     <li
-                        class="{{ Route::is('home') ? 'text-warna-01' : 'text-gray-500 hover:text-warna-01' }} px-3 font-bold uppercase md:py-4">
+                        class="{{ Route::is('home') ? 'text-warna-01' : 'text-gray-500 hover:text-warna-01' }} px-3 font-bold uppercase hover:bg-gray-200 md:py-4">
                         <a href="{{ route('home') }}">Home</a>
                     </li>
                     @foreach ($navbarCategories as $category)
                         <?php $isActive = request()->route('category') == $category->slug; ?>
                         <li class="relative">
-                            <div class="flex items-center justify-between px-3 font-bold uppercase md:py-4"
-                                @click="openMenu = openMenu === '{{ $category->slug }}' ? null : '{{ $category->slug }}'">
-                                <a href="{{ route('post.category', $category->slug) }}"
-                                    class="{{ $isActive ? 'text-warna-01' : 'text-gray-500 hover:text-warna-01' }} flex-1">
+                            <div
+                                class="{{ $isActive ? 'text-warna-01' : 'text-gray-500 hover:text-warna-01' }} flex flex-1 items-center justify-between px-3 font-bold uppercase hover:bg-gray-200 md:py-4">
+                                <a href="{{ route('post.category', $category->slug) }}">
                                     {{ $category->name }}
                                 </a>
                                 @if ($category->children->isNotEmpty())
-                                    <x-heroicon-m-chevron-down class="ml-2 h-5 w-5 transition-transform duration-300"
-                                        x-bind:class="{ 'rotate-180': openMenu === '{{ $category->slug }}' }" />
+                                    <x-heroicon-m-chevron-down
+                                        class="ml-2 h-5 w-5 rounded-full transition-transform duration-300 hover:bg-gray-300"
+                                        x-bind:class="{ 'rotate-180': openMenu === '{{ $category->slug }}' }"
+                                        @click="openMenu = openMenu === '{{ $category->slug }}' ? null : '{{ $category->slug }}'" />
                                 @endif
                             </div>
                             @if ($category->children->isNotEmpty())
-                                <div x-show="openMenu === '{{ $category->slug }}'" x-collapse
+                                <div x-cloak x-show="openMenu === '{{ $category->slug }}'" x-collapse
                                     class="min-w-50 absolute mt-2 overflow-hidden rounded border border-gray-200 bg-gray-100">
                                     @foreach ($category->children as $sub)
                                         @php
                                             $isSubActive = request()->route('category') == $sub->slug;
                                         @endphp
                                         <a href="{{ route('post.category', $sub->slug) }}"
-                                            class="{{ $isSubActive ? 'text-warna-01' : 'text-gray-500 hover:text-warna-01' }} block px-5 py-2 font-bold uppercase">
+                                            class="{{ $isSubActive ? 'text-warna-01' : 'text-gray-500 hover:text-warna-01' }} block px-5 py-2 font-bold uppercase hover:bg-gray-200">
                                             {{ $sub->name }}
                                         </a>
                                     @endforeach
