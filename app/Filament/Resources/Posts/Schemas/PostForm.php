@@ -66,10 +66,19 @@ class PostForm
                                 ->unique(ignoreRecord: true)
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published'),
 
-                            Toggle::make('headline')
-                                ->onColor('success')
-                                ->inline(false)
-                                ->default(false),
+                            Grid::make(2)
+                                ->schema([
+                                    Toggle::make('headline')
+                                        ->onColor('success')
+                                        ->inline(false)
+                                        ->default(false),
+
+                                    Toggle::make('infografis')
+                                        ->onColor('success')
+                                        ->inline(false)
+                                        ->default(false),
+                                ]),
+
 
                             Select::make('type')
                                 ->options([

@@ -108,6 +108,8 @@ class Post extends Model
                 'content',
                 'status',
                 'category_id',
+                'headline',
+                'infografis',
                 'author_id',
                 'publish_time',
             ])

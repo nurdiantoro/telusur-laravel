@@ -49,8 +49,8 @@ class PostsTable
                     })
                     ->formatStateUsing(fn(string $state) => ucfirst($state))
                     ->searchable(),
-                ToggleColumn::make('headline')
-                    ->sortable(),
+                ToggleColumn::make('headline')->sortable(),
+                ToggleColumn::make('infografis')->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
@@ -74,7 +74,10 @@ class PostsTable
                     ->native(false),
                 Filter::make('headline')
                     ->modifyFormFieldUsing(fn(Checkbox $field) => $field->inline(false))
-                    ->query(fn(Builder $query): Builder => $query->where('headline', true))
+                    ->query(fn(Builder $query): Builder => $query->where('headline', true)),
+                Filter::make('infografis')
+                    ->modifyFormFieldUsing(fn(Checkbox $field) => $field->inline(false))
+                    ->query(fn(Builder $query): Builder => $query->where('infografis', true))
             ], layout: FiltersLayout::AboveContent)
             ->filtersResetActionPosition(FiltersResetActionPosition::Footer)
             ->recordActions([

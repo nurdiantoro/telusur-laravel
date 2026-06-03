@@ -64,14 +64,22 @@
     {{-- ===================== --}}
     {{-- Infografis --}}
     {{-- ===================== --}}
-    @if ($infographics->count() > 0)
-        <div class="flex flex-col gap-3 border-t border-gray-300 pt-10">
-            @foreach ($infographics as $infographic)
-                <a href="{{ $infographic->link }}" target="_blank" rel="noopener noreferrer" class="block">
-                    <img src="{{ asset('storage/' . $infographic->image) }}" alt="Infografis"
-                        class="h-auto w-full rounded-2xl transition hover:opacity-90" loading="lazy">
-                </a>
-            @endforeach
+    @if ($infografises->count() > 0)
+        <div class="gap-3border-gray-300 flex flex-col">
+            <h2
+                class="text-merah-01 mb-4 border-b border-gray-300 text-sm font-bold uppercase tracking-wide text-gray-800">
+                Infografis
+            </h2>
+
+            <div class="flex flex-col gap-3">
+                @foreach ($infografises as $post)
+                    <a href="{{ route('post.detail', [$post->category->slug, $post->slug]) }}" class="block">
+                        <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
+                            alt="{{ $post->title }}" class="h-auto w-full rounded-2xl transition hover:opacity-90"
+                            loading="lazy">
+                    </a>
+                @endforeach
+            </div>
         </div>
     @endif
 

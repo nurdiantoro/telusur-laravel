@@ -44,6 +44,9 @@ class FrontendController extends Controller
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
         });
+        $infografises = Cache::remember('infografises_cache', 60, function () {
+            return Post::post()->where('infografis', true)->limit(5)->get();
+        });
 
         $adsense = Adsense::where('slug', 'inlist')->first();
 
@@ -134,9 +137,6 @@ class FrontendController extends Controller
         $pageSetting = Cache::rememberForever('page_settings_cache', function () {
             return PageSetting::first();
         });
-        $infographics = Cache::rememberForever('infographics_cache', function () {
-            return Infographic::orderBy('sort_order')->get();
-        });
 
         return view('index', compact(
             'categories',
@@ -148,7 +148,7 @@ class FrontendController extends Controller
             'suggestTags',
             'adsense',
             'pageSetting',
-            'infographics',
+            'infografises',
         ));
     }
 
@@ -173,23 +173,16 @@ class FrontendController extends Controller
                 ->orderBy('sort_order')
                 ->get();
         });
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+        $infografises = Cache::remember('infografises_cache', 60, function () {
+            return Post::post()->where('infografis', true)->limit(5)->get();
+        });
         $adsense = Adsense::where('slug', 'inarticle2')->first();
         $pageSetting = Cache::rememberForever('page_settings_cache', function () {
             return PageSetting::first();
         });
-        $infographics = Cache::rememberForever('infographics_cache', function () {
-            return Infographic::orderBy('sort_order')->get();
-        });
-
-        /*
-        |
-        |
-        |--------------------------------------------------------------------------
-        | Variable Query
-        |--------------------------------------------------------------------------
-        */
-        $adsense = Adsense::where('slug', 'inarticle2')->first();
 
         /*
         |--------------------------------------------------------------------------
@@ -253,7 +246,7 @@ class FrontendController extends Controller
             'adsense',
             'otherPosts',
             'pageSetting',
-            'infographics',
+            'infografises',
         ));
     }
 
@@ -291,12 +284,12 @@ class FrontendController extends Controller
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
         });
+        $infografises = Cache::remember('infografises_cache', 60, function () {
+            return Post::post()->where('infografis', true)->limit(5)->get();
+        });
         $adsense = Adsense::where('slug', 'inlist')->first();
         $pageSetting = Cache::rememberForever('page_settings_cache', function () {
             return PageSetting::first();
-        });
-        $infographics = Cache::rememberForever('infographics_cache', function () {
-            return Infographic::orderBy('sort_order')->get();
         });
 
         /*
@@ -327,7 +320,7 @@ class FrontendController extends Controller
             'adsense',
             'posts',
             'pageSetting',
-            'infographics',
+            'infografises',
         ));
     }
     public function opini()
@@ -356,14 +349,14 @@ class FrontendController extends Controller
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
         });
+        $infografises = Cache::remember('infografises_cache', 60, function () {
+            return Post::post()->where('infografis', true)->limit(5)->get();
+        });
 
         $adsense = Adsense::where('slug', 'inlist')->first();
 
         $pageSetting = Cache::rememberForever('page_settings_cache', function () {
             return PageSetting::first();
-        });
-        $infographics = Cache::rememberForever('infographics_cache', function () {
-            return Infographic::orderBy('sort_order')->get();
         });
 
         /*
@@ -394,7 +387,7 @@ class FrontendController extends Controller
             'adsense',
             'posts',
             'pageSetting',
-            'infographics',
+            'infografises',
         ));
     }
     public function video()
@@ -423,14 +416,14 @@ class FrontendController extends Controller
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
         });
+        $infografises = Cache::remember('infografises_cache', 60, function () {
+            return Post::post()->where('infografis', true)->limit(5)->get();
+        });
 
         $adsense = Adsense::where('slug', 'inlist')->first();
 
         $pageSetting = Cache::rememberForever('page_settings_cache', function () {
             return PageSetting::first();
-        });
-        $infographics = Cache::rememberForever('infographics_cache', function () {
-            return Infographic::orderBy('sort_order')->get();
         });
 
         /*
@@ -462,7 +455,7 @@ class FrontendController extends Controller
             'adsense',
             'posts',
             'pageSetting',
-            'infographics',
+            'infografises',
         ));
     }
     public function postByCategory($slug = null)
@@ -495,9 +488,6 @@ class FrontendController extends Controller
         $pageSetting = Cache::rememberForever('page_settings_cache', function () {
             return PageSetting::first();
         });
-        $infographics = Cache::rememberForever('infographics_cache', function () {
-            return Infographic::orderBy('sort_order')->get();
-        });
 
         $beritaPopulers = Post::post()
             ->orderByDesc('views')
@@ -528,7 +518,7 @@ class FrontendController extends Controller
             'beritaPopulers',
             'navbarCategories',
             'pageSetting',
-            'infographics',
+            'infografises',
         ));
     }
 
@@ -565,9 +555,6 @@ class FrontendController extends Controller
         $pageSetting = Cache::rememberForever('page_settings_cache', function () {
             return PageSetting::first();
         });
-        $infographics = Cache::rememberForever('infographics_cache', function () {
-            return Infographic::orderBy('sort_order')->get();
-        });
         $adsense = Adsense::where('slug', 'inlist')->first();
         /*
         |
@@ -592,7 +579,7 @@ class FrontendController extends Controller
             'beritaPopulers',
             'navbarCategories',
             'pageSetting',
-            'infographics',
+            'infografises',
             'adsense',
         ));
     }
@@ -625,9 +612,6 @@ class FrontendController extends Controller
         $pageSetting = Cache::rememberForever('page_settings_cache', function () {
             return PageSetting::first();
         });
-        $infographics = Cache::rememberForever('infographics_cache', function () {
-            return Infographic::orderBy('sort_order')->get();
-        });
 
         /*
         |
@@ -657,7 +641,7 @@ class FrontendController extends Controller
             'adsense',
             'posts',
             'pageSetting',
-            'infographics',
+            'infografises',
         ));
     }
     /*
