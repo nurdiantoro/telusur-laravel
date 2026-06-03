@@ -49,6 +49,10 @@ class RolePermissionSeeder extends Seeder
                 'post.read',
                 'post.update',
 
+                'opini.create',
+                'opini.read',
+                'opini.update',
+
                 'tags.create',
                 'tags.read',
 
@@ -61,6 +65,10 @@ class RolePermissionSeeder extends Seeder
                 'post.create',
                 'post.read',
                 'post.update',
+
+                'opini.create',
+                'opini.read',
+                'opini.update',
 
                 'tags.create',
                 'tags.read',

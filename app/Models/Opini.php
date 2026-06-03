@@ -8,7 +8,7 @@ use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Post extends Model
+class Opini extends Model
 {
     use LogsActivity;
     use Searchable;
@@ -44,11 +44,6 @@ class Post extends Model
     |    - Digunakan untuk sistem tagging artikel
     |
     */
-
-    public function author()
-    {
-        return $this->belongsTo(User::class, 'author_id')->withTrashed();
-    }
 
     public function category()
     {
@@ -100,15 +95,14 @@ class Post extends Model
         return LogOptions::defaults()
             ->logOnly([
                 'title',
-                'type',
                 'cover',
                 'gallery_id',
                 'caption',
-                'video_url',
                 'content',
                 'status',
                 'category_id',
-                'author_id',
+                'author',
+                'author_image',
                 'publish_time',
             ])
             ->logOnlyDirty()
@@ -140,7 +134,6 @@ class Post extends Model
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'type' => $this->type,
             'publish_time' => $this->publish_time?->timestamp,
         ];
     }
@@ -152,7 +145,7 @@ class Post extends Model
 
     public function searchableAs()
     {
-        return 'posts';
+        return 'opinis';
     }
 
     /*
@@ -179,28 +172,12 @@ class Post extends Model
     |     ->get();
     |
     */
-    public function scopePost(Builder $query): Builder
+    public function scopeOpini(Builder $query): Builder
     {
         return $query
-            ->where('type', 'post')
+            ->where('type', 'opini')
             ->where('status', 'published')
-            ->with([
-                'category:id,name,slug',
-                'gallery:id',
-                'gallery.media:id,model_id,file_name,collection_name,disk,conversions_disk'
-            ])
-            ->orderByDesc('publish_time');
-    }
-    public function scopeVideo(Builder $query): Builder
-    {
-        return $query
-            ->where('type', 'video')
-            ->where('status', 'published')
-            ->with([
-                'category:id,name,slug',
-                'gallery:id',
-                'gallery.media:id,model_id,file_name,collection_name,disk,conversions_disk'
-            ])
+            ->with(['category', 'gallery'])
             ->orderByDesc('publish_time');
     }
 }

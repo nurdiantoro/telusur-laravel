@@ -25,6 +25,16 @@ class PermissionSeeder extends Seeder
 
         /*
         |--------------------------------------------------------------------------
+        | table opini
+        |--------------------------------------------------------------------------
+        */
+        Permission::firstOrCreate(['name' => 'opini.create']);
+        Permission::firstOrCreate(['name' => 'opini.read']);
+        Permission::firstOrCreate(['name' => 'opini.update']);
+        Permission::firstOrCreate(['name' => 'opini.delete']);
+
+        /*
+        |--------------------------------------------------------------------------
         | table tags
         |--------------------------------------------------------------------------
         */
