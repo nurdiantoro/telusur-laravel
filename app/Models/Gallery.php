@@ -37,13 +37,18 @@ class Gallery extends Model implements HasMedia
             ->nonQueued();
     }
 
-    public function getSpatiePreviewAttribute()
+    public function getGalleryAttribute($value)
     {
-        return $this->getFirstMediaUrl('imagesCollection', 'preview') ?: asset('img/no_image.webp');
+        return $value ?: ($this->getFirstMediaUrl('imagesCollection') ?: asset('img/no_image.webp'));
     }
 
-    public function getSpatieThumbnailAttribute()
+    public function getSpatiePreviewAttribute($value)
     {
-        return $this->getFirstMediaUrl('imagesCollection', 'thumbnail') ?: asset('img/no_image.webp');
+        return $value ?: ($this->getFirstMediaUrl('imagesCollection', 'preview') ?: asset('img/no_image.webp'));
+    }
+
+    public function getSpatieThumbnailAttribute($value)
+    {
+        return $value ?: ($this->getFirstMediaUrl('imagesCollection', 'thumbnail') ?: asset('img/no_image.webp'));
     }
 }
