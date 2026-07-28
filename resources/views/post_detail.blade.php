@@ -21,27 +21,16 @@
                 {{-- Title --}}
                 <h1 class="mb-2 text-3xl font-bold">{{ $post->title }}</h1>
 
-                {{-- Meta --}}
-                <div class="text-gray-500">
-                    <span>by {{ $post->author?->name ?: 'Admin' }}</span> |
-                    <time>{{ $post->publish_time->translatedFormat('j F Y') }}</time>
-                </div>
+                <div class="flex flex-col items-center justify-between md:flex-row">
 
-                {{-- Cover Image --}}
-                <figure class="mb-6 mt-4">
-                    @if ($post->type == 'video')
-                        <div class="aspect-video w-full">
-                            <iframe src="https://www.youtube.com/embed/{{ $post->video_url }}" class="h-full w-full"
-                                frameborder="0" allowfullscreen>
-                            </iframe>
-                        </div>
-                    @else
-                        <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
-                            alt="{{ $post->title }}" class="h-auto w-full rounded-3xl">
-                    @endif
-                    <figcaption class="text-sm">{{ $post->caption }}</figcaption>
+                    {{-- Author & Tanggal --}}
+                    <div class="self-start text-gray-500 md:self-auto">
+                        <span>by {{ $post->author?->name ?: 'Admin' }}</span> |
+                        <time>{{ $post->publish_time->translatedFormat('j F Y') }}</time>
+                    </div>
 
-                    <div class="mt-2 flex items-center justify-end">
+                    {{-- Sosmed --}}
+                    <div class="mt-2 flex items-center justify-end gap-1 self-end md:self-auto">
                         @php
                             $url = urlencode(url()->current());
                             // $title = urlencode($post->title);
@@ -49,41 +38,69 @@
                         <!-- Facebook -->
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ $url }}" target="_blank"
                             rel="noopener"
-                            class="flex flex-row items-center gap-1 bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700">
-                            <div class="h-4 w-4">
-                                <x-fab-facebook />
-                            </div>
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700">
+                            <x-fab-facebook-f class="h-5 w-5" />
                         </a>
 
                         <!-- Twitter / X -->
                         <a href="https://twitter.com/intent/tweet?url={{ $url }}&text={{ $post->title }}"
                             target="_blank" rel="noopener"
-                            class="flex flex-row items-center gap-1 bg-black px-3 py-2 text-sm text-white hover:bg-gray-800">
-                            <div class="h-4 w-4">
-                                <x-fab-x-twitter />
-                            </div>
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-black text-white hover:bg-gray-800">
+                            <x-fab-x-twitter class="h-5 w-5" />
                         </a>
 
                         <!-- WhatsApp -->
                         <a href="https://wa.me/?text={{ $post->title }}%20{{ $url }}" target="_blank"
                             rel="noopener"
-                            class="flex flex-row items-center gap-1 bg-green-600 px-3 py-2 text-sm text-white hover:bg-green-700">
-                            <div class="h-4 w-4">
-                                <x-fab-whatsapp />
-                            </div>
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-600 text-white hover:bg-green-700">
+                            <x-fab-whatsapp class="h-5 w-5" />
                         </a>
 
                         <!-- Telegram -->
                         <a href="https://t.me/share/url?url={{ $url }}&text={{ $post->title }}" target="_blank"
                             rel="noopener"
-                            class="flex flex-row items-center gap-1 bg-sky-500 px-3 py-2 text-sm text-white hover:bg-sky-600">
-                            <div class="h-4 w-4">
-                                <x-fab-telegram />
-                            </div>
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500 text-white hover:bg-sky-600">
+                            <x-fab-telegram-plane class="h-5 w-5" />
                         </a>
-                    </div>
-                </figure>
 
+                        <!-- Youtube -->
+                        <a href="https://www.youtube.com/@telusurTV" target="_blank" rel="noopener"
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-600 text-white hover:bg-red-700">
+                            <x-fab-youtube class="h-5 w-5" />
+                        </a>
+
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/telusur.co.id/" target="_blank" rel="noopener"
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-pink-500 text-white hover:bg-pink-600">
+                            <x-fab-instagram class="h-5 w-5" />
+                        </a>
+
+                        <!-- Tiktok -->
+                        <a href="https://www.tiktok.com/@telusur.co.id" target="_blank" rel="noopener"
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-black text-white hover:bg-gray-800">
+                            <x-fab-tiktok class="h-5 w-5" />
+                        </a>
+
+                    </div>
+                </div>
+
+                {{-- Cover Image --}}
+                <figure class="mb-6 mt-2">
+                    @if ($post->type == 'video')
+                        <div class="aspect-video w-full">
+                            <iframe src="https://www.youtube.com/embed/{{ $post->video_url }}" class="h-full w-full"
+                                frameborder="0" allowfullscreen>
+                            </iframe>
+                        </div>
+                    @else
+                        <div class="aspect-video w-full overflow-hidden rounded-3xl bg-gray-200">
+                            <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
+                                alt="{{ $post->title }}" class="h-full w-full object-cover">
+                        </div>
+                    @endif
+                    <figcaption class="text-sm">{{ $post->caption }}</figcaption>
+
+                </figure>
                 {{--
                 |
                 |
