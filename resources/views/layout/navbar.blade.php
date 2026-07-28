@@ -32,15 +32,15 @@ $watch('showNav', val => {
                         <a href="{{ route('video') }}" class="hover:text-warna-03 font-semibold text-gray-900">Berita
                             Video</a>
                     </div>
-                    <a target="_blank" href="https://www.instagram.com/"
+                    <a target="_blank" href="https://www.instagram.com/telusur.co.id/"
                         class="p-2 font-semibold text-[#E1306C] hover:bg-gray-100">
                         <x-fab-instagram class="h-6" />
                     </a>
-                    <a target="_blank" href="https://www.linkedin.com/"
-                        class="p-2 font-semibold text-[#0A66C2] hover:bg-gray-100">
-                        <x-fab-linkedin class="h-6" />
+                    <a target="_blank" href="https://www.tiktok.com/@telusur.co.id"
+                        class="p-2 font-semibold text-black hover:bg-gray-100">
+                        <x-fab-tiktok class="h-5" />
                     </a>
-                    <a target="_blank" href="https://www.youtube.com/"
+                    <a target="_blank" href="https://www.youtube.com/@telusurTV"
                         class="p-2 font-semibold text-[#FF0000] hover:bg-gray-100">
                         <x-fab-youtube class="h-6" />
                     </a>
