@@ -22,12 +22,15 @@ use Filament\Tables\Table;
 class GalleryResource extends Resource
 {
     protected static ?string $model = Gallery::class;
+    protected static ?string $navigationLabel   = 'Galeri';
+    protected static ?string $modelLabel        = 'Galeri';
+    protected static ?string $pluralModelLabel  = 'Galeri';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Post Management';
+        return 'Manajemen Berita';
     }
     public static function getNavigationSort(): ?int
     {
@@ -58,15 +61,19 @@ class GalleryResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('title')
+                    ->label('Judul')
                     ->searchable(),
                 SpatieMediaLibraryImageColumn::make('image')
+                    ->label('Gambar')
                     ->collection('imagesCollection')
                     ->limit(3),
                 TextColumn::make('created_at')
+                    ->label('Tanggal Dibuat')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Tanggal Diperbarui')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

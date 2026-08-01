@@ -17,6 +17,9 @@ use Filament\Tables\Table;
 class PageSettingResource extends Resource
 {
     protected static ?string $model = PageSetting::class;
+    protected static ?string $navigationLabel   = 'Setting Halaman';
+    protected static ?string $modelLabel        = 'Setting Halaman';
+    protected static ?string $pluralModelLabel  = 'Setting Halaman';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

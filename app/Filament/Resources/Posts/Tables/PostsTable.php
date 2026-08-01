@@ -26,10 +26,12 @@ class PostsTable
         return $table
             ->columns([
                 TextColumn::make('title')
+                    ->label('Judul')
                     ->sortable()
                     ->wrap()
                     ->searchable(),
-                TextColumn::make('type'),
+                TextColumn::make('type')
+                    ->label('Tipe'),
                 TextColumn::make('publish_time')
                     ->label('Publish')
                     ->formatStateUsing(
@@ -61,7 +63,7 @@ class PostsTable
                         'published'   => 'Published',
                         'unpublished' => 'Unpublished',
                     ]),
-                SelectFilter::make('type')
+                SelectFilter::make('Tipe')
                     ->native(false)
                     ->options([
                         'post' => 'Post',
@@ -69,7 +71,7 @@ class PostsTable
                         'video' => 'Video',
                     ]),
                 SelectFilter::make('category_id')
-                    ->label('Category')
+                    ->label('Kategori')
                     ->relationship('category', 'name')
                     ->native(false),
                 Filter::make('headline')

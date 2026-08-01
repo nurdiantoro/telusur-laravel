@@ -23,7 +23,9 @@ use Illuminate\Support\Facades\Cache;
 class InfographicResource extends Resource
 {
     protected static ?string $model = Infographic::class;
-
+    protected static ?string $navigationLabel = 'Infografis';
+    protected static ?string $modelLabel = 'Infografis';
+    protected static ?string $pluralModelLabel = 'Infografis';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema

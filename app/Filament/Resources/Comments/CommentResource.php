@@ -23,6 +23,9 @@ use Pest\Support\View;
 class CommentResource extends Resource
 {
     protected static ?string $model = Comment::class;
+    protected static ?string $navigationLabel   = 'Komentar';
+    protected static ?string $modelLabel        = 'Komentar';
+    protected static ?string $pluralModelLabel  = 'Komentar';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleBottomCenterText;
 
@@ -49,7 +52,7 @@ class CommentResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Post Management';
+        return 'Manajemen Berita';
     }
 
     public static function getNavigationSort(): ?int
@@ -62,6 +65,7 @@ class CommentResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Name')
                     ->disabled()
                     ->required(),
                 TextInput::make('email')
@@ -70,9 +74,11 @@ class CommentResource extends Resource
                     ->email()
                     ->required(),
                 TextInput::make('post.title')
+                    ->label('Judul Berita')
                     ->disabled()
                     ->formatStateUsing(fn($record) => $record?->post?->title),
                 TextInput::make('comment')
+                    ->label('Komentar')
                     ->disabled()
                     ->required(),
                 Select::make('status')

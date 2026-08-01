@@ -12,6 +12,7 @@ class PageSettingForm
         return $schema
             ->components([
                 FileUpload::make('image_header')
+                    ->label('Gambar Header')
                     ->helperText('Ukuran 1000x288, maksimal 2MB')
                     ->image()
                     ->automaticallyResizeImagesMode('force')

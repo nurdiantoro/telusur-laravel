@@ -13,7 +13,7 @@ class ManageGalleries extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->label('Upload Image'),
+            CreateAction::make()->label('Tambah Galeri'),
         ];
     }
 }

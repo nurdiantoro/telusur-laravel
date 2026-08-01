@@ -43,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->navigationGroups([
-                'Post Management',
+                'Manajemen Berita',
                 'User Manajemen',
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')

@@ -23,6 +23,9 @@ use Filament\Tables\Table;
 class PostCategoryResource extends Resource
 {
     protected static ?string $model = PostCategory::class;
+    protected static ?string $navigationLabel   = 'Kategori';
+    protected static ?string $modelLabel        = 'Kategori';
+    protected static ?string $pluralModelLabel  = 'Kategori';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
 
@@ -46,11 +49,9 @@ class PostCategoryResource extends Resource
         return auth()->user()?->hasPermission('post_categories.delete');
     }
 
-    protected static ?string $modelLabel = 'Category';
-
     public static function getNavigationGroup(): ?string
     {
-        return 'Post Management';
+        return 'Manajemen Berita';
     }
     public static function getNavigationSort(): ?int
     {
@@ -86,14 +87,19 @@ class PostCategoryResource extends Resource
             ->reorderable('sort_order')
             ->columns([
                 TextColumn::make('sort_order')
+                    ->label('Urutan')
                     ->sortable(),
                 TextColumn::make('name')
+                    ->label('Judul')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('slug')
                     ->searchable(),
-                TextColumn::make('parent.name'),
+                TextColumn::make('parent.name')
+                    ->label('Kategori Induk')
+                    ->searchable(),
                 ToggleColumn::make('is_navbar')
+                    ->label('Tampilkan di Navbar')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
