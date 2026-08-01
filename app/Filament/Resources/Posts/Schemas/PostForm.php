@@ -168,7 +168,7 @@ class PostForm
                                 }),
                             DateTimePicker::make('publish_time')
                                 ->label('Publish Time')
-                                ->minDate(now())
+                                // ->minDate(now())
                                 ->disabled(fn($get) => $get('publish_at') === 'immediately')
                                 ->dehydrated(fn($get) => $get('publish_at') === 'scheduled')
                                 ->required(function ($get, $livewire) {
@@ -176,9 +176,6 @@ class PostForm
                                     $isScheduled = $get('publish_at') === 'scheduled';
                                     return $isPublished && $isScheduled;
                                 })
-                                ->validationMessages([
-                                    'after_or_equal' => 'Waktu publish tidak boleh melewati waktu saat ini',
-                                ])
                                 /*
                                 |  ----------------------------------------
                                 |  Data tidak akan disimpan jika :
@@ -188,13 +185,8 @@ class PostForm
                                 |  ----------------------------------------
                                 */
                                 ->dehydrated(function ($get) {
-                                    $isPublished = $get('status') === 'published';
                                     $isScheduled = $get('publish_at') === 'scheduled';
-                                    return $isPublished || $isScheduled;
-                                })
-                                ->hidden(function ($get) {
-                                    $isPosted = $get('status') === 'published';
-                                    return $isPosted;
+                                    return $isScheduled;
                                 }),
                         ]),
 
