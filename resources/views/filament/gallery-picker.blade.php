@@ -137,13 +137,13 @@
     },
 }" x-init="init()">
 
-    <div class="font-medium text-gray-950">Image Cover<span class="text-red-600">*</span></div>
+    <div class="font-medium text-gray-950">Cover Berita<span class="text-red-600">*</span></div>
 
     <!-- Trigger -->
     <input type="file" class="hidden" x-ref="file" @change="handleFile">
     <button type="button" @click="uploadModal = true" :disabled="uploading"
         class="rounded-lg bg-blue-600 px-4 py-2 text-xs text-white hover:bg-blue-500">
-        Upload Image
+        Upload Gambar
     </button>
     <button type="button" @click="open = true; fetchData()"
         class="rounded-lg bg-zinc-500 px-4 py-2 text-xs text-white hover:bg-zinc-400">
@@ -234,7 +234,7 @@
 
             <!-- Header -->
             <div class="flex items-center justify-between">
-                <h2 class="font-bold">Upload Image</h2>
+                <h2 class="font-bold">Upload Gambar</h2>
                 <button type="button" @click="resetUpload()">✕</button>
             </div>
 
@@ -261,7 +261,7 @@
 
             <!-- Title -->
             <div>
-                <label for="title" class="mb-2 block text-sm font-medium text-gray-700">Image Name<span
+                <label for="title" class="mb-2 block text-sm font-medium text-gray-700">Nama Gambar<span
                         class="text-red-600">*</span></label>
                 <input type="text" x-model="title" placeholder="Nama gambar"
                     class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">

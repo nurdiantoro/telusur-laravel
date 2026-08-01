@@ -97,11 +97,14 @@ class CommentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable(),
                 TextColumn::make('post.title')
+                    ->label('Judul Berita')
                     ->wrap()
                     ->searchable(),
                 TextColumn::make('comment')
+                    ->label('Komentar')
                     ->wrap()
                     ->searchable(),
                 TextColumn::make('status')

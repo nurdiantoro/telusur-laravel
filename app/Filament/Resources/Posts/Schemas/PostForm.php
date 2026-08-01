@@ -41,7 +41,7 @@ class PostForm
                     |  10. Publish At (immediately atau scheduled)
                     |  ----------------------------------------
                      */
-                    Section::make('Post Detail')
+                    Section::make('Detail Berita')
                         ->columnSpan(1)
                         ->schema([
                             TextInput::make('author_name')
@@ -81,6 +81,7 @@ class PostForm
 
 
                             Select::make('type')
+                                ->label('Tipe')
                                 ->options([
                                     'post' => 'Post',
                                     'video' => 'Video',
@@ -138,10 +139,11 @@ class PostForm
                             |  ----------------------------------------
                              */
                             Select::make('publish_at')
+                                ->label('Publish Berita')
                                 ->reactive()
                                 ->options([
-                                    'immediately' => 'Immediately',
-                                    'scheduled' => 'Scheduled',
+                                    'immediately' => 'Langsung Publish',
+                                    'scheduled' => 'Jadwalkan',
                                 ])
                                 ->default('scheduled') // untuk create
                                 ->afterStateHydrated(function ($state, callable $set, $record) {
@@ -167,7 +169,7 @@ class PostForm
                                     return $isPosted;
                                 }),
                             DateTimePicker::make('publish_time')
-                                ->label('Publish Time')
+                                ->label('Jadwal Publish')
                                 // ->minDate(now())
                                 ->disabled(fn($get) => $get('publish_at') === 'immediately')
                                 ->dehydrated(fn($get) => $get('publish_at') === 'scheduled')
@@ -197,10 +199,12 @@ class PostForm
                      |  2. Content
                      |  ----------------------------------------
                      */
-                    Section::make('Content')
+                    Section::make('Konten Berita')
                         ->columnSpan(2)
                         ->schema([
                             TextInput::make('title')
+                                ->label('Judul Berita')
+                                ->maxLength(255)
                                 ->required()
                                 ->live(onBlur: true)
                                 ->afterStateUpdated(function ($state, callable $set, $record) {
@@ -212,6 +216,7 @@ class PostForm
                                     'required' => 'Title is required',
                                 ]),
                             RichEditor::make('content')
+                                ->label('Isi Berita')
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published')
                                 ->validationMessages([
                                     'required' => 'Content is required',
