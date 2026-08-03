@@ -85,7 +85,7 @@ class PostsTable
             ->recordActions([
                 EditAction::make(),
                 Action::make('activities')
-                    ->label('Activities')
+                    ->label('Perubahan')
                     ->url(fn($record) => PostResource::getUrl('activities', ['record' => $record])),
             ])
             ->toolbarActions([

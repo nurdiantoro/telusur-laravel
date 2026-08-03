@@ -2,8 +2,8 @@
     use Illuminate\Support\Js;
     use Carbon\Carbon;
     $categories = \App\Models\PostCategory::pluck('name', 'id');
-    // $galleries = \App\Models\Gallery::pluck('id', 'id');
     $galleries = \App\Models\Gallery::select('id', 'title')->get()->keyBy('id');
+    $authors = \App\Models\User::pluck('name', 'id');
 @endphp
 <x-filament-panels::page>
     <div class="space-y-6">
@@ -78,6 +78,8 @@
 
                                         @if ($field === 'category_id' && $oldValue)
                                             {{ $categories[$oldValue] ?? $oldValue }}
+                                        @elseif ($field === 'author_id' && $oldValue)
+                                            {{ $authors[$oldValue] ?? $oldValue }}
                                         @elseif ($field === 'gallery_id' && $oldValue)
                                             @php
                                                 $gallery = $galleries[$oldValue] ?? null;
@@ -106,6 +108,8 @@
                                         class="fi-ta-cell whitespace-normal break-all px-4 py-2 align-top">
                                         @if ($field === 'category_id' && $newValue)
                                             {{ $categories[$newValue] ?? $newValue }}
+                                        @elseif ($field === 'author_id' && $newValue)
+                                            {{ $authors[$newValue] ?? $newValue }}
                                         @elseif ($field === 'gallery_id' && $newValue)
                                             @php
                                                 $gallery = $galleries[$newValue] ?? null;

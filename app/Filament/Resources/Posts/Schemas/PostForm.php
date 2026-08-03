@@ -44,21 +44,19 @@ class PostForm
                     Section::make('Detail Berita')
                         ->columnSpan(1)
                         ->schema([
-                            TextInput::make('author_name')
+                            Select::make('author_id')
                                 ->label('Author')
-                                ->disabled()
-                                ->dehydrated(false)
-                                ->afterStateHydrated(function ($state, $set, $record) {
-                                    if ($record) {
-                                        $set('author_name', $record->author?->name);
-                                    } else {
-                                        $set('author_name', Auth::user()?->name);
-                                    }
-                                }),
-
-                            Hidden::make('author_id')
-                                ->default(fn() => Auth::id())
-                                ->required(),
+                                ->relationship('author', 'name')
+                                ->selectablePlaceholder(false)
+                                ->default(auth()->id())
+                                ->disabled(fn() => ! auth()->user()?->hasPermission('post.edit_author'))
+                                ->dehydrated()
+                                ->preload()
+                                ->searchable()
+                                ->required(fn($livewire, $get) => $livewire->submitStatus === 'published' && $get('type') === 'post')
+                                ->validationMessages([
+                                    'required' => 'Author Wajib Di isi',
+                                ]),
 
                             TextInput::make('slug')
                                 ->disabled()
@@ -115,7 +113,7 @@ class PostForm
                                 ->searchable()
                                 ->required(fn($livewire, $get) => $livewire->submitStatus === 'published' && $get('type') === 'post')
                                 ->validationMessages([
-                                    'required' => 'Category is required',
+                                    'required' => 'Category Wajib Di isi',
                                 ]),
 
                             Select::make('tags')
@@ -213,13 +211,13 @@ class PostForm
                                     }
                                 })
                                 ->validationMessages([
-                                    'required' => 'Title is required',
+                                    'required' => 'Title Wajib Di isi',
                                 ]),
                             RichEditor::make('content')
                                 ->label('Isi Berita')
                                 ->required(fn($livewire) => $livewire->submitStatus === 'published')
                                 ->validationMessages([
-                                    'required' => 'Content is required',
+                                    'required' => 'Content Wajib Di isi',
                                 ])
                                 ->toolbarButtons([
                                     ['h2', 'h3', 'bold', 'italic', 'underline', 'strike', 'link'],
