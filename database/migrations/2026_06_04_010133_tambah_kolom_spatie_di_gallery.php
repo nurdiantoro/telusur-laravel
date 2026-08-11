@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::table('galleries', function (Blueprint $table) {
             $table->string('gallery')->nullable()->after('description');
-            $table->string('spatie_preview')->nullable()->after('gallery');
-            $table->string('spatie_thumbnail')->nullable()->after('spatie_preview');
+            $table->string('preview')->nullable()->after('gallery');
+            $table->string('thumbnail')->nullable()->after('preview');
         });
     }
 
@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('galleries', function (Blueprint $table) {
-            $table->dropColumn(['gallery', 'spatie_preview', 'spatie_thumbnail']);
+            $table->dropColumn(['gallery', 'preview', 'thumbnail']);
         });
     }
 };
