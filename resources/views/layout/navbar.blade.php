@@ -16,7 +16,7 @@ $watch('showNav', val => {
 
             {{-- Logo --}}
             <a href="{{ route('home') }}" class="w-full md:flex md:flex-1 md:justify-start">
-                <img src="{{ asset('img/logo-telusur-new.png') }}" class="h-12 md:h-20">
+                <img src="{{ asset('img/logo-telusur-new.png') }}" class="h-12 md:h-20" alt="Logo Telusur">
             </a>
 
             {{-- Kanan --}}

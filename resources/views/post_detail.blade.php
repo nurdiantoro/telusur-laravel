@@ -36,8 +36,7 @@
                             </iframe>
                         </div>
                     @else
-                        <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
-                            alt="{{ $post->title }}" class="h-auto w-full rounded-3xl">
+                        <img src="{{ $post->preview_url }}" alt="{{ $post->title }}" class="h-auto w-full rounded-3xl">
                     @endif
                     <figcaption class="text-sm">{{ $post->caption }}</figcaption>
 

@@ -174,88 +174,88 @@ function pushNotification() {
 //
 //
 // ─── API untuk Berita ─────────────────────────────────────────────────────
-function createFetcher(urlApi) {
-    return () => ({
-        isLoading: true,
-        isLoaded: false,
-        apiPosts: [],
-        pagination: null,
-        error: null,
-        currentUrl: urlApi,
+// function createFetcher(urlApi) {
+//     return () => ({
+//         isLoading: true,
+//         isLoaded: false,
+//         apiPosts: [],
+//         pagination: null,
+//         error: null,
+//         currentUrl: urlApi,
 
-        async fetchData(url = null) {
-            this.isLoading = true;
+//         async fetchData(url = null) {
+//             this.isLoading = true;
 
-            if (url) {
-                this.currentUrl = url;
-            }
+//             if (url) {
+//                 this.currentUrl = url;
+//             }
 
-            try {
-                const response = await fetch(this.currentUrl);
-                const json = await response.json();
+//             try {
+//                 const response = await fetch(this.currentUrl);
+//                 const json = await response.json();
 
-                this.apiPosts = json.data ?? [];
-                this.pagination = json.pagination ?? null;
+//                 this.apiPosts = json.data ?? [];
+//                 this.pagination = json.pagination ?? null;
 
-                if (!this.isLoaded && this.$refs.skeleton) {
-                    this.$refs.skeleton.style.display = 'none';
-                }
+//                 if (!this.isLoaded && this.$refs.skeleton) {
+//                     this.$refs.skeleton.style.display = 'none';
+//                 }
 
-                this.isLoaded = true;
+//                 this.isLoaded = true;
 
-            } catch (error) {
-                this.error = error;
-            } finally {
-                this.isLoading = false;
-            }
-        },
+//             } catch (error) {
+//                 this.error = error;
+//             } finally {
+//                 this.isLoading = false;
+//             }
+//         },
 
-        next() {
-            if (this.pagination?.next_page_url) {
-                this.fetchData(this.pagination.next_page_url);
-            }
-        },
+//         next() {
+//             if (this.pagination?.next_page_url) {
+//                 this.fetchData(this.pagination.next_page_url);
+//             }
+//         },
 
-        prev() {
-            if (this.pagination?.prev_page_url) {
-                this.fetchData(this.pagination.prev_page_url);
-            }
-        },
+//         prev() {
+//             if (this.pagination?.prev_page_url) {
+//                 this.fetchData(this.pagination.prev_page_url);
+//             }
+//         },
 
-        hasPagination() {
-            return this.pagination && this.pagination.last_page > 1;
-        },
+//         hasPagination() {
+//             return this.pagination && this.pagination.last_page > 1;
+//         },
 
-        init() {
-            const observer = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting) {
-                    this.fetchData();
-                    observer.disconnect();
-                }
-            }, {
-                rootMargin: '200px'
-            });
+//         init() {
+//             const observer = new IntersectionObserver((entries) => {
+//                 if (entries[0].isIntersecting) {
+//                     this.fetchData();
+//                     observer.disconnect();
+//                 }
+//             }, {
+//                 rootMargin: '200px'
+//             });
 
-            observer.observe(this.$el);
-        }
-    });
-}
+//             observer.observe(this.$el);
+//         }
+//     });
+// }
 // ─────────────────────────────────────────────────────────────────────────────
 // ─── Daftarkan Alpine.js ─────────────────────────────────────────────────────
-Alpine.plugin(collapse);
-window.Alpine = Alpine;
-document.addEventListener('alpine:init', () => {
-    Alpine.data('beritaUtama', createFetcher('/api/berita-utama'));
-    Alpine.data('beritaPopuler', createFetcher('/api/berita-populer'));
-    Alpine.data('beritaTerbaru', createFetcher('/api/berita-terbaru'));
-    Alpine.data('beritaTerbaruTanpaPagination', createFetcher('/api/berita-terbaru/tanpa-pagination'));
-    Alpine.data('beritaVideo', createFetcher('/api/berita-video'));
-    Alpine.data('beritaOpini', createFetcher('/api/berita-opini'));
+// Alpine.plugin(collapse);
+// window.Alpine = Alpine;
+// document.addEventListener('alpine:init', () => {
+//     Alpine.data('beritaUtama', createFetcher('/api/berita-utama'));
+//     Alpine.data('beritaPopuler', createFetcher('/api/berita-populer'));
+//     Alpine.data('beritaTerbaru', createFetcher('/api/berita-terbaru'));
+//     Alpine.data('beritaTerbaruTanpaPagination', createFetcher('/api/berita-terbaru/tanpa-pagination'));
+//     Alpine.data('beritaVideo', createFetcher('/api/berita-video'));
+//     Alpine.data('beritaOpini', createFetcher('/api/berita-opini'));
 
-    // Daftarkan push notification component
-    Alpine.data('pushNotification', pushNotification);
-});
-Alpine.start();
+//     // Daftarkan push notification component
+//     Alpine.data('pushNotification', pushNotification);
+// });
+// Alpine.start();
 // ─────────────────────────────────────────────────────────────────────────────
 //
 //
