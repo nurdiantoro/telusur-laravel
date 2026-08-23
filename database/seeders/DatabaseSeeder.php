@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             UserRoleSeeder::class,
             AdsenseSeeder::class,
             PageSettingSeeder::class,
+            NavbarSeeder::class,
 
             // Dipake saat development aja
             // GallerySeeder::class,
