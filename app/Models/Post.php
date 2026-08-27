@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -188,18 +189,10 @@ class Post extends Model
             ->where('status', 'published')
             ->with([
                 'category:id,name,slug',
-                'gallery:id',
-                'gallery.media:id,model_id,file_name,collection_name,disk,conversions_disk'
+                'gallery:id,thumbnail,preview',
             ])
             ->orderByDesc('publish_time');
     }
-    // public function scopePost_new(Builder $query): Builder
-    // {
-    //     return $query
-    //         ->where('type', 'post')
-    //         ->where('status', 'published')
-    //         ->orderByDesc('publish_time');
-    // }
     public function scopeOpini(Builder $query): Builder
     {
         return $query
@@ -219,5 +212,68 @@ class Post extends Model
                 'gallery.media:id,model_id,file_name,collection_name,disk,conversions_disk'
             ])
             ->orderByDesc('publish_time');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Image Accessors
+    |--------------------------------------------------------------------------
+    |
+    | Menentukan sumber image artikel.
+    |
+    | Artikel baru:
+    | - Menggunakan Gallery melalui gallery_id
+    | - Thumbnail diambil dari Gallery.thumbnail
+    | - Preview diambil dari Gallery.preview
+    |
+    | Artikel lama:
+    | - Tidak memiliki gallery_id
+    | - Menggunakan column cover sebagai nama file
+    |
+    */
+
+    public function getThumbnailUrlAttribute(): string
+    {
+        // Artikel baru
+        if ($this->gallery_id && $this->gallery?->thumbnail) {
+            $path = $this->gallery->thumbnail;
+            if (Storage::disk('public')->exists($path)) {
+                return Storage::disk('public')->url($path);
+            }
+        }
+
+        // Artikel lama
+        if ($this->cover) {
+            $path = 'thumbnails/' . $this->cover;
+            if (Storage::disk('public')->exists($path)) {
+                return Storage::disk('public')->url($path);
+            }
+        }
+
+        // Default
+        return asset('img/no_image.webp');
+    }
+
+    public function getPreviewUrlAttribute(): string
+    {
+        // Artikel baru
+        if ($this->gallery_id && $this->gallery?->preview) {
+            $path = $this->gallery->preview;
+            if (Storage::disk('public')->exists($path)) {
+                return Storage::disk('public')->url($path);
+            }
+        }
+
+        // Artikel lama
+        if ($this->cover) {
+            $path = 'images/' . $this->cover;
+
+            if (Storage::disk('public')->exists($path)) {
+                return Storage::disk('public')->url($path);
+            }
+        }
+
+        // Default
+        return asset('img/no_image.webp');
     }
 }

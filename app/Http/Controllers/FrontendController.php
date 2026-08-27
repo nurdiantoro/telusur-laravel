@@ -41,9 +41,55 @@ class FrontendController extends Controller
                 ->get();
         });
 
+        $postsSidebar = Cache::remember('berita_sidebar_cache', 60, function () {
+            $limit = 9;
+            $baseQuery = Post::post()
+                ->with([
+                    'category:id,name,slug',
+                    'gallery:id,thumbnail'
+                ]);
+
+            // STEP 1: 7 hari terakhir
+            $posts = (clone $baseQuery)
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->orderByDesc('views')
+                ->limit($limit)
+                ->get();
+
+            // STEP 2: fallback 30 hari
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(30))
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            // STEP 3: fallback all time
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            return $posts;
+        });
+
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
         });
+
         $infografises = Cache::remember('infografises_cache', 60, function () {
             return Post::post()->where('infografis', true)->limit(5)->get();
         });
@@ -95,6 +141,14 @@ class FrontendController extends Controller
             return $posts;
         });
 
+        $beritaTerbaru = Cache::remember('berita_terbaru_cache', 60, function () {
+            $posts = Post::post()
+                ->limit(9)
+                ->get();
+
+            return $posts;
+        });
+
         $beritaVideo = Cache::remember('berita_video_cache', 60, function () {
             $posts = Post::video()
                 ->select([
@@ -130,6 +184,22 @@ class FrontendController extends Controller
             return $posts;
         });
 
+        $beritaOpini = Cache::remember('berita_opini_cache_', 60, function () {
+            $posts = Post::opini()
+                ->select([
+                    'id',
+                    'title',
+                    'slug',
+                    'category_id',
+                    'gallery_id',
+                    'publish_time',
+                ])
+                ->limit(9)
+                ->get();
+
+            return $posts;
+        });
+
         $suggestTags = Tag::inRandomOrder()
             ->limit(5)
             ->get();
@@ -145,10 +215,13 @@ class FrontendController extends Controller
             'beritaUtama',
             'beritaVideo',
             'beritaFoto',
+            'beritaOpini',
             'suggestTags',
             'adsense',
             'pageSetting',
             'infografises',
+            'postsSidebar',
+            'beritaTerbaru'
         ));
     }
 
@@ -172,6 +245,50 @@ class FrontendController extends Controller
                 ->where('is_navbar', true)
                 ->orderBy('sort_order')
                 ->get();
+        });
+        $postsSidebar = Cache::remember('berita_sidebar_cache', 60, function () {
+            $limit = 9;
+            $baseQuery = Post::post()
+                ->with([
+                    'category:id,name,slug',
+                    'gallery:id,thumbnail'
+                ]);
+
+            // STEP 1: 7 hari terakhir
+            $posts = (clone $baseQuery)
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->orderByDesc('views')
+                ->limit($limit)
+                ->get();
+
+            // STEP 2: fallback 30 hari
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(30))
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            // STEP 3: fallback all time
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            return $posts;
         });
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
@@ -247,6 +364,7 @@ class FrontendController extends Controller
             'otherPosts',
             'pageSetting',
             'infografises',
+            'postsSidebar'
         ));
     }
 
@@ -280,6 +398,50 @@ class FrontendController extends Controller
                 ->where('is_navbar', true)
                 ->orderBy('sort_order')
                 ->get();
+        });
+        $postsSidebar = Cache::remember('berita_sidebar_cache', 60, function () {
+            $limit = 9;
+            $baseQuery = Post::post()
+                ->with([
+                    'category:id,name,slug',
+                    'gallery:id,thumbnail'
+                ]);
+
+            // STEP 1: 7 hari terakhir
+            $posts = (clone $baseQuery)
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->orderByDesc('views')
+                ->limit($limit)
+                ->get();
+
+            // STEP 2: fallback 30 hari
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(30))
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            // STEP 3: fallback all time
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            return $posts;
         });
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
@@ -321,6 +483,7 @@ class FrontendController extends Controller
             'posts',
             'pageSetting',
             'infografises',
+            'postsSidebar'
         ));
     }
     public function opini()
@@ -346,6 +509,50 @@ class FrontendController extends Controller
                 ->get();
         });
 
+        $postsSidebar = Cache::remember('berita_sidebar_cache', 60, function () {
+            $limit = 9;
+            $baseQuery = Post::post()
+                ->with([
+                    'category:id,name,slug',
+                    'gallery:id,thumbnail'
+                ]);
+
+            // STEP 1: 7 hari terakhir
+            $posts = (clone $baseQuery)
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->orderByDesc('views')
+                ->limit($limit)
+                ->get();
+
+            // STEP 2: fallback 30 hari
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(30))
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            // STEP 3: fallback all time
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            return $posts;
+        });
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
         });
@@ -388,6 +595,7 @@ class FrontendController extends Controller
             'posts',
             'pageSetting',
             'infografises',
+            'postsSidebar',
         ));
     }
     public function video()
@@ -413,6 +621,50 @@ class FrontendController extends Controller
                 ->get();
         });
 
+        $postsSidebar = Cache::remember('berita_sidebar_cache', 60, function () {
+            $limit = 9;
+            $baseQuery = Post::post()
+                ->with([
+                    'category:id,name,slug',
+                    'gallery:id,thumbnail'
+                ]);
+
+            // STEP 1: 7 hari terakhir
+            $posts = (clone $baseQuery)
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->orderByDesc('views')
+                ->limit($limit)
+                ->get();
+
+            // STEP 2: fallback 30 hari
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(30))
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            // STEP 3: fallback all time
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            return $posts;
+        });
         $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
             return SidebarAds::orderBy('sort_order')->get();
         });
@@ -456,6 +708,7 @@ class FrontendController extends Controller
             'posts',
             'pageSetting',
             'infografises',
+            'postsSidebar'
         ));
     }
     public function postByCategory($slug = null)
@@ -481,18 +734,61 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $postsSidebar = Cache::remember('berita_sidebar_cache', 60, function () {
+            $limit = 9;
+            $baseQuery = Post::post()
+                ->with([
+                    'category:id,name,slug',
+                    'gallery:id,thumbnail'
+                ]);
 
+            // STEP 1: 7 hari terakhir
+            $posts = (clone $baseQuery)
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->orderByDesc('views')
+                ->limit($limit)
+                ->get();
+
+            // STEP 2: fallback 30 hari
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(30))
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            // STEP 3: fallback all time
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            return $posts;
+        });
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+        $infografises = Cache::remember('infografises_cache', 60, function () {
+            return Post::post()->where('infografis', true)->limit(5)->get();
+        });
         $adsense = Adsense::where('slug', 'inlist')->first();
 
         $pageSetting = Cache::rememberForever('page_settings_cache', function () {
             return PageSetting::first();
         });
-
-        $beritaPopulers = Post::post()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
 
         /*
         |
@@ -509,16 +805,17 @@ class FrontendController extends Controller
             ->where('category_id', $category->id)
             ->paginate(10);
 
+
         return view('post_index', compact(
             'category',
             'posts',
             'categories',
             'sidebarAds',
             'adsense',
-            'beritaPopulers',
             'navbarCategories',
             'pageSetting',
             'infografises',
+            'postsSidebar'
         ));
     }
 
@@ -545,12 +842,56 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $postsSidebar = Cache::remember('berita_sidebar_cache', 60, function () {
+            $limit = 9;
+            $baseQuery = Post::post()
+                ->with([
+                    'category:id,name,slug',
+                    'gallery:id,thumbnail'
+                ]);
 
-        $beritaPopulers = Post::post()
-            ->orderByDesc('views')
-            ->limit(6)
-            ->get();
+            // STEP 1: 7 hari terakhir
+            $posts = (clone $baseQuery)
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->orderByDesc('views')
+                ->limit($limit)
+                ->get();
+
+            // STEP 2: fallback 30 hari
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(30))
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            // STEP 3: fallback all time
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            return $posts;
+        });
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+        $infografises = Cache::remember('infografises_cache', 60, function () {
+            return Post::post()->where('infografis', true)->limit(5)->get();
+        });
 
         $pageSetting = Cache::rememberForever('page_settings_cache', function () {
             return PageSetting::first();
@@ -576,16 +917,19 @@ class FrontendController extends Controller
             'categories',
             'sidebarAds',
             'adsense',
-            'beritaPopulers',
             'navbarCategories',
             'pageSetting',
             'infografises',
             'adsense',
+            'postsSidebar'
         ));
     }
 
     public function postSearch(Request $request)
     {
+        if (!$request->search_input) {
+            return redirect()->back()->with('error', 'Masukkan kata kunci pencarian.');
+        }
         /*
         |
         |
@@ -607,11 +951,61 @@ class FrontendController extends Controller
                 ->get();
         });
 
-        $sidebarAds = SidebarAds::orderBy('sort_order')->get();
+        $postsSidebar = Cache::remember('berita_sidebar_cache', 60, function () {
+            $limit = 9;
+            $baseQuery = Post::post()
+                ->with([
+                    'category:id,name,slug',
+                    'gallery:id,thumbnail'
+                ]);
+
+            // STEP 1: 7 hari terakhir
+            $posts = (clone $baseQuery)
+                ->where('publish_time', '>=', now()->subDays(7))
+                ->orderByDesc('views')
+                ->limit($limit)
+                ->get();
+
+            // STEP 2: fallback 30 hari
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->where('publish_time', '>=', now()->subDays(30))
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            // STEP 3: fallback all time
+            if ($posts->count() < $limit) {
+                $excludeIds = $posts->pluck('id');
+
+                $morePosts = (clone $baseQuery)
+                    ->whereNotIn('id', $excludeIds)
+                    ->orderByDesc('views')
+                    ->limit($limit - $posts->count())
+                    ->get();
+
+                $posts = $posts->merge($morePosts);
+            }
+
+            return $posts;
+        });
+        $sidebarAds = Cache::remember('sidebar_ads_cache', 60, function () {
+            return SidebarAds::orderBy('sort_order')->get();
+        });
+        $infografises = Cache::remember('infografises_cache', 60, function () {
+            return Post::post()->where('infografis', true)->limit(5)->get();
+        });
 
         $pageSetting = Cache::rememberForever('page_settings_cache', function () {
             return PageSetting::first();
         });
+        $adsense = Adsense::where('slug', 'inlist')->first();
 
         /*
         |
@@ -630,10 +1024,6 @@ class FrontendController extends Controller
                 'search_input' => $request->search_input
             ]);
 
-        if (!$request->search_input) {
-            return redirect()->back()->with('error', 'Masukkan kata kunci pencarian.');
-        }
-
         return view('post_index', compact(
             'categories',
             'navbarCategories',
@@ -642,6 +1032,7 @@ class FrontendController extends Controller
             'posts',
             'pageSetting',
             'infografises',
+            'postsSidebar',
         ));
     }
     /*

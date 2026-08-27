@@ -270,6 +270,7 @@ class ApiController extends Controller
         $limit = (int) $limit;
         $data = Cache::remember('berita_populer_cache_' . $limit, 60, function () use ($limit) {
 
+            // Query ini bakal di pake di 3 step dibawah
             $baseQuery = Post::post()
                 ->select([
                     'id',
@@ -282,7 +283,7 @@ class ApiController extends Controller
                 ])
                 ->with([
                     'category:id,name,slug',
-                    'gallery:id'
+                    'gallery:id,preview,thumbnail'
                 ]);
 
             // STEP 1: 7 hari terakhir
