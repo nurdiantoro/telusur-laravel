@@ -254,6 +254,28 @@ class Post extends Model
         return asset('img/no_image.webp');
     }
 
+    public function getThumbnailVideoAttribute(): string
+    {
+        // Artikel baru
+        if ($this->gallery_id && $this->gallery?->thumbnail) {
+            $path = $this->gallery->thumbnail;
+            if (Storage::disk('public')->exists($path)) {
+                return Storage::disk('public')->url($path);
+            }
+        }
+
+        // Artikel lama
+        if ($this->cover) {
+            $path = 'thumbnails/' . $this->cover;
+            if (Storage::disk('public')->exists($path)) {
+                return Storage::disk('public')->url($path);
+            }
+        }
+
+        // Default
+        return 'https://img.youtube.com/vi/' . $this->video_url . '/hqdefault.jpg';
+    }
+
     public function getPreviewUrlAttribute(): string
     {
         // Artikel baru

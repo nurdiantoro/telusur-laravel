@@ -64,9 +64,8 @@
             <div class="flex flex-col gap-3">
                 @foreach ($infografises as $post)
                     <a href="{{ route('post.detail', [$post->category->slug, $post->slug]) }}" class="block">
-                        <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
-                            alt="{{ $post->title }}" class="h-auto w-full rounded-2xl transition hover:opacity-90"
-                            loading="lazy">
+                        <img src="{{ $post->thumbnail_url }}" alt="{{ $post->title }}"
+                            class="h-auto w-full rounded-2xl transition hover:opacity-90" loading="lazy">
                     </a>
                 @endforeach
             </div>

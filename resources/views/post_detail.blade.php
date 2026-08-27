@@ -94,8 +94,8 @@
                         </div>
                     @else
                         <div class="aspect-video w-full overflow-hidden rounded-3xl bg-gray-200">
-                            <img src="{{ $post->gallery?->spatie_preview ?: asset('img/no_image.webp') }}"
-                                alt="{{ $post->title }}" class="h-full w-full object-cover">
+                            <img src="{{ $post->preview_url }}" alt="{{ $post->title }}"
+                                class="h-full w-full object-cover">
                         </div>
                     @endif
                     <figcaption class="text-sm">{{ $post->caption }}</figcaption>
@@ -214,10 +214,7 @@
                         <a href="{{ route('post.detail', [$post->category->slug ?? $post->type, $post->slug]) }}"
                             class="group flex items-start gap-4">
                             <div class="shrink-0 overflow-hidden rounded-2xl bg-gray-200">
-                                <img src="{{ $post->gallery?->spatie_thumbnail ??
-                                    ($post->type === 'video' && $post->video_url
-                                        ? 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg'
-                                        : asset('img/no_image.webp')) }}"
+                                <img src="{{ $post->type == 'video' ? $post->thumbnail_video : $post->thumbnail_url }}"
                                     class="h-20 w-28 object-cover transition duration-300 group-hover:scale-105">
                             </div>
                             <div class="flex flex-col">

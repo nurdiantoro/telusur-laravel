@@ -196,8 +196,7 @@
                     <div class="swiper-wrapper">
                         @foreach ($beritaVideo as $post)
                             <a href="{{ $post->category->slug . '/' . $post->slug }}" class="swiper-slide group/item">
-                                <img src="{{ $post->gallery?->spatie_preview ?? 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg' }}"
-                                    alt="{{ $post->title }}"
+                                <img src="{{ $post->thumbnail_video }}" alt="{{ $post->title }}"
                                     class="mb-2 aspect-video h-full w-full rounded-2xl object-cover" loading="lazy">
                                 <div class="flex flex-col gap-2 px-4 md:px-0">
                                     <div
