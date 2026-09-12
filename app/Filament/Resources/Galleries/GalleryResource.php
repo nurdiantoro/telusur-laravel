@@ -51,8 +51,8 @@ class GalleryResource extends Resource
                     ->collection('imagesCollection')
                     ->maxSize(2480)
                     ->image()
-                    ->imageEditor()
-                    ->required(),
+                    ->required()
+                    ->disabled(fn(string $operation): bool => $operation === 'edit'),
             ]);
     }
 
@@ -60,13 +60,13 @@ class GalleryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title')
-                    ->label('Judul')
-                    ->searchable(),
                 SpatieMediaLibraryImageColumn::make('image')
                     ->label('Gambar')
                     ->collection('imagesCollection')
                     ->limit(3),
+                TextColumn::make('title')
+                    ->label('Judul')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->label('Tanggal Dibuat')
                     ->dateTime()
