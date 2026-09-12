@@ -64,19 +64,26 @@ class UserResource extends Resource
                 Select::make('role_id')
                     ->relationship('roles', 'name')
                     ->native(false)
-                    ->required(),
+                    ->required()
+                    ->columnSpanFull(),
                 // TextInput::make('role.name'),
                 TextInput::make('name')
-                    ->required(),
+                    ->required()
+                    ->columnSpanFull(),
                 TextInput::make('email')
                     ->label('Email address')
                     ->email()
-                    ->required(),
-                TextInput::make('username'),
+                    ->required()
+                    ->columnSpanFull(),
+                TextInput::make('username')
+                    ->required()
+                    ->columnSpanFull(),
                 TextInput::make('password')
                     ->password()
+                    ->revealable()
                     ->dehydrateStateUsing(fn($state) => Hash::make($state))
-                    ->dehydrated(fn($state) => filled($state)),
+                    ->dehydrated(fn($state) => filled($state))
+                    ->columnSpanFull(),
             ]);
     }
 
