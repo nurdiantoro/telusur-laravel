@@ -198,7 +198,10 @@ class Post extends Model
         return $query
             ->where('type', 'opini')
             ->where('status', 'published')
-            ->with(['category', 'gallery'])
+            ->with([
+                'category:id,name,slug',
+                'gallery:id,thumbnail,preview',
+            ])
             ->orderByDesc('publish_time');
     }
     public function scopeVideo(Builder $query): Builder
@@ -208,8 +211,7 @@ class Post extends Model
             ->where('status', 'published')
             ->with([
                 'category:id,name,slug',
-                'gallery:id',
-                'gallery.media:id,model_id,file_name,collection_name,disk,conversions_disk'
+                'gallery:id,thumbnail,preview',
             ])
             ->orderByDesc('publish_time');
     }
