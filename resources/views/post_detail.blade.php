@@ -146,7 +146,7 @@
                 @endif
             </article>
 
-            @if (env('ADSENSE', false))
+            @if (config('services.adsense.true'))
                 <div>
                     {!! $adsense->script !!}
                 </div>

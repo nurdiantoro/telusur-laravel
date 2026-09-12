@@ -343,9 +343,11 @@
             </div>
 
             {{-- Adsense --}}
-            <div class="px-4 md:px-0">
-                {!! $adsense->script !!}
-            </div>
+            @if (config('services.adsense.true'))
+                <div class="px-4 md:px-0">
+                    {!! $adsense->script !!}
+                </div>
+            @endif
         </div>
 
         {{-- side div --}}

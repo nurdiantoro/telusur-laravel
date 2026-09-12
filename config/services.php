@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'adsense' => [
+        'true' => env('ADSENSE', false),
+    ],
+
 ];
