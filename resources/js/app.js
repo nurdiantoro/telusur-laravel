@@ -242,20 +242,20 @@ function pushNotification() {
 // }
 // ─────────────────────────────────────────────────────────────────────────────
 // ─── Daftarkan Alpine.js ─────────────────────────────────────────────────────
-// Alpine.plugin(collapse);
-// window.Alpine = Alpine;
-// document.addEventListener('alpine:init', () => {
-//     Alpine.data('beritaUtama', createFetcher('/api/berita-utama'));
-//     Alpine.data('beritaPopuler', createFetcher('/api/berita-populer'));
-//     Alpine.data('beritaTerbaru', createFetcher('/api/berita-terbaru'));
-//     Alpine.data('beritaTerbaruTanpaPagination', createFetcher('/api/berita-terbaru/tanpa-pagination'));
-//     Alpine.data('beritaVideo', createFetcher('/api/berita-video'));
-//     Alpine.data('beritaOpini', createFetcher('/api/berita-opini'));
+Alpine.plugin(collapse);
+window.Alpine = Alpine;
+document.addEventListener('alpine:init', () => {
+    // Alpine.data('beritaUtama', createFetcher('/api/berita-utama'));
+    // Alpine.data('beritaPopuler', createFetcher('/api/berita-populer'));
+    // Alpine.data('beritaTerbaru', createFetcher('/api/berita-terbaru'));
+    // Alpine.data('beritaTerbaruTanpaPagination', createFetcher('/api/berita-terbaru/tanpa-pagination'));
+    // Alpine.data('beritaVideo', createFetcher('/api/berita-video'));
+    // Alpine.data('beritaOpini', createFetcher('/api/berita-opini'));
 
-//     // Daftarkan push notification component
-//     Alpine.data('pushNotification', pushNotification);
-// });
-// Alpine.start();
+    // Daftarkan push notification component
+    Alpine.data('pushNotification', pushNotification);
+});
+Alpine.start();
 // ─────────────────────────────────────────────────────────────────────────────
 //
 //
