@@ -251,7 +251,7 @@ class Post extends Model
         }
 
         // Default
-        return asset('backup/storage/thumbnails/' . $this->cover);
+        return asset('img/no_image.webp');
     }
 
     public function getThumbnailVideoAttribute(): string

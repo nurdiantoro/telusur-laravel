@@ -111,6 +111,7 @@ class FrontendController extends Controller
                     'id',
                     'title',
                     'slug',
+                    'cover',
                     'category_id',
                     'gallery_id',
                     'publish_time'
