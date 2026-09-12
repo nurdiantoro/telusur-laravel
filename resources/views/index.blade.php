@@ -17,12 +17,13 @@
             </button>
         </form>
 
-        <div class="flex flex-row flex-wrap justify-center gap-6">
+        {{-- suggestTag --}}
+        {{-- <div class="flex flex-row flex-wrap justify-center gap-6">
             @foreach ($suggestTags as $suggestTag)
                 <a href="{{ route('post.tag', $suggestTag->slug) }}"
                     class="hover:text-warna-03 text-sm text-white">#{{ $suggestTag->slug }}</a>
             @endforeach
-        </div>
+        </div> --}}
     </div>
 
     {{-- Hot news --}}
