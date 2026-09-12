@@ -15,29 +15,34 @@ class CreatePost extends CreateRecord
     protected function getFormActions(): array
     {
         return [
-            Action::make('publish')
-                ->label('Publish')
+            // Action::make('publish')
+            //     ->label('Publish')
+            //     ->color('primary')
+            //     ->action(function () {
+            //         $this->submitStatus = 'published';
+            //         $this->create();
+            //     }),
+
+            // Action::make('draft')
+            //     ->label('Draft')
+            //     ->color('gray')
+            //     ->action(function () {
+            //         $this->submitStatus = 'draft';
+
+            //         $this->create(false);
+
+            //         $this->redirect(
+            //             $this->getResource()::getUrl('index')
+            //         );
+            //     }),
+
+            Action::make('submit')
+                ->label('Simpan')
                 ->color('primary')
-                ->action(function () {
-                    $this->submitStatus = 'published';
-                    $this->create();
-                }),
-
-            Action::make('draft')
-                ->label('Draft')
-                ->color('gray')
-                ->action(function () {
-                    $this->submitStatus = 'draft';
-
-                    $this->create(false);
-
-                    $this->redirect(
-                        $this->getResource()::getUrl('index')
-                    );
-                }),
+                ->submit('save'),
 
             Action::make('cancel')
-                ->label('Cancel')
+                ->label('Batal')
                 ->color('gray')
                 ->url($this->getResource()::getUrl('index')),
         ];
@@ -62,30 +67,30 @@ class CreatePost extends CreateRecord
         |
         | Kalau pilih published
         */
-        if ($this->submitStatus === 'published') {
-            /*
-            |
-            |
-            | Jika publish_at = immediately
-            | langsung set publish_time ke sekarang
-            */
-            if ($this->data['publish_at'] === 'immediately') {
-                $data['publish_time'] = now();
-            }
-            /*
-            |
-            |
-            | Jika publish_at = scheduled
-            | cek apakah waktunya sudah lewat atau belum
-            */
-            if ($this->data['publish_at'] === 'scheduled' && !empty($data['publish_time'])) {
-                if (Carbon::parse($data['publish_time'])->isFuture()) {
-                    $data['status'] = 'pending';
-                }
-            }
-        } else {
-            $data['status'] = $this->submitStatus;
-        }
+        // if ($this->submitStatus === 'published') {
+        //     /*
+        //     |
+        //     |
+        //     | Jika publish_at = immediately
+        //     | langsung set publish_time ke sekarang
+        //     */
+        //     if ($this->data['publish_at'] === 'immediately') {
+        //         $data['publish_time'] = now();
+        //     }
+        //     /*
+        //     |
+        //     |
+        //     | Jika publish_at = scheduled
+        //     | cek apakah waktunya sudah lewat atau belum
+        //     */
+        //     if ($this->data['publish_at'] === 'scheduled' && !empty($data['publish_time'])) {
+        //         if (Carbon::parse($data['publish_time'])->isFuture()) {
+        //             $data['status'] = 'pending';
+        //         }
+        //     }
+        // } else {
+        //     $data['status'] = $this->submitStatus;
+        // }
 
         return $data;
     }

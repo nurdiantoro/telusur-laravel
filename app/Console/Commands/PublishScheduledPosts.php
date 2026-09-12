@@ -28,7 +28,7 @@ class PublishScheduledPosts extends Command
     |
     |
     | Jalankan ini kalau ada publis post
-    | 1. Cari post yang statusnya pending
+    | 1. Cari post yang statusnya scheduled
     | 2. Cari post yang publish_time <= sekarang
     | 3. Update statusnya jadi published
     | 4. index ke searchable()
@@ -36,7 +36,7 @@ class PublishScheduledPosts extends Command
     */
     public function handle(WebPushService $webPushService): void
     {
-        $posts = Post::where('status', 'pending')
+        $posts = Post::where('status', 'scheduled')
             ->whereNotNull('publish_time')
             ->where('publish_time', '<=', now())
             ->get();

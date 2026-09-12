@@ -128,66 +128,98 @@ class PostForm
                                         ->required(),
                                 ]),
 
+
                             /*
                             |
                             |
-                            |
+                            |   SKEMA LAMA
                             |  ----------------------------------------
                             |  Publish At
                             |  ----------------------------------------
                              */
-                            Select::make('publish_at')
-                                ->label('Publish Berita')
-                                ->reactive()
+                            Select::make('status')
+                                ->label('Status')
                                 ->options([
-                                    'immediately' => 'Langsung Publish',
-                                    'scheduled' => 'Jadwalkan',
+                                    'draft' => 'Draft',
+                                    'published' => 'Publish Sekarang',
+                                    'scheduled' => 'Jadwalkan Publish',
+                                    'unpublished' => 'Unpublish',
                                 ])
-                                ->default('scheduled') // untuk create
-                                ->afterStateHydrated(function ($state, callable $set, $record) {
-
-                                    // Cek apakah ini edit, bukan create (ada record)
-                                    if ($record) {
-                                        // Jika publish_time sudah ada → post sebelumnya dijadwalkan, default pilih 'scheduled'
-                                        // Jika publish_time null → post belum pernah publish, default pilih 'immediately'
-                                        if (!$record->publish_time) {
-                                            $set('publish_at', 'immediately'); // immediately karena belum ada publish_time
-                                        } else {
-                                            $set('publish_at', 'scheduled'); // scheduled karena ada waktu publish
-                                        }
-                                    }
-                                    // Note: Saat create, default tetap diatur oleh ->default('scheduled')
-                                })
+                                ->default('draft')
                                 ->selectablePlaceholder(false)
                                 ->native(false)
-                                ->dehydrated(false)
-                                ->required(fn($livewire) => $livewire->submitStatus === 'published')
-                                ->hidden(function ($get) {
-                                    $isPosted = $get('status') === 'published';
-                                    return $isPosted;
-                                }),
+                                ->reactive()
+                                ->required(),
+
                             DateTimePicker::make('publish_time')
-                                ->label('Jadwal Publish')
-                                // ->minDate(now())
-                                ->disabled(fn($get) => $get('publish_at') === 'immediately')
-                                ->dehydrated(fn($get) => $get('publish_at') === 'scheduled')
-                                ->required(function ($get, $livewire) {
-                                    $isPublished = $livewire->submitStatus === 'published';
-                                    $isScheduled = $get('publish_at') === 'scheduled';
-                                    return $isPublished && $isScheduled;
-                                })
-                                /*
-                                |  ----------------------------------------
-                                |  Data tidak akan disimpan jika :
-                                |  publish_at = immediately
-                                |  atau
-                                |  status nya sudah published (untuk edit post yang sudah published)
-                                |  ----------------------------------------
-                                */
-                                ->dehydrated(function ($get) {
-                                    $isScheduled = $get('publish_at') === 'scheduled';
-                                    return $isScheduled;
-                                }),
+                                ->label('Publish Berita')
+                                ->reactive()
+                                // ->required(fn($livewire) => $livewire->submitStatus === 'published' && $livewire->getFormState()['status'] === 'scheduled')
+                                ->hidden(fn($get) => $get('status') !== 'scheduled')
+                                ->dehydrated(fn($get) => $get('status') === 'scheduled')
+                                ->validationMessages([
+                                    'required' => 'Publish Time Wajib Di isi',
+                                ]),
+
+                            /*
+                            |
+                            |
+                            |   SKEMA LAMA
+                            |  ----------------------------------------
+                            |  Publish At
+                            |  ----------------------------------------
+                             */
+                            // Select::make('publish_at')
+                            //     ->label('Publish Berita')
+                            //     ->reactive()
+                            //     ->options([
+                            //         'immediately' => 'Langsung Publish',
+                            //         'scheduled' => 'Jadwalkan',
+                            //     ])
+                            //     ->default('scheduled') // untuk create
+                            //     ->afterStateHydrated(function ($state, callable $set, $record) {
+
+                            //         // Cek apakah ini edit, bukan create (ada record)
+                            //         if ($record) {
+                            //             // Jika publish_time sudah ada → post sebelumnya dijadwalkan, default pilih 'scheduled'
+                            //             // Jika publish_time null → post belum pernah publish, default pilih 'immediately'
+                            //             if (!$record->publish_time) {
+                            //                 $set('publish_at', 'immediately'); // immediately karena belum ada publish_time
+                            //             } else {
+                            //                 $set('publish_at', 'scheduled'); // scheduled karena ada waktu publish
+                            //             }
+                            //         }
+                            //         // Note: Saat create, default tetap diatur oleh ->default('scheduled')
+                            //     })
+                            //     ->selectablePlaceholder(false)
+                            //     ->native(false)
+                            //     ->dehydrated(false)
+                            //     ->required(fn($livewire) => $livewire->submitStatus === 'published')
+                            //     ->hidden(function ($get) {
+                            //         $isPosted = $get('status') === 'published';
+                            //         return $isPosted;
+                            //     }),
+                            // DateTimePicker::make('publish_time')
+                            //     ->label('Jadwal Publish')
+                            //     ->disabled(fn($get) => $get('publish_at') === 'immediately')
+                            //     ->dehydrated(fn($get) => $get('publish_at') === 'scheduled')
+                            //     ->required(function ($get, $livewire) {
+                            //         $isPublished = $livewire->submitStatus === 'published';
+                            //         $isScheduled = $get('publish_at') === 'scheduled';
+                            //         return $isPublished && $isScheduled;
+                            //     })
+                            //     /*
+                            //     |  ----------------------------------------
+                            //     |  Data tidak akan disimpan jika :
+                            //     |  publish_at = immediately
+                            //     |  atau
+                            //     |  status nya sudah published (untuk edit post yang sudah published)
+                            //     |  ----------------------------------------
+                            //     */
+                            //     ->dehydrated(function ($get) {
+                            //         $isScheduled = $get('publish_at') === 'scheduled';
+                            //         return $isScheduled;
+                            //     }),
                         ]),
 
                     /*
