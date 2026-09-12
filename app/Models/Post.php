@@ -245,8 +245,8 @@ class Post extends Model
         // Artikel lama
         if ($this->cover) {
             $path = 'backup/storage/thumbnails/' . $this->cover;
-            if (Storage::disk('public')->exists($path)) {
-                return Storage::disk('public')->url($path);
+            if (file_exists(public_path($path))) {
+                return asset($path);
             }
         }
 
@@ -267,8 +267,8 @@ class Post extends Model
         // Artikel lama
         if ($this->cover) {
             $path = 'backup/storage/thumbnails/' . $this->cover;
-            if (Storage::disk('public')->exists($path)) {
-                return Storage::disk('public')->url($path);
+            if (file_exists(public_path($path))) {
+                return asset($path);
             }
         }
 
@@ -290,8 +290,8 @@ class Post extends Model
         if ($this->cover) {
             $path = 'backup/storage/images/' . $this->cover;
 
-            if (Storage::disk('public')->exists($path)) {
-                return Storage::disk('public')->url($path);
+            if (file_exists(public_path($path))) {
+                return asset($path);
             }
         }
 
