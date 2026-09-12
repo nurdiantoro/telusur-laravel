@@ -23,7 +23,7 @@
 
                         <div class="md:col-span-1">
                             <div class="aspect-2/1 w-full overflow-hidden rounded-3xl bg-gray-100">
-                                <img src="{{ $post->gallery?->spatie_thumbnail ??
+                                <img src="{{ $post->thumbnail_url ??
                                     ($post->type === 'video' && $post->video_url
                                         ? 'https://img.youtube.com/vi/' . $post->video_url . '/hqdefault.jpg'
                                         : asset('img/no_image.webp')) }}"
