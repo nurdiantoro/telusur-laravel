@@ -320,6 +320,7 @@ class FrontendController extends Controller
         $comments = Comment::where('post_id', $post->id)
             ->where('status', 'approved')
             ->get();
+        $post->increment('views');
 
 
         /*
