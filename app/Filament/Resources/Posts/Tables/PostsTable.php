@@ -88,6 +88,7 @@ class PostsTable
                     ->label('Perubahan')
                     ->url(fn($record) => PostResource::getUrl('activities', ['record' => $record])),
             ])
+            ->selectCurrentPageOnly()
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

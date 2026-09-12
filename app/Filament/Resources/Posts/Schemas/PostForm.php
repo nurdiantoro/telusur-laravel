@@ -92,10 +92,7 @@ class PostForm
                                 ->required(),
 
                             Hidden::make('gallery_id'),
-                            View::make('.filament.gallery-picker')
-                                ->viewData([
-                                    'galleries' => Gallery::with('media')->get(),
-                                ]),
+                            View::make('.filament.gallery-picker'),
 
                             TextInput::make('video_url')
                                 ->label('Video URL')

@@ -8,6 +8,8 @@
     loading: false,
     uploading: false,
     uploadProgress: 0,
+    uploadError: null,
+    uploadErrors: [],
     file: null,
     preview: null,
     title: '',
@@ -56,6 +58,9 @@
         const file = e.target.files[0]
         if (!file) return
 
+        this.uploadError = null
+        this.uploadErrors = []
+
         this.file = file
         this.preview = URL.createObjectURL(file)
         this.title = file.name.split('.').slice(0, -1).join('.')
@@ -84,24 +89,46 @@
 
         // Success
         xhr.onload = () => {
-            if (xhr.status === 200) {
-                const data = JSON.parse(xhr.responseText)
+            let data = {}
 
-                // Update state
+            try {
+                data = JSON.parse(xhr.responseText)
+            } catch (e) {
+                data = {}
+            }
+
+            // Success
+            if (xhr.status >= 200 && xhr.status < 300) {
+
                 this.galleries.unshift(data.data)
+
                 this.selected = data.data.id
                 this.selectedItem = data.data
 
-                // Sync ke Livewire
-                if (typeof $wire !== 'undefined') {
-                    $wire.$set('data.gallery_id', data.data.id)
+                this.$wire.$set('data.gallery_id', data.data.id)
+
+                // Tutup modal
+                this.uploadModal = false
+
+                // Reset upload
+                this.file = null
+                this.preview = null
+                this.title = ''
+                this.uploadProgress = 0
+                this.uploading = false
+                this.uploadError = null
+                this.uploadErrors = []
+
+                if (this.$refs.file) {
+                    this.$refs.file.value = ''
                 }
 
-                // Reset & close modal
-                this.resetUpload()
-            } else {
-                console.error(xhr.responseText)
+                return
             }
+
+            // Validation / Server Error
+            this.uploadError = data.message || 'Upload gagal.'
+            this.uploadErrors = data.errors || {}
 
             this.uploading = false
         }
@@ -138,9 +165,6 @@
 }" x-init="init()">
 
     <div class="font-medium text-gray-950">Cover Berita<span class="text-red-600">*</span></div>
-
-    <!-- Trigger -->
-    <input type="file" class="hidden" x-ref="file" @change="handleFile">
     <button type="button" @click="uploadModal = true" :disabled="uploading"
         class="rounded-lg bg-blue-600 px-4 py-2 text-xs text-white hover:bg-blue-500">
         Upload Gambar
@@ -149,13 +173,14 @@
         class="rounded-lg bg-zinc-500 px-4 py-2 text-xs text-white hover:bg-zinc-400">
         Pilih Dari Gallery
     </button>
-    <div x-show="uploading" class="mt-2 w-full">
+
+    {{-- <div x-show="uploading" class="mt-2 w-full">
         <div class="h-2 w-full rounded bg-gray-200">
             <div class="h-2 rounded bg-blue-500 transition-all" :style="'width:' + uploadProgress + '%'"></div>
         </div>
 
         <div class="mt-1 text-xs text-gray-600" x-text="uploadProgress + '%'"></div>
-    </div>
+    </div> --}}
 
     <!-- Selected Preview -->
     <template x-if="selectedItem">
@@ -186,10 +211,6 @@
                     placeholder="Cari Gambar"
                     class="mb-4 w-full rounded-lg px-3 py-2 ring-1 ring-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
-            <!-- Loading -->
-            {{-- <div x-show="loading" class="py-4 text-center">
-                Loading...
-            </div> --}}
 
             <!-- Grid -->
             <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
@@ -230,7 +251,7 @@
     <!-- Upload Modal -->
     <div x-show="uploadModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
 
-        <div class="w-full max-w-lg space-y-4 rounded-lg bg-white p-4">
+        <div class="relative w-full max-w-lg space-y-4 overflow-hidden rounded-lg bg-white p-4">
 
             <!-- Header -->
             <div class="flex items-center justify-between">
@@ -267,6 +288,22 @@
                     class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
             </div>
 
+            <!-- Error -->
+            <div x-show="uploadError" x-transition
+                class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                <div class="font-semibold" x-text="uploadError"></div>
+
+                <template x-if="Object.keys(uploadErrors).length">
+                    <ul class="mt-2 list-inside list-disc space-y-1">
+                        <template x-for="(messages, field) in uploadErrors" :key="field">
+                            <template x-for="message in messages" :key="message">
+                                <li x-text="message"></li>
+                            </template>
+                        </template>
+                    </ul>
+                </template>
+            </div>
+
             <!-- Action -->
             <div class="flex justify-end gap-2">
                 <button type="button" @click="resetUpload()"
@@ -282,8 +319,8 @@
 
             <!-- Progress -->
             <div x-show="uploading">
-                <div class="h-2 w-full rounded bg-gray-200">
-                    <div class="h-2 rounded bg-blue-500" :style="'width:' + uploadProgress + '%'"></div>
+                <div class="absolute bottom-0 left-0 h-1 w-full">
+                    <div class="h-1 bg-blue-500" :style="'width:' + uploadProgress + '%'"></div>
                 </div>
             </div>
 

@@ -7,6 +7,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ApiController extends Controller
 {
@@ -65,25 +66,48 @@ class ApiController extends Controller
 
     public function upload(Request $request)
     {
-        $request->validate([
-            'file' => 'required|image|max:2480'
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:2480',
+            'title' => 'required|string|max:255',
+        ], [
+            'file.required' => 'Gambar wajib dipilih.',
+            'file.image' => 'File harus berupa gambar.',
+            'file.mimes' => 'Format gambar harus JPG, JPEG, PNG, atau WEBP.',
+            'file.max' => 'Ukuran gambar maksimal 2.48 MB.',
+            'title.required' => 'Nama gambar wajib diisi.',
+            'title.max' => 'Nama gambar maksimal 255 karakter.',
         ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Upload gagal. Periksa data yang dikirim.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
-        $gallery = new Gallery();
-        $gallery->title = $request->title;
-        $gallery->save();
-
-        $gallery
-            ->addMediaFromRequest('file')
-            ->toMediaCollection('imagesCollection');
-
-        return response()->json([
-            'data' => [
-                'id' => $gallery->id,
-                'title' => $gallery->title,
-                'thumbnail' => $gallery->spatie_thumbnail,
-            ]
-        ]);
+        try {
+            $gallery = new Gallery();
+            $gallery->title = $request->title;
+            $gallery->save();
+            $gallery
+                ->addMediaFromRequest('file')
+                ->toMediaCollection('imagesCollection');
+            return response()->json([
+                'success' => true,
+                'message' => 'Gambar berhasil diupload.',
+                'data' => [
+                    'id' => $gallery->id,
+                    'title' => $gallery->title,
+                    'thumbnail' => $gallery->spatie_thumbnail,
+                ],
+            ], 201);
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengupload gambar.',
+            ], 500);
+        }
     }
     /*
     |--------------------------------------------------------------------------
