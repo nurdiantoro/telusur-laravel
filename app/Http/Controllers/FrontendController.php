@@ -129,6 +129,7 @@ class FrontendController extends Controller
                         'id',
                         'title',
                         'slug',
+                        'cover',
                         'category_id',
                         'gallery_id',
                         'publish_time'
@@ -156,6 +157,7 @@ class FrontendController extends Controller
                     'id',
                     'title',
                     'slug',
+                    'cover',
                     'category_id',
                     'gallery_id',
                     'publish_time',
@@ -471,6 +473,7 @@ class FrontendController extends Controller
                 'id',
                 'title',
                 'slug',
+                'cover',
                 'category_id',
                 'gallery_id',
                 'publish_time'
@@ -584,6 +587,7 @@ class FrontendController extends Controller
                 'title',
                 'type',
                 'slug',
+                'cover',
                 'category_id',
                 'gallery_id',
                 'publish_time'
@@ -696,6 +700,7 @@ class FrontendController extends Controller
                 'title',
                 'type',
                 'slug',
+                'cover',
                 'video_url',
                 'category_id',
                 'gallery_id',
