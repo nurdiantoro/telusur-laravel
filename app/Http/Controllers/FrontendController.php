@@ -103,7 +103,7 @@ class FrontendController extends Controller
         | Variable Query
         |--------------------------------------------------------------------------
         */
-        $beritaUtama = Cache::remember('berita_utama_carousel_cache', 60, function () {
+        $beritaTerbaru = Cache::remember('berita_terbaru_cache', 60, function () {
             $posts = Post::post()
                 ->where('publish_time', '>=', now()->subDays(7))
                 ->where('headline', true)
@@ -141,7 +141,7 @@ class FrontendController extends Controller
             return $posts;
         });
 
-        $beritaTerbaru = Cache::remember('berita_terbaru_cache', 60, function () {
+        $beritaUtama = Cache::remember('berita_utama_cache', 60, function () {
             $posts = Post::post()
                 ->limit(9)
                 ->get();

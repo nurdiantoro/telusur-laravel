@@ -108,34 +108,31 @@
                     <h2 class="mb-2 text-2xl font-bold">Berita Utama</h2>
                 </div>
 
-                <div x-data="beritaUtama()" x-init="init()">
+                <!-- Content -->
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    @foreach ($beritaUtama as $post)
+                        <a href="{{ route('post.detail', ['slug' => $post->slug, 'category' => $post->category->slug]) }}"
+                            class="group flex items-start gap-4">
 
-                    <!-- Content -->
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        @foreach ($beritaUtama as $post)
-                            <a href="{{ route('post.detail', ['slug' => $post->slug, 'category' => $post->category->slug]) }}"
-                                class="group flex items-start gap-4">
+                            <!-- Thumbnail -->
+                            <div class="shrink-0 overflow-hidden rounded-2xl bg-gray-200">
+                                <img src="{{ $post->thumbnail_url }}" alt="{{ $post->title }}"
+                                    class="h-20 w-28 bg-gray-200 object-cover transition duration-300 group-hover:scale-105">
+                            </div>
 
-                                <!-- Thumbnail -->
-                                <div class="shrink-0 overflow-hidden rounded-2xl bg-gray-200">
-                                    <img src="{{ $post->thumbnail_url }}" alt="{{ $post->title }}"
-                                        class="h-20 w-28 bg-gray-200 object-cover transition duration-300 group-hover:scale-105">
+                            <!-- Content -->
+                            <div class="flex flex-col">
+
+                                <!-- ✅ langsung pakai -->
+                                <div class="mb-1 text-xs text-gray-500">{{ $post->publish_time->diffForHumans() }}
                                 </div>
 
-                                <!-- Content -->
-                                <div class="flex flex-col">
-
-                                    <!-- ✅ langsung pakai -->
-                                    <div class="mb-1 text-xs text-gray-500">{{ $post->publish_time->diffForHumans() }}
-                                    </div>
-
-                                    <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition">
-                                        {{ $post->title }}
-                                    </h3>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
+                                <h3 class="group-hover:text-warna-03 text-sm font-semibold leading-snug transition">
+                                    {{ $post->title }}
+                                </h3>
+                            </div>
+                        </a>
+                    @endforeach
                 </div>
             </div>
 
@@ -320,7 +317,7 @@
                             <div class="flex flex-col justify-center md:col-span-2">
 
                                 <div class="mb-1 text-xs text-gray-500">
-                                    {{ $post->publish_time }}
+                                    {{ $post->publish_time->diffForHumans() }}
                                 </div>
 
                                 <h2
