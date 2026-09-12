@@ -245,9 +245,9 @@ class Post extends Model
         // Artikel lama
         if ($this->cover) {
             $path = 'backup/storage/thumbnails/' . $this->cover;
-            if (file_exists($path)) {
-                return asset($path);
-            }
+            // if (file_exists($path)) {
+            return asset($path);
+            // }
         }
 
         // Default
