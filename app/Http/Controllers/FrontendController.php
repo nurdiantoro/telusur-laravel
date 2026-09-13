@@ -913,15 +913,15 @@ class FrontendController extends Controller
         | Variable Query
         |--------------------------------------------------------------------------
         */
-
-        $tag = Tag::where('slug', $slug)->firstOrFail();
+        $category = Tag::where('slug', $slug)->firstOrFail();
 
         $posts = Post::post()
-            ->where('tag')
+            ->whereHas('tags', fn($query) => $query->where('slug', $slug))
             ->paginate(10);
 
-        return view('post_category', compact(
-            'tag',
+
+        return view('post_index', compact(
+            'category',
             'posts',
             'categories',
             'sidebarAds',
@@ -929,7 +929,6 @@ class FrontendController extends Controller
             'navbarCategories',
             'pageSetting',
             'infografises',
-            'adsense',
             'postsSidebar'
         ));
     }
