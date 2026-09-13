@@ -35,7 +35,7 @@
 
             <div class="swiper hotNews hidden min-w-0 flex-1 overflow-hidden">
                 <div class="swiper-wrapper">
-                    @foreach ($beritaUtama as $post)
+                    @foreach ($beritaSlider as $post)
                         <a href="{{ $post->category->slug . '/' . $post->slug }}"
                             class="swiper-slide hover:text-warna-03 x-cloak min-w-0 truncate px-2 md:p-0 md:text-lg">{{ $post->title }}</a>
                     @endforeach
@@ -63,7 +63,7 @@
             <div class="w-screen md:w-full" id="carousel">
                 <div class="swiper highlightNews md:rounded-4xl group relative hidden aspect-video w-full overflow-hidden">
                     <div class="swiper-wrapper">
-                        @foreach ($beritaUtama as $post)
+                        @foreach ($beritaSlider as $post)
                             <a href="{{ $post->category->slug . '/' . $post->slug }}" class="swiper-slide">
                                 <img src="{{ $post->preview_url }}" alt="{{ $post->title }}"
                                     class="h-full w-full object-cover" loading="lazy">
