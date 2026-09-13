@@ -138,11 +138,11 @@
                 </div>
             </div>
 
-            {{-- Artikel Terbaru --}}
+            {{-- Berita Terkini --}}
             <div class="px-4 md:px-0">
                 <div
                     class="before:bg-warna-01 top-26 sticky z-10 mb-6 border-b border-gray-200 bg-white pb-2 pt-6 before:absolute before:top-full before:h-1 before:w-16 md:relative md:top-0 md:py-0">
-                    <h2 class="mb-2 text-2xl font-bold">Artikel Terbaru</h2>
+                    <h2 class="mb-2 text-2xl font-bold">Berita Terkini</h2>
                 </div>
 
                 <!-- Content -->
@@ -177,7 +177,7 @@
                 {{-- Lihat berita terbaru lainnya --}}
                 <a href="{{ route('index_post') }}"
                     class="hover:text-warna-03 group mt-10 flex flex-row items-center justify-center gap-2 text-sm text-gray-500">
-                    <span>Lihat berita terbaru lainnya</span>
+                    <span>Lihat berita terkini lainnya</span>
                     <span class="duration-300 ease-out group-hover:translate-x-2">
                         <x-heroicon-o-arrow-right class="h-4" />
                     </span>

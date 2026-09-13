@@ -136,6 +136,7 @@ class PostForm
                              */
                             Select::make('status')
                                 ->label('Status')
+                                ->disabled(fn() => ! auth()->user()?->hasPermission('post.publish'))
                                 ->options([
                                     'draft' => 'Draft',
                                     'published' => 'Publish Sekarang',

@@ -48,6 +48,7 @@ class RolePermissionSeeder extends Seeder
                 'post.create',
                 'post.read',
                 'post.update',
+                'post.publish',
 
                 'tags.create',
                 'tags.read',

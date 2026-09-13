@@ -23,6 +23,7 @@ class PermissionSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'post.update']);
         Permission::firstOrCreate(['name' => 'post.delete']);
         Permission::firstOrCreate(['name' => 'post.edit_author']);
+        Permission::firstOrCreate(['name' => 'post.publish']);
 
         /*
         |--------------------------------------------------------------------------
