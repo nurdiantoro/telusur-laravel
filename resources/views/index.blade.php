@@ -65,17 +65,18 @@
                     <div class="swiper-wrapper">
                         @foreach ($beritaUtama as $post)
                             <a href="{{ $post->category->slug . '/' . $post->slug }}" class="swiper-slide">
-                                <img src="{{ $post->thumbnail_url }}" alt="{{ $post->title }}"
+                                <img src="{{ $post->preview_url }}" alt="{{ $post->title }}"
                                     class="h-full w-full object-cover" loading="lazy">
 
                                 <div class="bg-linear-to-t absolute inset-0 from-black/60 via-black/20 to-transparent">
                                 </div>
-                                <div class="absolute bottom-8 left-8 right-8 flex flex-col gap-2 text-white">
+                                <div
+                                    class="absolute bottom-2 left-2 right-2 flex flex-col text-white md:bottom-8 md:left-8 md:right-8 md:gap-2">
                                     <span class="inline-block w-fit bg-red-600 px-3 py-1 text-sm font-bold"
                                         data-swiper-parallax="-90%">
                                         {{ $post->category?->name ?? 'No Category' }}
                                     </span>
-                                    <div class="text-lg" data-swiper-parallax-x="100">
+                                    <div class="line-clamp-2 text-lg font-semibold" data-swiper-parallax-x="100">
                                         {{ $post->title }}
                                     </div>
                                     <div class="text-sm opacity-50" data-swiper-parallax-x="-300"
