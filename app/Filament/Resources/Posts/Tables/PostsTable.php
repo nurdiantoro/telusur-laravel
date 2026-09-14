@@ -96,7 +96,8 @@ class PostsTable
             ->selectCurrentPageOnly()
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn() => auth()->user()?->hasPermission('post.delete')),
                 ]),
             ]);
     }
