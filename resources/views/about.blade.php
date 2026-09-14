@@ -10,17 +10,17 @@
         <br><br>
 
         <!--<b>Pemi<b>Pemimpin Umum</b><br>
-    Fahri Haidar<br><br>-->
+            Fahri Haidar<br><br>-->
         <b>Pemimpin Redaksi / Penanggung jawab</b><br>
         Fahri Haidar <br>
         <b>Redaktur Pelaksana</b>
         <br>Farauq Iskandar<br>
         <b>Staff Redaksi</b><br>
-        Tio Pirnando | Firardi | Mohammad Tegar Jihad Alfaruq|Dhanis Iswara |<br>
-        <b>Medsos</b><br>
-        Hamdani <br>
+        Malik Sihite | Rikky Affandi Daulay | Yudo Budi Harto | Firardi | Arianto Deni I Hamdani I Perto<br>
+        <b>Sosial Media</b><br>
+        Rofifah Hanna | Nadhifa Putri <br>
         <b>Fotografer</b><br>
-        Bambang Tri Prasetyo <br>
+        Bambang Tri | Abdul Aziz <br>
         <b>Sekretaris Redaksi</b><br>
         Udi Subarja<br>
         <b>Iklan &amp; Pemasaran</b><br>

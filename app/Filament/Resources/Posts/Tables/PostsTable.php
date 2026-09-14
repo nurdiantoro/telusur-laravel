@@ -30,6 +30,11 @@ class PostsTable
                     ->sortable()
                     ->wrap()
                     ->searchable(),
+                TextColumn::make('author.name')
+                    ->label('Author')
+                    ->sortable()
+                    ->wrap()
+                    ->searchable(),
                 TextColumn::make('type')
                     ->label('Tipe'),
                 TextColumn::make('publish_time')
