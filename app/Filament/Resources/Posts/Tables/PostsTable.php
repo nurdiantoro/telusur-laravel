@@ -35,6 +35,11 @@ class PostsTable
                     ->sortable()
                     ->wrap()
                     ->searchable(),
+                TextColumn::make('category.name')
+                    ->label('Kategori')
+                    ->sortable()
+                    ->wrap()
+                    ->searchable(),
                 TextColumn::make('type')
                     ->label('Tipe'),
                 TextColumn::make('publish_time')
