@@ -198,7 +198,9 @@
                         @enderror
                     </div>
 
-                    <input type="hidden" name="jangan_diisi">
+                    <div class="hidden">
+                        <input type="text" name="jangan_diisi">
+                    </div>
                 </div>
                 <button type="submit"
                     class="bg-warna-02 hover:bg-warna-01 block w-full cursor-pointer self-end rounded-md px-4 py-2 text-white md:w-auto">
