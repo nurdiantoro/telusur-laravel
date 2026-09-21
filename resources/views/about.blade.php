@@ -2,7 +2,7 @@
 @section('content')
     <div class="text-center">
         telusur.co.id diterbitkan 17 Februari 2017 oleh PT Telusur Info Media, dan telah Terverifikasi Administrasi
-        dan Faktual oleh Dewan Pers No. 302/DP-Terverifikasi/K/X/2018 pada tanggal 5 Oktober 2018, juga Terdaftar di
+        dan Faktual oleh Dewan Pers No. 1275/DP-Verifikasi/K/VIII/2024 pada tanggal 5 Oktober 2018, juga Terdaftar di
         Kemenkominfo No. 00840/DJAI.PSE/04/2018.
         <br><br>
         <b>Dewan Redaksi</b><br>
@@ -10,7 +10,7 @@
         <br><br>
 
         <!--<b>Pemi<b>Pemimpin Umum</b><br>
-            Fahri Haidar<br><br>-->
+                Fahri Haidar<br><br>-->
         <b>Pemimpin Redaksi / Penanggung jawab</b><br>
         Fahri Haidar <br>
         <b>Redaktur Pelaksana</b>

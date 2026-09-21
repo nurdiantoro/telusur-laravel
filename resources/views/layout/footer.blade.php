@@ -9,7 +9,7 @@
             <div class="text-sm text-neutral-400">
                 <p>Telusur.co.id diterbitkan 17 Februari 2017 oleh PT Telusur Info Media, dan telah Terverifikasi
                     Administrasi
-                    dan Faktual oleh Dewan Pers No. 302/DP-Terverifikasi/K/X/2018</p>
+                    dan Faktual oleh Dewan Pers No. 1275/DP-Verifikasi/K/VIII/2024</p>
                 <br>
                 <p>Pada tanggal 5 Oktober 2018, juga Terdaftar di
                     Kemenkominfo No. 00840/DJAI.PSE/04/2018.</p>
