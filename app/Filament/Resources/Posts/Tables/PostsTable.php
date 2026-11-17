@@ -63,6 +63,9 @@ class PostsTable
                     ->searchable(),
                 ToggleColumn::make('headline')->sortable(),
                 ToggleColumn::make('infografis')->sortable(),
+                TextColumn::make('views')
+                    ->label('Views')
+                    ->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
