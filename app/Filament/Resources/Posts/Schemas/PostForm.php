@@ -198,7 +198,12 @@ class PostForm
                                 ->fileAttachmentsDisk('public')
                                 ->fileAttachmentsDirectory('posts')
                                 ->fileAttachmentsVisibility('public')
-                                ->columnSpanFull(),
+                                ->columnSpanFull()
+                                ->dehydrateStateUsing(
+                                    fn(?string $state) => $state
+                                        ? str_replace(' nofollow', '', $state)
+                                        : $state
+                                ),
                         ]),
                 ]),
         ]);

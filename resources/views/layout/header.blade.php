@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/icon-telusur.webp') }}">
 
-<title>{{ $title ?? 'Telusur' }}</title>
+<title>{{ $title ?? 'Telusur.co.id' }}</title>
 <meta name="description"
     content="{{ $description ??
         'Telusur adalah platform pencarian yang membantu Anda menemukan informasi, tempat, dan layanan dengan mudah. Jelajahi dunia dengan Telusur!' }}">
@@ -14,7 +14,7 @@
 
 {{-- Open Graph (Facebook, WhatsApp, LinkedIn, dll) --}}
 <meta property="og:type" content="article">
-<meta property="og:title" content="{{ $title ?? 'Telusur' }}">
+<meta property="og:title" content="{{ $title ?? 'Telusur.co.id' }}">
 <meta property="og:description" content="{{ $description ?? 'Portal berita Telusur' }}">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:image" content="{{ $thumbnail ?? asset('img/logo-telusur.webp') }}">
@@ -22,7 +22,7 @@
 
 {{-- Twitter Card --}}
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $title ?? 'Telusur' }}">
+<meta name="twitter:title" content="{{ $title ?? 'Telusur.co.id' }}">
 <meta name="twitter:description" content="{{ $description ?? 'Portal berita Telusur' }}">
 <meta name="twitter:image" content="{{ $thumbnail ?? asset('img/logo-telusur.webp') }}">
 
